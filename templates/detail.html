@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <title>WAVE LAB</title>
   <link rel="stylesheet" href="//cdn.bootcss.com/mdui/0.3.0/css/mdui.min.css">
-  <script src="echarts.min.js"></script>
+  <script src="/static/js/echarts.min.js"></script>
   <script src="//cdn.bootcss.com/mdui/0.3.0/js/mdui.min.js"></script>
   <style>
   #main {
@@ -117,11 +117,9 @@
     </div>
   </div>
 </div>
-  <script src="/static/commen.js" charset="utf-8"></script>
-  <script src="config.js" charset="utf-8"></script>
-  <script src="cookie.js" charset="utf-8"></script>
-  <script src="stock.js" charset="utf-8"></script>
-  <script src="detail.js" charset="utf-8"></script>
+  <script src="/static/js/commen.js" charset="utf-8"></script>
+  <script src="/static/js/config.js" charset="utf-8"></script>
+  <script src="/static/js/detail.js" charset="utf-8"></script>
   <script type="text/javascript">
   var myChart = echarts.init(document.getElementById('main'));
   myChart.showLoading();
@@ -181,40 +179,6 @@
     }
   });
 
-  function addFavoriteStock(favoriteStock,stockData){
-    favoriteStock[stockData.name] = stockData.code;
-  }
-  function delFavoriteStock(favoriteStock,stockData){
-    favoriteStock[stockData.name] = undefined;
-  }
-  function updateFavoriteStockUl(ulObj,favoriteStock){
-    let htmlstr = '';
-    for (let item in favoriteStock) {
-      if (favoriteStock[item]) {
-        htmlstr += '<a href="' + hostName + 'detail.html?stockcode=' + favoriteStock[item].substr(2) + '&yearcount=1" target="_self"><li class="mdui-list-item mdui-ripple">' + item + '</li></a>';
-      }
-    }
-    ulObj.innerHTML = htmlstr;
-  }
-  function displayTradeData(ulObj,tradeData){
-    let htmlstr = '';
-    for (let item in tradeData){
-      htmlstr += '<a href="' + hostName + 'detail.html?stockcode=' + item.substr(2) + '&yearcount=1" target="_self"><li class="mdui-list-item mdui-ripple">' + tradeData[item] + '</li></a>';
-    }
-    ulObj.innerHTML = htmlstr;
-  }
-  function addTradeData(){
-    var xmlHttp = new XMLHttpRequest();
-    var queryStr = $('form').serialize();
-    // console.log(queryStr);
-    xmlHttp.open('get',hostName + 'addtradedata?' + queryStr);
-    xmlHttp.send();
-    xmlHttp.onreadystatechange = function(){
-      if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
-        mdui.snackbar({message: xmlHttp.responseText,position: 'top', timeout: 1000});
-      }
-    };
-  }
   </script>
 </body>
 </html>
