@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>WAVE LAB</title>
+  <link rel="stylesheet" href="//cdn.bootcss.com/mdui/0.3.0/css/mdui.min.css">
+  <script src="echarts.min.js"></script>
+  <script src="//cdn.bootcss.com/mdui/0.3.0/js/mdui.min.js"></script>
+  <style>
+  #main {
+    height: 800px;
+    padding: 10px 0 10px 0;
+  }
+  </style>
+</head>
+<body class="mdui-drawer-body-left mdui-appbar-with-toolbar mdui-theme-primary-indigo mdui-theme-accent-white mdui-loaded">
+  <header class="mdui-appbar mdui-appbar-fixed">
+    <div class="mdui-toolbar mdui-color-indigo">
+      <a class="mdui-btn mdui-btn-icon mdui-ripple"><i class="mdui-icon material-icons">trending_up</i></a>
+      <a id="title" class="mdui-typo-title mdui-ripple" target="_blank"></a>
+      <div class="mdui-toolbar-spacer"></div>
+      <div class="mdui-col-xs-2">
+        <div class="mdui-textfield mdui-textfield-expandable mdui-float-right">
+          <button class="mdui-textfield-icon mdui-btn mdui-btn-icon"><i class="mdui-icon material-icons">search</i></button>
+          <input class="mdui-textfield-input" type="text" placeholder="Search" id="searchbox">
+          <button class="mdui-textfield-close mdui-btn mdui-btn-icon"><i class="mdui-icon material-icons">close</i></button>
+        </div>
+      </div>
+      <label class="mdui-checkbox"><input id="favoriteCheckbox" type="checkbox" /><i class="mdui-checkbox-icon"></i>添加自选</label>
+      <button class="mdui-btn mdui-btn-icon mdui-ripple" mdui-tooltip="{content: '添加交易'}" mdui-dialog="{target: '#addtrade',modal: true}"><i class="mdui-icon material-icons">add</i></button>
+    </div>
+  </header>
+  <div class="mdui-drawer mdui-hidden-sm-down" id="left-drawer">
+    <ul class="mdui-list" mdui-collapse="{accordion: false}">
+      <li class="mdui-collapse-item">
+        <div class="mdui-collapse-item-header mdui-list-item mdui-ripple">
+          <i class="mdui-list-item-icon mdui-icon material-icons">access_time</i>
+          <div class="mdui-list-item-content">RECENT</div>
+          <i class="mdui-collapse-item-arrow mdui-icon material-icons">keyboard_arrow_down</i>
+        </div>
+        <ul id="recentStock" class="mdui-collapse-item-body mdui-list mdui-list-dense">
+          <!-- <li class="mdui-list-item mdui-ripple">New vs Returning</li> -->
+        </ul>
+      </li>
+
+      <li class="mdui-collapse-item mdui-collapse-item-open">
+        <div class="mdui-collapse-item-header mdui-list-item mdui-ripple">
+          <i class="mdui-list-item-icon mdui-icon material-icons">favorite</i>
+          <div class="mdui-list-item-content">FAVORITE</div>
+          <i class="mdui-collapse-item-arrow mdui-icon material-icons">keyboard_arrow_down</i>
+        </div>
+        <ul id="favoriteStock" class="mdui-collapse-item-body mdui-list mdui-list-dense">
+          <!-- <li class="mdui-list-item mdui-ripple">Overview</li> -->
+        </ul>
+      </li>
+      <li class="mdui-collapse-item mdui-collapse-item-open">
+        <div class="mdui-collapse-item-header mdui-list-item mdui-ripple">
+          <i class="mdui-list-item-icon mdui-icon material-icons">timeline</i>
+          <div class="mdui-list-item-content">TRADEDATA</div>
+          <i class="mdui-collapse-item-arrow mdui-icon material-icons">keyboard_arrow_down</i>
+        </div>
+        <ul id="tradeData" class="mdui-collapse-item-body mdui-list mdui-list-dense">
+          <!-- <li class="mdui-list-item mdui-ripple">Overview</li> -->
+        </ul>
+      </li>
+    </ul>
+  </div>
+  <div id="main" class="mdui-container-fluid"></div>
+  <div class="mdui-dialog" id="addtrade">
+    <div class="mdui-dialog-title">ADD TRADE DATA</div>
+    <div class="mdui-dialog-content">
+      <div class="mdui-container-fluid">
+        <form id="addTradeData">
+        <div class="mdui-row">
+          <div class="mdui-col-xs-6">
+            <div class="mdui-textfield">
+              <label class="mdui-textfield-label">Stock Code</label>
+              <input class="mdui-textfield-input" name="code" type="text" id="tradeStockCode"/>
+            </div>
+          </div>
+          <div class="mdui-col-xs-6">
+            <div class="mdui-textfield">
+            <label class="mdui-textfield-label">Date</label>
+            <input class="mdui-textfield-input" name="date" type="text" id="tradeDate"/>
+            </div>
+          </div>
+        </div>
+        <div class="mdui-row">
+          <div class="mdui-col-xs-6">
+            <div class="mdui-textfield">
+              <label class="mdui-textfield-label">Price</label>
+              <input class="mdui-textfield-input" name="price" type="text" id="tradePrice"/>
+            </div>
+          </div>
+          <div class="mdui-col-xs-6">
+            <div class="mdui-textfield">
+            <label class="mdui-textfield-label">Trading Volume</label>
+            <input class="mdui-textfield-input" name="volume" type="text" id="tradeVolume"/>
+            </div>
+          </div>
+        </div>
+        <div class="mdui-row">
+          <div class="mdui-col-xs-6">
+            <label class="mdui-switch">
+              <input name="type" type="checkbox" checked/>
+              <i class="mdui-switch-icon"></i>
+              / BUY / SELL /
+            </label>
+        </div>
+        </div>
+      </form>
+      </div>
+    </div>
+    <div class="mdui-dialog-actions">
+      <button class="mdui-btn mdui-ripple" mdui-dialog-close>cancel</button>
+      <button class="mdui-btn mdui-ripple" mdui-dialog-confirm>ADD</button>
+    </div>
+  </div>
+</div>
+  <script src="/static/commen.js" charset="utf-8"></script>
+  <script src="config.js" charset="utf-8"></script>
+  <script src="cookie.js" charset="utf-8"></script>
+  <script src="stock.js" charset="utf-8"></script>
+  <script src="detail.js" charset="utf-8"></script>
+  <script type="text/javascript">
+  var myChart = echarts.init(document.getElementById('main'));
+  myChart.showLoading();
+  var hostName = config.hostName;
+  var favoriteStock = {};
+  var stockData = null;
+  var stockCode = commen.getUrlParam().stockcode;
+  var yearCount = commen.getUrlParam().yearcount ? commen.getUrlParam().yearcount : 0;
+  if(stockCode.toString().length == 6){
+    stock.getRecentStock(document.getElementById('recentStock'));
+    stock.getFavoriteStock('zhkf',function(str){
+      favoriteStock = JSON.parse(str);
+      updateFavoriteStockUl(document.getElementById('favoriteStock'),favoriteStock);
+    });
+    stock.getTradeData('zhkf',function(str){
+      console.log(str);
+      let tradeData = JSON.parse(str);
+      displayTradeData(document.getElementById('tradeData'),tradeData);
+    });
+    isReady(stockCode);
+  }else{
+    document.writeln('The stockcode is incorrect.');
+  }
+
+  var $ = mdui.JQ;
+
+  $('#favoriteCheckbox').on('click', function () {
+    if (document.getElementById('favoriteCheckbox').checked) {
+      addFavoriteStock(favoriteStock,stockData);
+      updateFavoriteStockUl(document.getElementById('favoriteStock'),favoriteStock);
+      stock.updateFavoriteStock(JSON.stringify(favoriteStock).replace(/"/g, '\\"'),'zhkf',function(str){
+        mdui.snackbar({message:'favorite added.' + str,position:'top',timeout:800});
+      });
+      mdui.snackbar({message: 'favorite added.',position:'top',timeout:800});
+    }else {
+      delFavoriteStock(favoriteStock,stockData);
+      updateFavoriteStockUl(document.getElementById('favoriteStock'),favoriteStock);
+      stock.updateFavoriteStock(JSON.stringify(favoriteStock).replace(/"/g, '\\"'),'zhkf',function(str){
+        mdui.snackbar({message: 'favorite deleted.' + str,position:'top',timeout:800});
+      });
+      mdui.snackbar({message: 'favorite deleted.',position:'top',timeout:800});
+    }
+  });
+
+  $('#addtrade').on('opened.mdui.dialog',function(){
+    $('#tradeStockCode').val(stockData.code.substr(2));
+    $('#tradeDate').val(commen.getCurrentDate(false));
+    // console.log($$('#tradeDate'));
+  });
+  $('#addtrade').on('confirm.mdui.dialog', function(){
+    // mdui.snackbar({message: $$('#tradeStockCode').value,position: 'top', timeout: 800});
+    addTradeData();
+  });
+  $('#searchbox').on('keyup',function(event){
+    if (event.key == "Enter") {
+      stock.verifyStockCode($('#searchbox').val()) ? stock.getStockData($('#searchbox').val()) : mdui.snackbar({message: 'stockcode formate is not correct',position:'top',timeout:800});;
+    }
+  });
+
+  function addFavoriteStock(favoriteStock,stockData){
+    favoriteStock[stockData.name] = stockData.code;
+  }
+  function delFavoriteStock(favoriteStock,stockData){
+    favoriteStock[stockData.name] = undefined;
+  }
+  function updateFavoriteStockUl(ulObj,favoriteStock){
+    let htmlstr = '';
+    for (let item in favoriteStock) {
+      if (favoriteStock[item]) {
+        htmlstr += '<a href="' + hostName + 'detail.html?stockcode=' + favoriteStock[item].substr(2) + '&yearcount=1" target="_self"><li class="mdui-list-item mdui-ripple">' + item + '</li></a>';
+      }
+    }
+    ulObj.innerHTML = htmlstr;
+  }
+  function displayTradeData(ulObj,tradeData){
+    let htmlstr = '';
+    for (let item in tradeData){
+      htmlstr += '<a href="' + hostName + 'detail.html?stockcode=' + item.substr(2) + '&yearcount=1" target="_self"><li class="mdui-list-item mdui-ripple">' + tradeData[item] + '</li></a>';
+    }
+    ulObj.innerHTML = htmlstr;
+  }
+  function addTradeData(){
+    var xmlHttp = new XMLHttpRequest();
+    var queryStr = $('form').serialize();
+    // console.log(queryStr);
+    xmlHttp.open('get',hostName + 'addtradedata?' + queryStr);
+    xmlHttp.send();
+    xmlHttp.onreadystatechange = function(){
+      if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+        mdui.snackbar({message: xmlHttp.responseText,position: 'top', timeout: 1000});
+      }
+    };
+  }
+  </script>
+</body>
+</html>
