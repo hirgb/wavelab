@@ -16,8 +16,11 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from . import view
+from . import ajax
 urlpatterns = [
     path('', view.index), 
-    path('detail', view.detail), 
+    path('home/', view.home),
+    path('detail/', view.detail), 
+    path('ajax', ajax.ajax),
     path('admin/', admin.site.urls),
 ]

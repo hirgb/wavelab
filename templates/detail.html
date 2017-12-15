@@ -15,7 +15,7 @@
 </head>
 <body class="mdui-drawer-body-left mdui-appbar-with-toolbar mdui-theme-primary-indigo mdui-theme-accent-white mdui-loaded">
   <header class="mdui-appbar mdui-appbar-fixed">
-    <div class="mdui-toolbar mdui-color-indigo">
+    <div class="mdui-toolbar mdui-color-theme">
       <a class="mdui-btn mdui-btn-icon mdui-ripple"><i class="mdui-icon material-icons">trending_up</i></a>
       <a id="title" class="mdui-typo-title mdui-ripple" target="_blank"></a>
       <div class="mdui-toolbar-spacer"></div>
@@ -117,17 +117,30 @@
     </div>
   </div>
 </div>
-  <script src="/static/js/commen.js" charset="utf-8"></script>
+  <script src="/static/js/z.js" charset="utf-8"></script>
   <script src="/static/js/config.js" charset="utf-8"></script>
   <script src="/static/js/detail.js" charset="utf-8"></script>
   <script type="text/javascript">
+  var $ = mdui.JQ;
+  var stockCode = Z.getUrlParam().stockcode;
+    $.ajax({
+        method : 'POST',
+        url : '/ajax', 
+        dataType : 'json', 
+        data : {
+            action : 'getstockname', 
+            stockcode : stockCode
+        }, 
+        success : function (data) {
+            $('#title').text(data.name + data.code)
+        }
+    });
   var myChart = echarts.init(document.getElementById('main'));
   myChart.showLoading();
   var hostName = config.hostName;
   var favoriteStock = {};
   var stockData = null;
-  var stockCode = commen.getUrlParam().stockcode;
-  var yearCount = commen.getUrlParam().yearcount ? commen.getUrlParam().yearcount : 0;
+  var yearCount = Z.getUrlParam().yearcount ? Z.getUrlParam().yearcount : 0;
   if(stockCode.toString().length == 6){
     stock.getRecentStock(document.getElementById('recentStock'));
     stock.getFavoriteStock('zhkf',function(str){
@@ -143,8 +156,6 @@
   }else{
     document.writeln('The stockcode is incorrect.');
   }
-
-  var $ = mdui.JQ;
 
   $('#favoriteCheckbox').on('click', function () {
     if (document.getElementById('favoriteCheckbox').checked) {
@@ -166,7 +177,7 @@
 
   $('#addtrade').on('opened.mdui.dialog',function(){
     $('#tradeStockCode').val(stockData.code.substr(2));
-    $('#tradeDate').val(commen.getCurrentDate(false));
+    $('#tradeDate').val(Z.getCurrentDate(false));
     // console.log($$('#tradeDate'));
   });
   $('#addtrade').on('confirm.mdui.dialog', function(){

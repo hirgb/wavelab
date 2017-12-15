@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>WAVE LAB</title>
+    <link rel="stylesheet" href="//cdn.bootcss.com/mdui/0.3.0/css/mdui.min.css">
+  </head>
+  <body class="mdui-theme-primary-indigo mdui-theme-accent-pink">
+    <div class="mdui-appbar">
+      <div class="mdui-toolbar mdui-color-theme">
+        <a href="javascript:;" class="mdui-btn mdui-btn-icon"><i class="mdui-icon material-icons">trending_up</i></a>
+        <a href="javascript:;" class="mdui-typo-title">HOME</a>
+        <div class="mdui-toolbar-spacer"></div>
+        <a href="javascript:;" class="mdui-btn mdui-btn-icon mdui-ripple" mdui-dialog="{target: '#loginbox',closeOnCancel: true,modal: true}"><i class="mdui-icon material-icons">person</i></a>
+        <a href="javascript:;" class="mdui-btn mdui-btn-icon mdui-ripple"><i class="mdui-icon material-icons">person_add</i></a>
+      </div>
+    </div>
+    <div class="mdui-dialog" id="loginbox">
+      <div class="mdui-dialog-title">LOGIN</div>
+      <div class="mdui-dialog-content">
+        <form id="login">
+          <div class="mdui-p-a-2" id="login">
+            <div class="mdui-textfield mdui-textfield-floating-label">
+              <label class="mdui-textfield-label">User name</label>
+              <input id="username" name="username" type="text" class="mdui-textfield-input" required>
+              <div class="mdui-textfield-error">
+                The user name can not be null
+              </div>
+            </div>
+            <div class="mdui-textfield mdui-textfield-floating-label">
+              <label class="mdui-textfield-label">Password</label>
+              <input id="password" type="password" name="password" class="mdui-textfield-input" pattern="^.*(?=.{6,})(?=.*[a-z])(?=.*[A-Z]).*$" required>
+              <div class="mdui-textfield-error">
+                The number of password must be 6,include uper chars please.
+              </div>
+            </div>
+          </div>
+        </form>
+      <div class="mdui-dialog-actions">
+        <button class="mdui-btn mdui-ripple" mdui-dialog-cancel>CANCEL</button>
+        <button class="mdui-btn mdui-ripple" mdui-dialog-confirm>LOGIN</button>
+      </div>
+    </div>
+    <script src="//cdn.bootcss.com/mdui/0.3.0/js/mdui.min.js"></script>
+    <script>
+      var $ = mdui.JQ;
+      $('#loginbox').on('confirm.mdui.dialog',function(){
+                  $.ajax({
+                        url : '/ajax', 
+                        method : 'POST', 
+                        action : 'login', 
+                        dataType : 'json', 
+                        data : {
+                            username : $('#username').value(), 
+                            password : $('#password').value()
+                        }, 
+                        success : function (data) {
+                            if (data.status == 1) {
+                                Z.cookie.set('username', data.username, 365);
+                                Z.cookie.set('token', data.token, 365);
+                                window.location.href = '/home/';
+                            }
+                            else {
+                                mdui.alert('Login failed. Please try again.')
+                            }
+                        }
+                      });
+      });
+    </script>
+  </body>
+</html>
