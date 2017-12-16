@@ -4,16 +4,66 @@
     <meta charset="utf-8">
     <title>WAVE LAB</title>
     <link rel="stylesheet" href="//cdn.bootcss.com/mdui/0.3.0/css/mdui.min.css">
+    <style>
+        div#left-drawer{border-right:solid 1px #eee}
+    </style>
   </head>
-  <body class="mdui-theme-primary-indigo mdui-theme-accent-pink">
-    <div class="mdui-appbar">
+
+  <body class="mdui-theme-primary-indigo mdui-theme-accent-pink mdui-drawer-body-left mdui-appbar-with-toolbar">
+    <div class="mdui-appbar mdui-appbar-fixed">
       <div class="mdui-toolbar mdui-color-theme">
         <a href="javascript:;" class="mdui-btn mdui-btn-icon"><i class="mdui-icon material-icons">trending_up</i></a>
         <a href="javascript:;" class="mdui-typo-title">HOME</a>
         <div class="mdui-toolbar-spacer"></div>
-        <a href="javascript:;" class="mdui-btn mdui-btn-icon mdui-ripple" mdui-dialog="{target: '#loginbox',closeOnCancel: true,modal: true}"><i class="mdui-icon material-icons">person</i></a>
-        <a href="javascript:;" class="mdui-btn mdui-btn-icon mdui-ripple"><i class="mdui-icon material-icons">person_add</i></a>
+        <a href="javascript:;" class="mdui-btn mdui-btn-icon mdui-ripple"><i class="mdui-icon material-icons">settings</i></a>
       </div>
+    </div>
+  <div class="mdui-drawer mdui-hidden-sm-down" id="left-drawer">
+    <ul class="mdui-list" mdui-collapse="{accordion: false}">
+      <li class="mdui-collapse-item">
+        <div class="mdui-collapse-item-header mdui-list-item mdui-ripple">
+          <i class="mdui-list-item-icon mdui-icon material-icons">person_outline</i>
+          <div class="mdui-list-item-content">账户概览</div>
+        </div>
+      </li>
+
+      <li class="mdui-collapse-item">
+        <div class="mdui-collapse-item-header mdui-list-item mdui-ripple">
+          <i class="mdui-list-item-icon mdui-icon material-icons">favorite_border</i>
+          <div class="mdui-list-item-content">自选股</div>
+          <i class="mdui-collapse-item-arrow mdui-icon material-icons">keyboard_arrow_down</i>
+        </div>
+        <ul id="recentStock" class="mdui-collapse-item-body mdui-list mdui-list-dense">
+          <!-- <li class="mdui-list-item mdui-ripple">New vs Returning</li> -->
+        </ul>
+      </li>
+
+      <li class="mdui-collapse-item">
+        <div class="mdui-collapse-item-header mdui-list-item mdui-ripple">
+          <i class="mdui-list-item-icon mdui-icon material-icons">attach_money</i>
+          <div class="mdui-list-item-content">交易数据</div>
+        </div>
+      </li>
+
+      <li class="mdui-collapse-item">
+        <div class="mdui-collapse-item-header mdui-list-item mdui-ripple">
+          <i class="mdui-list-item-icon mdui-icon material-icons">equalizer</i>
+          <div class="mdui-list-item-content">选股策略</div>
+        </div>
+      </li>
+
+      <li class="mdui-collapse-item">
+        <div class="mdui-collapse-item-header mdui-list-item mdui-ripple">
+          <i class="mdui-list-item-icon mdui-icon material-icons">filter_list</i>
+          <div class="mdui-list-item-content">股票筛选器</div>
+        </div>
+      </li>
+    </ul>
+  </div>
+    <div class="mdui-container-fluid">
+        <div class="mdui-row">
+            <div class="mdui-col-md-12">kefei</div>
+        </div>
     </div>
     <div class="mdui-dialog" id="loginbox">
       <div class="mdui-dialog-title">LOGIN</div>

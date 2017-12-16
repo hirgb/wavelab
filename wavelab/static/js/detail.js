@@ -1,80 +1,52 @@
-function isReady(stockCode,user = 'zhkf'){
-  var xmlHttp = new XMLHttpRequest();
-  xmlHttp.open('get',hostName + 'isready?stockcode=' + stockCode + '&yearcount=' + yearCount + '&user=' + user,true);
-  xmlHttp.send();
-  xmlHttp.onreadystatechange = function(){
-    if(xmlHttp.readyState == 4 && xmlHttp.status == 200){
-      stockData = JSON.parse(xmlHttp.responseText);
-      stockData.name != '' && stock.catchStock(stockData.code,stockData.name);
-      document.title = stockData.name + stockData.code + ' - WAVE LAB';
-      document.getElementById('title').innerHTML = stockData.name + stockData.code;
-      document.getElementById('title').href = 'http://stockpage.10jqka.com.cn/' + stockData.code.substr(2) + '/';
-      document.getElementById('favoriteCheckbox').checked = (favoriteStock?(favoriteStock[stockData.name] !== undefined?true:false):false);
-      stockData.isready ? display(stockData) : (document.writeln(stockData.message));
-    }
-  };
-}
-function display(stockData){
-  var _this = this;
-  var data0 = _this.splitData(stockData.data);
-  var dataDIF = stock.calculateDIF(12,26,data0.values);
-  var dataDEA = stock.calculateDEA(9,dataDIF);
-  var dataMACD = stock.calculateMACD(dataDIF,dataDEA);
-
+function display(stockdata, chart){
   var option = {
     title: [
       {
-        text: stockData.name + stockData.code,
-        show: false,
-        left: '4%',
-        link: 'http://stockpage.10jqka.com.cn/' + stockData.code.substr(2) + '/',
-        target: 'blank',
-      },
-      {
         text: '分时图',
         left: '2%',
-        link: 'https://gupiao.baidu.com/stock/'+stockData.code+'.html',
+        link: 'https://gupiao.baidu.com/stock/'+stockdata.code+'.html',
         target: 'blank',
         textStyle: {fontSize:14}
       },
       {
         text: '一年',
         left: '5%',
-        link: hostName + 'detail.html?stockcode=' + stockCode + '&yearcount=1',
+        link: '/detail/?stockcode=' + stockdata.code + '&yearcount=1',
         target: 'self',
         textStyle: {fontSize:14}
       },
       {
         text: '两年',
         left: '7%',
-        link: hostName + 'detail.html?stockcode=' + stockCode + '&yearcount=2',
+        link: '/detail/?stockcode=' + stockdata.code + '&yearcount=2',
         target: 'self',
         textStyle: {fontSize:14}
       },
       {
         text: '三年',
         left: '9%',
-        link: hostName + 'detail.html?stockcode=' + stockCode + '&yearcount=3',
+        link: '/detail/?stockcode=' + stockdata.code + '&yearcount=3',
         target: 'self',
         textStyle: {fontSize:14}
       },
       {
         text: '五年',
         left: '11%',
-        link: hostName + 'detail.html?stockcode=' + stockCode + '&yearcount=5',
+        link: '/detail/?stockcode=' + stockdata.code + '&yearcount=5',
         target: 'self',
         textStyle: {fontSize:14}
       },
       {
         text: '十年',
         left: '13%',
-        link: hostName + 'detail.html?stockcode=' + stockCode + '&yearcount=10',
+        link: '/detail/?stockcode=' + stockdata.code + '&yearcount=10',
         target: 'self',
         textStyle: {fontSize:14}
       }
     ],
     tooltip: {
       trigger: 'axis',
+      position: ['2%', '5%'],
       axisPointer: {
         type: 'cross'
       }
@@ -101,7 +73,6 @@ function display(stockData){
     left: '2%',
     right: '1%',
     height: '50%'
-    // bottom: '15%'
   },
   {
     left: '2%',
@@ -113,26 +84,24 @@ function display(stockData){
 xAxis: [{
   type: 'category',
   gridIndex: 0,
-  data: data0.categoryData.slice(-250 * window.yearCount),
+  data: stockdata.date,
   scale: true,
   boundaryGap : false,
   axisLine: {onZero: false},
   splitLine: {show: false},
   splitNumber: 20,
-  // min: 'dataMin',
   max: 'dataMax'
 },
 {
   type: 'category',
   gridIndex: 1,
-  data: data0.categoryData.slice(-250 * window.yearCount),
+  data: stockdata.date,
   scale: true,
   boundaryGap : false,
   axisLine: {onZero: true,show: true},
   axisLabel: {show: false},
   splitLine: {show: false},
   splitNumber: 20,
-  // min: 'dataMin',
   max: 'dataMax'
 }
 ],
@@ -144,8 +113,6 @@ yAxis: [{
 },
 {
   gridIndex: 1,
-  // splitNumber: 3,
-  // scale: false,
   axisLine: {onZero: false},
   axisTick: {show: false},
   splitLine: {show: false},
@@ -164,7 +131,6 @@ dataZoom: [
     show: true,
     type: 'slider',
     xAxisIndex: [0, 1],
-    // y: '90%',
     start: 0,
     end: 100
   },
@@ -182,7 +148,7 @@ series: [
     type: 'candlestick',
     xAxisIndex: 0,
     yAxisIndex: 0,
-    data: data0.values.slice(-250 * window.yearCount),
+    data: stockdata.value,
     itemStyle: {
       normal: {
         color: '#ec0000',
@@ -230,7 +196,7 @@ series: [
   {
     name: 'MA5',
     type: 'line',
-    data: stock.calculateMA(5,data0.values).slice(-250 * window.yearCount),
+    data: stockdata.ma5,
     smooth: true,
     lineStyle: {
       normal: {opacity: 0.5}
@@ -239,7 +205,7 @@ series: [
   {
     name: 'MA10',
     type: 'line',
-    data: stock.calculateMA(10,data0.values).slice(-250 * window.yearCount),
+    data: stockdata.ma10,
     smooth: true,
     lineStyle: {
       normal: {opacity: 0.5}
@@ -248,7 +214,7 @@ series: [
   {
     name: 'MA20',
     type: 'line',
-    data: stock.calculateMA(20,data0.values).slice(-250 * window.yearCount),
+    data: stockdata.ma20,
     smooth: true,
     lineStyle: {
       normal: {opacity: 0.5}
@@ -259,7 +225,7 @@ series: [
     type: 'line',
     xAxisIndex: 0,
     yAxisIndex: 0,
-    data: stock.calculateMA(30,data0.values).slice(-250 * window.yearCount),
+    data: stockdata.ma30,
     smooth: true,
     lineStyle: {
       normal: {opacity: 0.5}
@@ -270,7 +236,7 @@ series: [
     type: 'line',
     xAxisIndex: 0,
     yAxisIndex: 0,
-    data: stock.calculateMA(60,data0.values).slice(-250 * window.yearCount),
+    data: stockdata.ma60,
     smooth: true,
     lineStyle: {
       normal: {opacity: 0.5}
@@ -281,7 +247,7 @@ series: [
     type: 'bar',
     xAxisIndex: 1,
     yAxisIndex: 1,
-    data: dataMACD.slice(-250 * window.yearCount),
+    data: stockdata.bar,
     itemStyle: {
       normal: {
         color: function(params) {
@@ -301,46 +267,19 @@ series: [
     type: 'line',
     xAxisIndex: 1,
     yAxisIndex: 1,
-    data: dataDIF.slice(-250 * window.yearCount)
+    data: stockdata.dif
   },
   {
     name: 'DEA',
     type: 'line',
     xAxisIndex: 1,
     yAxisIndex: 1,
-    data: dataDEA.slice(-250 * window.yearCount)
+    data: stockdata.dea
   }
 ]
 };
-console.log(stockData.tradeData);
-option.series[0].markPoint.data = stockData.tradeData;//[{name: '买', coord: ['2017/09/21',4.04]}];
-window.myChart.hideLoading();
-window.myChart.setOption(option);
-}
-function splitArray(rawArray){
-  var raw2Array = [];
-  var arrayTemp = [];
-  for(var i=0; i<rawArray.length; i++){
-    raw2Array.push(rawArray[i].split(','));
-  }
-  for(var i=0; i<rawArray.length; i++){
-    for(var j=1; j<5; j++){
-      raw2Array[i][j] = parseFloat(raw2Array[i][j]);
-    }
-  }
-  return raw2Array;
-}
-function splitData(rawData) {
-  var categoryData = [];
-  var values = [];
-  for (var i = 0; i < rawData.length; i++) {
-    categoryData.push(rawData[i].splice(0, 1)[0]);
-    values.push(rawData[i])
-  }
-  return {
-    categoryData: categoryData,
-    values: values
-  };
+//option.series[0].markPoint.data = stockData.tradeData;//[{name: '买', coord: ['2017/09/21',4.04]}];
+chart.setOption(option);
 }
 function addFavoriteStock(favoriteStock,stockData){
     favoriteStock[stockData.name] = stockData.code;

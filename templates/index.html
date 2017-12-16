@@ -20,6 +20,9 @@
         <div class="mdui-toolbar-spacer"></div>
         <a href="javascript:;" class="mdui-btn mdui-btn-icon mdui-ripple" mdui-tooltip="{content:'登录'}" mdui-dialog="{target: '#loginbox',closeOnCancel: true,modal: true}"><i class="mdui-icon material-icons">person</i></a>
         <a href="javascript:;" class="mdui-btn mdui-btn-icon mdui-ripple" mdui-tooltip="{content:'注册'}"><i class="mdui-icon material-icons">person_add</i></a>
+        <a href="javascript:;" class="mdui-btn mdui-btn-icon mdui-ripple" mdui-tooltip="{content:'分享'}"><i class="mdui-icon material-icons">share</i></a>
+        <a href="javascript:;" class="mdui-btn mdui-btn-icon mdui-ripple" mdui-tooltip="{content:'语言'}"><i class="mdui-icon material-icons">language</i></a>
+        <a href="javascript:;" class="mdui-btn mdui-btn-icon mdui-ripple" mdui-tooltip="{content:'帮助'}"><i class="mdui-icon material-icons">help</i></a>
       </div>
     </div>
     <div class="mdui-container-fluid">
@@ -245,13 +248,17 @@
         
 optionSH = {
 title: {
-text: '上证指数',
+text: '上证指数-SH000001',
+      link: '/detail/?stockcode=sh601633',
+      target: 'black',
       textStyle:{
         color:'#eee',
       }
        },
     tooltip: {
-        trigger: 'axis'
+        trigger: 'axis',
+        position: ['1%', '15%'],
+        backgroundColor: ''
     },
 grid: {top:0,left:0,bottom:0,right:0},
     xAxis: {
@@ -303,13 +310,17 @@ var chartSZ = echarts.init(document.getElementById('szindex'));
         
 optionSZ = {
 title: {
-text: '深证指数',
+text: '深证成指-SZ399001',
+      link: '/detail/?stockcode=sz399001',
+      target: 'black',
       textStyle:{
         color:'#eee',
       }
        },
     tooltip: {
-        trigger: 'axis'
+        trigger: 'axis',
+        position: ['1%', '15%'],
+        backgroundColor: ''
     },
 grid: {top:0,left:0,bottom:0,right:0},
     xAxis: {
@@ -360,13 +371,17 @@ var chartZX = echarts.init(document.getElementById('zxindex'));
         
 optionZX = {
 title: {
-text: '中小板指',
+text: '中小板指-SZ399005',
+      link: '/detail/?stockcode=sz399005',
+      target:'black',
       textStyle:{
         color:'#eee',
       }
        },
     tooltip: {
-        trigger: 'axis'
+        trigger: 'axis',
+        position: ['1%', '15%'],
+        backgroundColor: ''
     },
 grid: {top:0,left:0,bottom:0,right:0},
     xAxis: {
@@ -417,13 +432,17 @@ var chartCY = echarts.init(document.getElementById('cyindex'));
         
 optionCY = {
 title: {
-text: '创业板指',
+text: '创业板指-SZ399006',
+      link: '/detail/?stockcode=sz399006',
+      target:'black',
       textStyle:{
         color:'#eee',
       }
        },
     tooltip: {
-        trigger: 'axis'
+        trigger: 'axis',
+        position: ['1%', '15%'],
+        backgroundColor: ''
     },
 grid: {top:0,left:0,bottom:0,right:0},
     xAxis: {
