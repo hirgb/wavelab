@@ -4,6 +4,7 @@ function display(stockdata, chart){
       {
         text: '分时图',
         left: '2%',
+        top: 5,
         link: 'https://gupiao.baidu.com/stock/'+stockdata.code+'.html',
         target: 'blank',
         textStyle: {fontSize:14}
@@ -11,6 +12,7 @@ function display(stockdata, chart){
       {
         text: '一年',
         left: '5%',
+        top: 5,
         link: '/detail/?stockcode=' + stockdata.code + '&yearcount=1',
         target: 'self',
         textStyle: {fontSize:14}
@@ -18,6 +20,7 @@ function display(stockdata, chart){
       {
         text: '两年',
         left: '7%',
+        top: 5,
         link: '/detail/?stockcode=' + stockdata.code + '&yearcount=2',
         target: 'self',
         textStyle: {fontSize:14}
@@ -25,6 +28,7 @@ function display(stockdata, chart){
       {
         text: '三年',
         left: '9%',
+        top: 5,
         link: '/detail/?stockcode=' + stockdata.code + '&yearcount=3',
         target: 'self',
         textStyle: {fontSize:14}
@@ -32,6 +36,7 @@ function display(stockdata, chart){
       {
         text: '五年',
         left: '11%',
+        top: 5,
         link: '/detail/?stockcode=' + stockdata.code + '&yearcount=5',
         target: 'self',
         textStyle: {fontSize:14}
@@ -39,6 +44,7 @@ function display(stockdata, chart){
       {
         text: '十年',
         left: '13%',
+        top: 5,
         link: '/detail/?stockcode=' + stockdata.code + '&yearcount=10',
         target: 'self',
         textStyle: {fontSize:14}
@@ -46,13 +52,14 @@ function display(stockdata, chart){
     ],
     tooltip: {
       trigger: 'axis',
-      position: ['2%', '5%'],
+      position: ['3%', '5%'],
       axisPointer: {
         type: 'cross'
       }
     },
     legend: [{
-      right: '4%',
+      right: 5,
+      top: 5,
       data: ['日K', 'MA5', 'MA10', 'MA20', 'MA30', 'MA60'],
       selected: {
         '日K': true,
@@ -62,21 +69,17 @@ function display(stockdata, chart){
         'MA30': true,
         'MA60': false
       }
-    },
-    {
-      left: '15%',
-      data: ['分时图','一年','三年']
     }
   ],
   grid: [{
     top: '5%',
-    left: '2%',
-    right: '1%',
+    left: '3%',
+    right: 5,
     height: '50%'
   },
   {
-    left: '2%',
-    right: '1%',
+    left: '3%',
+    right: 5,
     top: '55%',
     height: '40%'
   }

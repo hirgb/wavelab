@@ -61,7 +61,7 @@
   </div>
   <div id="main" class="mdui-container-fluid" style="height:800px;"></div>
   <div class="mdui-dialog" id="addtrade">
-    <div class="mdui-dialog-title">i添加交易数据</div>
+    <div class="mdui-dialog-title">添加交易数据</div>
     <div class="mdui-dialog-content">
       <div class="mdui-container-fluid">
         <form id="addTradeData">
@@ -96,9 +96,10 @@
         <div class="mdui-row">
           <div class="mdui-col-xs-6">
             <label class="mdui-switch">
+              <span>卖出&nbsp</span>
               <input name="type" type="checkbox" checked/>
               <i class="mdui-switch-icon"></i>
-              / 买入 / 卖出 /
+              <span>&nbsp买入</span>
             </label>
         </div>
         </div>
@@ -119,6 +120,7 @@
   var $ = mdui.JQ;
   var stockCode = Z.getUrlParam().stockcode;
   var yearCount = Z.getUrlParam().yearcount ? Z.getUrlParam().yearcount : 1;
+  var stockData = {};
     $.ajax({
         method : 'POST',
         url : '/ajax', 
@@ -129,7 +131,8 @@
             yearcount : yearCount
         }, 
         success : function (data) {
-            console.log(data)
+            //console.log(data)
+            stockData = data;
             $('#title').text(data.name + data.code)
             document.title = data.name + data.code + ' - WAVE LAB';
             document.getElementById('title').href = 'http://stockpage.10jqka.com.cn/' + data.code.substr(2) + '/';
@@ -160,12 +163,10 @@
   });
 
   $('#addtrade').on('opened.mdui.dialog',function(){
-    $('#tradeStockCode').val(stockData.code.substr(2));
+    $('#tradeStockCode').val(stockData.code);
     $('#tradeDate').val(Z.getCurrentDate(false));
-    // console.log($$('#tradeDate'));
   });
   $('#addtrade').on('confirm.mdui.dialog', function(){
-    // mdui.snackbar({message: $$('#tradeStockCode').value,position: 'top', timeout: 800});
     addTradeData();
   });
   $('#searchbox').on('keyup',function(event){
