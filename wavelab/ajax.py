@@ -2,7 +2,7 @@
 
 from django.http import HttpResponse, HttpRequest, JsonResponse
 from . import db
-import json
+import json, hashlib
 
 def ajax(request):
     action = request.POST['action']
@@ -13,7 +13,7 @@ def ajax(request):
         jsonstr = '{"code":"%s", "name":"%s"}' % (stock[0], stock[1])
         return HttpResponse(jsonstr)
     elif action == 'getindexdata':
-        query = "select date, close from sh000001 order by id desc limit 30"
+        query = "select date, close from sh000001 order by id desc limit 60"
         cursor = db.sqlquery(query)
         data = cursor.fetchall()
         dateSH = [i[0] for i in data]
@@ -21,8 +21,8 @@ def ajax(request):
         dateSH.reverse()
         valueSH.reverse()
         del data
-        dataSH = {"date":dateSH, "value":valueSH}
-        query = "select date, close from sz399001 order by id desc limit 30"
+        dataSH = {"code":"sh000001", "name":"上证指数", "date":dateSH, "value":valueSH}
+        query = "select date, close from sz399001 order by id desc limit 60"
         cursor = db.sqlquery(query)
         data = cursor.fetchall()
         dateSZ = [i[0] for i in data]
@@ -30,8 +30,8 @@ def ajax(request):
         dateSZ.reverse()
         valueSZ.reverse()
         del data
-        dataSZ = {"date":dateSZ, "value":valueSZ}
-        query = "select date, close from sz399005 order by id desc limit 30"
+        dataSZ = {"code":"sz399001", "name":"深证成指", "date":dateSZ, "value":valueSZ}
+        query = "select date, close from sz399005 order by id desc limit 60"
         cursor = db.sqlquery(query)
         data = cursor.fetchall()
         dateZX = [i[0] for i in data]
@@ -39,8 +39,8 @@ def ajax(request):
         dateZX.reverse()
         valueZX.reverse()
         del data
-        dataZX = {"date":dateZX, "value":valueZX}
-        query = "select date, close from sz399006 order by id desc limit 30"
+        dataZX = {"code":"sz399005", "name":"中小板指", "date":dateZX, "value":valueZX}
+        query = "select date, close from sz399006 order by id desc limit 60"
         cursor = db.sqlquery(query)
         data = cursor.fetchall()
         dateCY = [i[0] for i in data]
@@ -48,7 +48,7 @@ def ajax(request):
         dateCY.reverse()
         valueCY.reverse()
         del data
-        dataCY = {"date":dateCY, "value":valueCY}
+        dataCY = {"code":"sz399006", "name":"创业板指", "date":dateCY, "value":valueCY}
         indexData = {"dataSH":dataSH, "dataSZ":dataSZ, "dataZX":dataZX, "dataCY":dataCY}
         return HttpResponse(json.dumps(indexData))
     elif action == 'getstockdata':
@@ -87,7 +87,10 @@ def ajax(request):
     elif action == 'login':
         loginname = request.POST['loginname']
         password = request.POST['password']
-        token = loginname + password
+        rawstr = password + 'zhangkefei'
+        md5 = hashlib.md5()
+        md5.update(rawstr.encode('utf-8'))
+        token = md5.hexdigest()
         query = "select count(*) from wave_user where login = '%s' and password = '%s'" % (loginname, password)
         cursor = db.sqlquery(query)
         if cursor.fetchone()[0] > 0:

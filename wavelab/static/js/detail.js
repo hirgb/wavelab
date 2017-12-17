@@ -52,10 +52,13 @@ function display(stockdata, chart){
     ],
     tooltip: {
       trigger: 'axis',
-      position: ['3%', '5%'],
-      axisPointer: {
-        type: 'cross'
-      }
+      position: ['3%', '5%'], 
+      axisPointer : {type : 'cross'}
+    },
+    axisPointer : {
+        snap : true, 
+        link : {xAxisIndex : 'all'}, 
+        label : {show : true, backgroundColor : '#777'}
     },
     legend: [{
       right: 5,
@@ -93,7 +96,8 @@ xAxis: [{
   axisLine: {onZero: false},
   splitLine: {show: false},
   splitNumber: 20,
-  max: 'dataMax'
+  max: 'dataMax', 
+  axisPointer : {label : {show : false}}
 },
 {
   type: 'category',
@@ -180,20 +184,6 @@ series: [
           coord: ['2017/09/06',3.99]
         }
       ]
-      // itemStyle: {
-      //   normal: {
-      //     color: function(params) {
-      //       // console.log(params);
-      //       var colorList;
-      //       if (params.data >= 0) {//attention
-      //         colorList = '#ef232a';
-      //       } else {
-      //         colorList = '#14b143';
-      //       }
-      //       return colorList;
-      //     }
-      //   }
-      // }
     }
   },
   {
@@ -255,7 +245,7 @@ series: [
       normal: {
         color: function(params) {
           var colorList;
-          if (params.data >= 0) {//attention
+          if (params.data >= 0) {
             colorList = '#ef232a';
           } else {
             colorList = '#14b143';

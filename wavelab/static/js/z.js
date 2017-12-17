@@ -94,8 +94,11 @@
                   var expires = "expires="+d.toUTCString();
                   document.cookie = cname + "=" + cvalue + "; " + expires;
               }, 
-        clear : function (name) {
-                  this.setCookie(name, "", -1);
+        remove : function (name) {
+                  var d = new Date();
+                  d.setTime(d.getTime() - 1);
+                  var expires = "expires=" + d.toUTCString();
+                  document.cookie = name + "='';" + expires + "; path = /";
               }
      },  
   };

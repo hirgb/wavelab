@@ -18,7 +18,7 @@
         <a href="javascript:;" class="mdui-btn mdui-btn-icon mdui-ripple" mdui-menu="{target: '#settingMenu'}"><i class="mdui-icon material-icons">settings</i></a>
         <ul class="mdui-menu" id="settingMenu">
           <li class="mdui-menu-item">
-            <a href="javascript:;" class="mdui-ripple">
+            <a id="logoutbtn" href="javascript:;" class="mdui-ripple">
             <i class="mdui-menu-item-icon mdui-icon material-icons">power_settings_new</i>退出
             </a>
           </li>
@@ -72,57 +72,16 @@
             <div class="mdui-col-md-12">kefei</div>
         </div>
     </div>
-    <div class="mdui-dialog" id="loginbox">
-      <div class="mdui-dialog-title">LOGIN</div>
-      <div class="mdui-dialog-content">
-        <form id="login">
-          <div class="mdui-p-a-2" id="login">
-            <div class="mdui-textfield mdui-textfield-floating-label">
-              <label class="mdui-textfield-label">User name</label>
-              <input id="username" name="username" type="text" class="mdui-textfield-input" required>
-              <div class="mdui-textfield-error">
-                The user name can not be null
-              </div>
-            </div>
-            <div class="mdui-textfield mdui-textfield-floating-label">
-              <label class="mdui-textfield-label">Password</label>
-              <input id="password" type="password" name="password" class="mdui-textfield-input" pattern="^.*(?=.{6,})(?=.*[a-z])(?=.*[A-Z]).*$" required>
-              <div class="mdui-textfield-error">
-                The number of password must be 6,include uper chars please.
-              </div>
-            </div>
-          </div>
-        </form>
-      <div class="mdui-dialog-actions">
-        <button class="mdui-btn mdui-ripple" mdui-dialog-cancel>CANCEL</button>
-        <button class="mdui-btn mdui-ripple" mdui-dialog-confirm>LOGIN</button>
-      </div>
-    </div>
     <script src="//cdn.bootcss.com/mdui/0.3.0/js/mdui.min.js"></script>
+    <script src="/static/js/echarts.min.js"></script>
+    <script src="/static/js/z.js"></script>
     <script>
       var $ = mdui.JQ;
-      $('#loginbox').on('confirm.mdui.dialog',function(){
-                  $.ajax({
-                        url : '/ajax', 
-                        method : 'POST', 
-                        action : 'login', 
-                        dataType : 'json', 
-                        data : {
-                            username : $('#username').value(), 
-                            password : $('#password').value()
-                        }, 
-                        success : function (data) {
-                            if (data.status == 1) {
-                                Z.cookie.set('username', data.username, 365);
-                                Z.cookie.set('token', data.token, 365);
-                                window.location.href = '/home/';
-                            }
-                            else {
-                                mdui.alert('Login failed. Please try again.')
-                            }
-                        }
-                      });
-      });
+      $('#logoutbtn').on('click',function(){
+                  Z.cookie.remove('loginname');
+                  Z.cookie.remove('token');
+                  window.location.href = '/';
+                  });
     </script>
   </body>
 </html>

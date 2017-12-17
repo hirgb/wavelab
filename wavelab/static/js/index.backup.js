@@ -1,22 +1,19 @@
 function loadData(data, chart) {
     chart.setOption({
-        title : {
-            text : data.name + '-' + data.code, 
-            link : '/detail/?stockcode=' + data.code
-        },
-        xAxis : {
-            data : data.date
-        }, 
-        series : [{
-            name : '指数',
-            data : data.value
-        }]
-    });
+                    xAxis : {
+                        data : data.date
+                    }, 
+                    series : [{
+                        name : '指数',
+                        data : data.value
+                    }]
+                });
 }
-optionIndex = {
+var chartSH = echarts.init(document.getElementById('shindex'));
+optionSH = {
 title: {
-    text: '',
-      link: '',
+    text: '上证指数-SH000001',
+      link: '/detail/?stockcode=sh000001',
       target: 'black',
       textStyle:{
         color:'#eee',
@@ -49,7 +46,7 @@ grid: {top:0,left:0,bottom:0,right:0},
         {
             name:'指数',
             type:'line',
-            smooth:false,
+            smooth:true,
             symbol:'none',
             sampling: 'average',
             itemStyle: {
@@ -72,14 +69,192 @@ grid: {top:0,left:0,bottom:0,right:0},
         }
     ]
 };
-var chartSH = echarts.init(document.getElementById('shindex'));
-chartSH.setOption(optionIndex);
+chartSH.setOption(optionSH);
+
 var chartSZ = echarts.init(document.getElementById('szindex'));
-chartSZ.setOption(optionIndex);
+        
+optionSZ = {
+title: {
+text: '深证成指-SZ399001',
+      link: '/detail/?stockcode=sz399001',
+      target: 'black',
+      textStyle:{
+        color:'#eee',
+      }
+       },
+    tooltip: {
+        trigger: 'axis',
+        position: ['1%', '15%'],
+        backgroundColor: ''
+    },
+grid: {top:0,left:0,bottom:0,right:0},
+    xAxis: {
+        type: 'category',
+        boundaryGap: false,
+        data:[],
+        axisLine:{show:false},
+        axisTick:{show:false},
+        axisLabel:{show:false}
+    },
+    yAxis: {
+        type: 'value',
+        min : 'dataMin',
+        max : 'dataMax', 
+        axisLine:{show:false},
+        axisTick:{show:false},
+        axisLabel:{show:false},
+        boundaryGap: [0, '100%']
+    },
+    series: [
+        {
+            name:'指数',
+            type:'line',
+            smooth:true,
+            symbol:'none',
+            sampling: 'average',
+            itemStyle: {
+                normal: {
+                    color: 'rgb(204, 255, 51)'
+                }
+            },
+            areaStyle: {
+                normal: {
+                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                        offset: 0,
+                        color: 'rgba(255, 255, 255, 0.2)'
+                    }, {
+                        offset: 1,
+                        color: 'rgba(255, 255, 255, 0.5)'
+                    }])
+                }
+            },
+            data: [],
+        }
+    ]
+};
+chartSZ.setOption(optionSZ);
 var chartZX = echarts.init(document.getElementById('zxindex'));
-chartZX.setOption(optionIndex);
+optionZX = {
+title: {
+text: '中小板指-SZ399005',
+      link: '/detail/?stockcode=sz399005',
+      target:'black',
+      textStyle:{
+        color:'#eee',
+      }
+       },
+    tooltip: {
+        trigger: 'axis',
+        position: ['1%', '15%'],
+        backgroundColor: ''
+    },
+grid: {top:0,left:0,bottom:0,right:0},
+    xAxis: {
+        type: 'category',
+        boundaryGap: false,
+        data: [],
+        axisLine:{show:false},
+        axisTick:{show:false},
+        axisLabel:{show:false}
+    },
+    yAxis: {
+        type: 'value',
+        min : 'dataMin',
+        max : 'dataMax', 
+        axisLine:{show:false},
+        axisTick:{show:false},
+        axisLabel:{show:false},
+        boundaryGap: [0, '100%']
+    },
+    series: [
+        {
+            name:'指数',
+            type:'line',
+            smooth:true,
+            symbol:'none',
+            sampling: 'average',
+            itemStyle: {
+                normal: {
+                    color: 'rgb(204, 255, 51)'
+                }
+            },
+            areaStyle: {
+                normal: {
+                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                        offset: 0,
+                        color: 'rgba(255, 255, 255, 0.2)'
+                    }, {
+                        offset: 1,
+                        color: 'rgba(255, 255, 255, 0.5)'
+                    }])
+                }
+            },
+            data: [],
+        }
+    ]
+};
+chartZX.setOption(optionZX);
 var chartCY = echarts.init(document.getElementById('cyindex'));
-chartCY.setOption(optionIndex);
+optionCY = {
+title: {
+text: '创业板指-SZ399006',
+      link: '/detail/?stockcode=sz399006',
+      target:'black',
+      textStyle:{
+        color:'#eee',
+      }
+       },
+    tooltip: {
+        trigger: 'axis',
+        position: ['1%', '15%'],
+        backgroundColor: ''
+    },
+grid: {top:0,left:0,bottom:0,right:0},
+    xAxis: {
+        type: 'category',
+        boundaryGap: false,
+        data: [],
+        axisLine:{show:false},
+        axisTick:{show:false},
+        axisLabel:{show:false}
+    },
+    yAxis: {
+        type: 'value',
+        min : 'dataMin',
+        max : 'dataMax', 
+        axisLine:{show:false},
+        axisTick:{show:false},
+        axisLabel:{show:false},
+        boundaryGap: [0, '100%']
+    },
+    series: [
+        {
+            name:'指数',
+            type:'line',
+            smooth:true,
+            symbol:'none',
+            sampling: 'average',
+            itemStyle: {
+                normal: {
+                    color: 'rgb(204, 255, 51)'
+                }
+            },
+            areaStyle: {
+                normal: {
+                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                        offset: 0,
+                        color: 'rgba(255, 255, 255, 0.2)'
+                    }, {
+                        offset: 1,
+                        color: 'rgba(255, 255, 255, 0.5)'
+                    }])
+                }
+            },
+            data: [],
+        }
+    ]
+};
+chartCY.setOption(optionCY);
 
         var chartIndustry = echarts.init(document.getElementById('industry'));
         var xAxisData = [];
