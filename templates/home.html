@@ -15,7 +15,14 @@
         <a href="javascript:;" class="mdui-btn mdui-btn-icon"><i class="mdui-icon material-icons">trending_up</i></a>
         <a href="javascript:;" class="mdui-typo-title">HOME</a>
         <div class="mdui-toolbar-spacer"></div>
-        <a href="javascript:;" class="mdui-btn mdui-btn-icon mdui-ripple"><i class="mdui-icon material-icons">settings</i></a>
+        <a href="javascript:;" class="mdui-btn mdui-btn-icon mdui-ripple" mdui-menu="{target: '#settingMenu'}"><i class="mdui-icon material-icons">settings</i></a>
+        <ul class="mdui-menu" id="settingMenu">
+          <li class="mdui-menu-item">
+            <a href="javascript:;" class="mdui-ripple">
+            <i class="mdui-menu-item-icon mdui-icon material-icons">power_settings_new</i>退出
+            </a>
+          </li>
+        </ul>
       </div>
     </div>
   <div class="mdui-drawer mdui-hidden-sm-down" id="left-drawer">

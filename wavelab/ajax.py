@@ -12,6 +12,45 @@ def ajax(request):
         stock = cursor.fetchone()
         jsonstr = '{"code":"%s", "name":"%s"}' % (stock[0], stock[1])
         return HttpResponse(jsonstr)
+    elif action == 'getindexdata':
+        query = "select date, close from sh000001 order by id desc limit 30"
+        cursor = db.sqlquery(query)
+        data = cursor.fetchall()
+        dateSH = [i[0] for i in data]
+        valueSH = [i[1] for i in data]
+        dateSH.reverse()
+        valueSH.reverse()
+        del data
+        dataSH = {"date":dateSH, "value":valueSH}
+        query = "select date, close from sz399001 order by id desc limit 30"
+        cursor = db.sqlquery(query)
+        data = cursor.fetchall()
+        dateSZ = [i[0] for i in data]
+        valueSZ = [i[1] for i in data]
+        dateSZ.reverse()
+        valueSZ.reverse()
+        del data
+        dataSZ = {"date":dateSZ, "value":valueSZ}
+        query = "select date, close from sz399005 order by id desc limit 30"
+        cursor = db.sqlquery(query)
+        data = cursor.fetchall()
+        dateZX = [i[0] for i in data]
+        valueZX = [i[1] for i in data]
+        dateZX.reverse()
+        valueZX.reverse()
+        del data
+        dataZX = {"date":dateZX, "value":valueZX}
+        query = "select date, close from sz399006 order by id desc limit 30"
+        cursor = db.sqlquery(query)
+        data = cursor.fetchall()
+        dateCY = [i[0] for i in data]
+        valueCY = [i[1] for i in data]
+        dateCY.reverse()
+        valueCY.reverse()
+        del data
+        dataCY = {"date":dateCY, "value":valueCY}
+        indexData = {"dataSH":dataSH, "dataSZ":dataSZ, "dataZX":dataZX, "dataCY":dataCY}
+        return HttpResponse(json.dumps(indexData))
     elif action == 'getstockdata':
         query = "select code, name from wave_stocklist where code = '%s'" % request.POST['stockcode']
         cursor = db.sqlquery(query)
@@ -19,31 +58,19 @@ def ajax(request):
         code = result[0]
         name = result[1]
         del result
-
-        query = "select * from %s order by id desc limit %d" % (request.POST['stockcode'], int(request.POST['yearcount']) * 250)
+        query = "select date,open,close,lowest,highest,ma5,ma10,ma20,ma30,ma60,dif,dea,bar from %s order by id desc limit %d" % (request.POST['stockcode'], int(request.POST['yearcount']) * 250)
         cursor = db.sqlquery(query)
         result1 = cursor.fetchall()
-        date = []
-        value = []
-        ma5 = []
-        ma10 = []
-        ma20 = []
-        ma30 = []
-        ma60 = []
-        dif = []
-        dea = []
-        bar = []
-        for e in result1:
-            date.append(e[1])
-            value.append([e[2], e[3], e[4], e[5]])
-            ma5.append(e[6])
-            ma10.append(e[7])
-            ma20.append(e[8])
-            ma30.append(e[9])
-            ma60.append(e[10])
-            dif.append(e[13])
-            dea.append(e[14])
-            bar.append(e[15])
+        date = [i[0] for i in result1]
+        value = [[i[1],i[2],i[3],i[4]] for i in result1]
+        ma5 = [i[5] for i in result1]
+        ma10 = [i[6] for i in result1]
+        ma20 = [i[7] for i in result1]
+        ma30 = [i[8] for i in result1]
+        ma60 = [i[9] for i in result1]
+        dif = [i[10] for i in result1]
+        dea = [i[11] for i in result1]
+        bar = [i[12] for i in result1]
         del result1
         date.reverse()
         value.reverse()
@@ -55,7 +82,6 @@ def ajax(request):
         dif.reverse()
         dea.reverse()
         bar.reverse()
-
         stockdata = {"code":code, "name":name, "date":date, "value":value, "ma5":ma5, "ma10":ma10, "ma20":ma20, "ma30":ma30, "ma60":ma60, "dif":dif, "dea":dea, "bar":bar}
         return HttpResponse(json.dumps(stockdata))
     elif action == 'login':
