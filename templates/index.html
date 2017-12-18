@@ -114,7 +114,6 @@
                 loginbox.open();
             }
         });
-      //$('#loginbox').on('confirm.mdui.dialog',function(){
         $(document).on('confirm.mdui.dialog', '#loginbox', function(){
             if($('#loginname').val() && $('#password').val()){
                   $.ajax({

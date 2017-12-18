@@ -15,6 +15,7 @@
         .mdui-card{margin:15px 5px;box-shadow: none;}
         .height-150{height:200px;}
         .chart{width:100%; height:100%;}
+        .edit{position:absolute; right:6%; display:none;}
     </style>
   </head>
 
@@ -78,11 +79,27 @@
   </div>
     <div id="container" class="mdui-container-fluid">
     </div>
+    <div class="mdui-dialog" id="editgroup">
+      <div class="mdui-dialog-title">重命名分组</div>
+      <div class="mdui-dialog-content">
+          <div class="mdui-p-a-2">
+            <div class="mdui-textfield mdui-textfield-floating-label">
+              <input id="groupname" name="groupname" type="text" class="mdui-textfield-input" value="" />
+            </div>
+          </div>
+      <div class="mdui-dialog-actions">
+        <button class="mdui-btn mdui-ripple" mdui-dialog-cancel>取消</button>
+        <button class="mdui-btn mdui-ripple" mdui-dialog-confirm>修改</button>
+      </div>
+    </div>
     <script src="//cdn.bootcss.com/mdui/0.3.0/js/mdui.min.js"></script>
     <script src="/static/js/echarts.min.js"></script>
     <script>
       var $ = mdui.JQ;
       var favoriteData = null;
+      var editGroup = new mdui.Dialog('#editgroup', {closeOnCancel: true,modal: true});
+      var oldname = '';
+      var newname = '';
       $.ajax({
             url : '/ajax', 
             method : 'POST',
@@ -99,8 +116,8 @@
                   Z.cookie.remove('token');
                   window.location.href = '/';
       });
-    $(document).on('click', '.favoritegroup', function(){
-                    var stocklist = favoriteData.favorite[$(this).index()].stock;
+    $(document).on('click', '.favoritegroup span', function(){
+                    var stocklist = favoriteData.favorite[$(this).parent().index()].stock;
                     var stockData = favoriteData.stockdata;
                     var str = '<div class="mdui-row">';
                     stocklist.forEach(function(e){
@@ -118,10 +135,36 @@
                             chart.setOption(option);
                         });
                 });
+    $(document).on('mouseover', '.favoritegroup', function(){
+                    $(this).children('.edit').css('display', 'inline');
+                });
+    $(document).on('mouseout', '.favoritegroup', function(){
+                    $(this).children('.edit').css('display', 'none');
+                });
+    $(document).on('click', '.edit', function(){
+                    oldname = $(this).parent().children('span').text();
+                    $('#groupname').val(oldname);
+                    editGroup.open();
+                });
+    $(document).on('confirm.mdui.dialog', '#editgroup', function(){
+                    newname = $('#groupname').val();
+                    if (oldname == newname){
+                        console.log('The oldname is equal to newname.');
+                    } else {
+                        $.ajax({
+                                url:'/ajax',
+                                method:'POST',
+                                data:{"action":"renamegroup", "oldname":oldname, "newname":newname},
+                                success:function(data){
+                                    data == 1 && mdui.snackbar('重命名成功', 2000);
+                                }
+                            });
+                    }
+                });
 function initFavorite(favorite, element) {
     htmlstr = '';
     for (i in favorite){
-        htmlstr += '<li class="mdui-list-item mdui-ripple favoritegroup">' + favorite[i].name + '</li>';
+        htmlstr += '<li class="mdui-list-item mdui-ripple favoritegroup"><span>' + favorite[i].name + '</span><i class="mdui-list-item-icon mdui-icon material-icons edit">edit</i></li>';
     }
     htmlstr += '<li id="addgroup" class="mdui-list-item mdui-ripple favoritegroup"><i class="mdui-list-item-icon mdui-icon material-icons">add</i>添加分组</li>';
     element.innerHTML = htmlstr;

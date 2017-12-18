@@ -102,6 +102,17 @@ def ajax(request):
                 stockData[i[0]] = {"date":date, "value":value}
         dataFinal = {"favorite":favoriteStock, "stockdata":stockData}
         return HttpResponse(json.dumps(dataFinal, ensure_ascii = False))
+    elif action == 'renamegroup':
+        query = "select favorite from wave_user where login = '%s'" % request.COOKIES['loginname']
+        cursor = db.sqlquery(query)
+        favoriteStr = cursor.fetchone()[0]
+        favoriteStock = json.loads(favoriteStr)
+        for i in range(len(favoriteStock)):
+            if favoriteStock[i]['name'] == request.POST['oldname']:
+                favoriteStock[i] = {"name":request.POST['newname'], "stock":favoriteStock[i]['stock']}
+        query = "update wave_user set favorite = '%s' where login = '%s'" % (json.dumps(favoriteStock, ensure_ascii = False), request.COOKIES['loginname'])
+        db.sqlquery(query)
+        return HttpResponse(1)
     elif action == 'login':
         loginname = request.POST['loginname']
         password = request.POST['password']
@@ -116,3 +127,5 @@ def ajax(request):
         else:
             jsonstr = '{"status":0}'
         return HttpResponse(jsonstr)
+    else:
+        return HttpResponse(db.md5('zhangkefei'))

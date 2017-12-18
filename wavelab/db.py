@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-import pymysql
+import pymysql, hashlib
 
 
 def sqlquery(str):
@@ -14,3 +14,9 @@ def sqlquery(str):
     except:
         con.rollback()
         con.close()
+
+def md5(rawstr):
+    md5 = hashlib.md5()
+    md5.update(rawstr.encode('utf-8'))
+    return md5.hexdigest()
+
