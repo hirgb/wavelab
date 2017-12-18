@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>WAVE LAB</title>
+    <title>WAVELAB</title>
     <link rel="stylesheet" href="//cdn.bootcss.com/mdui/0.3.0/css/mdui.min.css">
     <link rel="stylesheet" href="/static/css/style.css">
     <style>
@@ -15,10 +15,10 @@
   <body class="mdui-theme-primary-indigo mdui-theme-accent-pink">
     <div class="mdui-appbar">
       <div class="mdui-toolbar mdui-color-theme">
-        <a href="javascript:;" class="mdui-btn mdui-btn-icon"><i class="mdui-icon material-icons">trending_up</i></a>
-        <a href="javascript:;" class="mdui-typo-title">WAVE LAB</a>
+        <a href="/" class="mdui-btn mdui-btn-icon"><i class="mdui-icon material-icons">trending_up</i></a>
+        <a href="javascript:;" class="mdui-typo-title">波段实验室-WAVELAB</a>
         <div class="mdui-toolbar-spacer"></div>
-        <a href="javascript:;" class="mdui-btn mdui-btn-icon mdui-ripple" mdui-tooltip="{content:'登录'}" mdui-dialog="{target: '#loginbox',closeOnCancel: true,modal: true}"><i class="mdui-icon material-icons">person</i></a>
+        <a href="javascript:;" class="mdui-btn mdui-btn-icon mdui-ripple" mdui-tooltip="{content:'登录'}"><i id="loginicon" class="mdui-icon material-icons">person_outline</i></a>
         <a href="javascript:;" class="mdui-btn mdui-btn-icon mdui-ripple" mdui-tooltip="{content:'注册'}"><i class="mdui-icon material-icons">person_add</i></a>
         <a href="javascript:;" class="mdui-btn mdui-btn-icon mdui-ripple" mdui-tooltip="{content:'分享'}"><i class="mdui-icon material-icons">share</i></a>
         <a href="javascript:;" class="mdui-btn mdui-btn-icon mdui-ripple" mdui-tooltip="{content:'语言'}"><i class="mdui-icon material-icons">language</i></a>
@@ -56,29 +56,29 @@
         </div>
     </div>
     <div class="mdui-dialog" id="loginbox">
-      <div class="mdui-dialog-title">LOGIN</div>
+      <div class="mdui-dialog-title">登录</div>
       <div class="mdui-dialog-content">
         <form id="login">
           <div class="mdui-p-a-2" id="login">
             <div class="mdui-textfield mdui-textfield-floating-label">
-              <label class="mdui-textfield-label">User name</label>
+              <label class="mdui-textfield-label">用户名</label>
               <input id="loginname" name="loginname" type="text" class="mdui-textfield-input" value="" />
               <div class="mdui-textfield-error">
-                The user name can not be null
+                用户名不能为空 
               </div>
             </div>
             <div class="mdui-textfield mdui-textfield-floating-label">
-              <label class="mdui-textfield-label">Password</label>
+              <label class="mdui-textfield-label">密码</label>
               <input id="password" type="password" name="password" class="mdui-textfield-input" value="" />
               <div class="mdui-textfield-error">
-                The number of password must be 6,include uper chars please.
+                密码必须6位以上，含大写字母
               </div>
             </div>
           </div>
         </form>
       <div class="mdui-dialog-actions">
-        <button class="mdui-btn mdui-ripple" mdui-dialog-cancel>CANCEL</button>
-        <button class="mdui-btn mdui-ripple" mdui-dialog-confirm>LOGIN</button>
+        <button class="mdui-btn mdui-ripple" mdui-dialog-cancel>取消</button>
+        <button class="mdui-btn mdui-ripple" mdui-dialog-confirm>登录</button>
       </div>
     </div>
     <script src="/static/js/echarts.min.js"></script>
@@ -87,6 +87,11 @@
     <script src="/static/js/index.js"></script>
     <script>
       var $ = mdui.JQ;
+      var loginbox = new mdui.Dialog('#loginbox', {closeOnCancel: true,modal: true});
+      if (!!Z.cookie.get('loginname')){
+        $('#loginicon').text('person');
+        $('#loginicon').parent().attr('mdui-tooltip', '{content:"' + Z.cookie.get('loginname') + ' 已登录"}');
+      }
         $.ajax({
             url : '/ajax', 
             method : 'POST', 
@@ -99,9 +104,19 @@
                 loadData(data.dataSZ, chartSZ);
                 loadData(data.dataZX, chartZX);
                 loadData(data.dataCY, chartCY);
+                Z.check.localStorageSupport() ? localStorage.setItem('indexData', JSON.stringify(data)) : mdui.alert('你的浏览器OUT了。要获得更好的浏览体验，请使用chrome浏览器！');
             }
         });
-      $('#loginbox').on('confirm.mdui.dialog',function(){
+        $(document).on('click', '#loginicon', function(){
+            if (!!Z.cookie.get('loginname')) {
+                window.location.href = '/home';
+            } else {
+                loginbox.open();
+            }
+        });
+      //$('#loginbox').on('confirm.mdui.dialog',function(){
+        $(document).on('confirm.mdui.dialog', '#loginbox', function(){
+            if($('#loginname').val() && $('#password').val()){
                   $.ajax({
                         url : '/ajax', 
                         method : 'POST', 
@@ -119,10 +134,13 @@
                                 window.location.href = '/home/';
                             }
                             else {
-                                mdui.alert('Login failed. Please try again.');
+                                $('#loginname').val('');
+                                $('#password').val('');
+                                mdui.alert('登录失败，请重试。');
                             }
                         }
                       });
+            }
       });
     </script>
   </body>

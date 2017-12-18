@@ -84,6 +84,24 @@ def ajax(request):
         bar.reverse()
         stockdata = {"code":code, "name":name, "date":date, "value":value, "ma5":ma5, "ma10":ma10, "ma20":ma20, "ma30":ma30, "ma60":ma60, "dif":dif, "dea":dea, "bar":bar}
         return HttpResponse(json.dumps(stockdata))
+    elif action == 'getfavorite':
+        query = "select favorite from wave_user where login = '%s'" % request.COOKIES['loginname']
+        cursor = db.sqlquery(query)
+        favoriteStr = cursor.fetchone()[0]
+        favoriteStock = json.loads(favoriteStr)
+        stockData = {}
+        for e in favoriteStock:
+            for i in e['stock']:
+                query = "select date, close from %s order by date desc limit 60" % i[0]
+                cursor = db.sqlquery(query)
+                result = cursor.fetchall()
+                date = [i[0] for i in result]
+                value = [i[1] for i in result]
+                date.reverse()
+                value.reverse()
+                stockData[i[0]] = {"date":date, "value":value}
+        dataFinal = {"favorite":favoriteStock, "stockdata":stockData}
+        return HttpResponse(json.dumps(dataFinal, ensure_ascii = False))
     elif action == 'login':
         loginname = request.POST['loginname']
         password = request.POST['password']
