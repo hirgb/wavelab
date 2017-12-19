@@ -26,7 +26,7 @@
   </header>
   <div class="mdui-drawer mdui-hidden-sm-down" id="left-drawer">
     <ul class="mdui-list" mdui-collapse="{accordion: false}">
-      <li class="mdui-collapse-item">
+      <li class="mdui-collapse-item mdui-collapse-item-open">
         <div class="mdui-collapse-item-header mdui-list-item mdui-ripple">
           <i class="mdui-list-item-icon mdui-icon material-icons">access_time</i>
           <div class="mdui-list-item-content">最近浏览</div>
@@ -39,21 +39,11 @@
 
       <li class="mdui-collapse-item mdui-collapse-item-open">
         <div class="mdui-collapse-item-header mdui-list-item mdui-ripple">
-          <i class="mdui-list-item-icon mdui-icon material-icons">favorite</i>
+          <i class="mdui-list-item-icon mdui-icon material-icons">favorite_border</i>
           <div class="mdui-list-item-content">自选股</div>
           <i class="mdui-collapse-item-arrow mdui-icon material-icons">keyboard_arrow_down</i>
         </div>
         <ul id="favoriteStock" class="mdui-collapse-item-body mdui-list mdui-list-dense">
-          <!-- <li class="mdui-list-item mdui-ripple">Overview</li> -->
-        </ul>
-      </li>
-      <li class="mdui-collapse-item mdui-collapse-item-open">
-        <div class="mdui-collapse-item-header mdui-list-item mdui-ripple">
-          <i class="mdui-list-item-icon mdui-icon material-icons">timeline</i>
-          <div class="mdui-list-item-content">交易数据</div>
-          <i class="mdui-collapse-item-arrow mdui-icon material-icons">keyboard_arrow_down</i>
-        </div>
-        <ul id="tradeData" class="mdui-collapse-item-body mdui-list mdui-list-dense">
           <!-- <li class="mdui-list-item mdui-ripple">Overview</li> -->
         </ul>
       </li>
@@ -131,50 +121,54 @@
             yearcount : yearCount
         }, 
         success : function (data) {
-            //console.log(data)
             stockData = data;
+            $('title').text(data.name + data.code + ' - WAVE LAB');
             $('#title').text(data.name + data.code)
-            document.title = data.name + data.code + ' - WAVE LAB';
-            document.getElementById('title').href = 'http://stockpage.10jqka.com.cn/' + data.code.substr(2) + '/';
+            $('#title').prop('href', 'http://stockpage.10jqka.com.cn/' + data.code.substr(2) + '/');
             //document.getElementById('favoriteCheckbox').checked = (favoriteStock?(favoriteStock[stockData.name] !== undefined?true:false):false);
             var myChart = echarts.init(document.getElementById('main'));
             myChart.showLoading();
             display(data, myChart);
             myChart.hideLoading();
+            updateRecentStock(data.code, data.name);
+            recentStockDisplay();
         }
     });
 
-  $('#favoriteCheckbox').on('click', function () {
-    if (document.getElementById('favoriteCheckbox').checked) {
-      addFavoriteStock(favoriteStock,stockData);
-      updateFavoriteStockUl(document.getElementById('favoriteStock'),favoriteStock);
-      stock.updateFavoriteStock(JSON.stringify(favoriteStock).replace(/"/g, '\\"'),'zhkf',function(str){
-        mdui.snackbar({message:'favorite added.' + str,position:'top',timeout:800});
-      });
-      mdui.snackbar({message: 'favorite added.',position:'top',timeout:800});
-    }else {
-      delFavoriteStock(favoriteStock,stockData);
-      updateFavoriteStockUl(document.getElementById('favoriteStock'),favoriteStock);
-      stock.updateFavoriteStock(JSON.stringify(favoriteStock).replace(/"/g, '\\"'),'zhkf',function(str){
-        mdui.snackbar({message: 'favorite deleted.' + str,position:'top',timeout:800});
-      });
-      mdui.snackbar({message: 'favorite deleted.',position:'top',timeout:800});
+function updateRecentStock(stockcode, stockname){ 
+    if (Z.check.localStorageSupport() && localStorage.getItem('recentStock')) {
+        var recentObj = JSON.parse(localStorage.getItem('recentStock'));
+        var len = recentObj.length;
+        var index = -1;
+        for (e in recentObj) {
+            if (recentObj[e][0] == stockcode) {
+                index = e;
+                recentObj.splice(e, 1);
+                recentObj.unshift([stockcode, stockname]);
+                break;
+            }
+        }
+        if (index == -1) {
+            if (len < 20) {
+                recentObj.unshift([stockcode, stockname]);
+            } else {
+                recentObj.pop();
+                recentObj.unshift([stockcode, stockname]);
+            }
+        }
+        localStorage.setItem('recentStock', JSON.stringify(recentObj));
+    } else {
+        Z.check.localStorageSupport() && localStorage.setItem('recentStock', JSON.stringify([[stockcode, stockname]]));
     }
-  });
-
-  $('#addtrade').on('opened.mdui.dialog',function(){
-    $('#tradeStockCode').val(stockData.code);
-    $('#tradeDate').val(Z.getCurrentDate(false));
-  });
-  $('#addtrade').on('confirm.mdui.dialog', function(){
-    addTradeData();
-  });
-  $('#searchbox').on('keyup',function(event){
-    if (event.key == "Enter") {
-      stock.verifyStockCode($('#searchbox').val()) ? stock.getStockData($('#searchbox').val()) : mdui.snackbar({message: 'stockcode formate is not correct',position:'top',timeout:800});;
+}
+function recentStockDisplay() {
+    recentObj = JSON.parse(localStorage.getItem('recentStock'));
+    htmlStr = '';
+    for (i in recentObj) {
+        htmlStr += '<a href="/detail/?stockcode=' + recentObj[i][0] + '"><li class="mdui-list-item mdui-ripple">' + recentObj[i][1] + '</li></a>';
     }
-  });
-
+    $('#recentStock').html(htmlStr);
+}
   </script>
 </body>
 </html>

@@ -308,3 +308,33 @@ function addTradeData(){
         }
     };
 }
+  $('#favoriteCheckbox').on('click', function () {
+    if (document.getElementById('favoriteCheckbox').checked) {
+      addFavoriteStock(favoriteStock,stockData);
+      updateFavoriteStockUl(document.getElementById('favoriteStock'),favoriteStock);
+      stock.updateFavoriteStock(JSON.stringify(favoriteStock).replace(/"/g, '\\"'),'zhkf',function(str){
+        mdui.snackbar({message:'favorite added.' + str,position:'top',timeout:800});
+      });
+      mdui.snackbar({message: 'favorite added.',position:'top',timeout:800});
+    }else {
+      delFavoriteStock(favoriteStock,stockData);
+      updateFavoriteStockUl(document.getElementById('favoriteStock'),favoriteStock);
+      stock.updateFavoriteStock(JSON.stringify(favoriteStock).replace(/"/g, '\\"'),'zhkf',function(str){
+        mdui.snackbar({message: 'favorite deleted.' + str,position:'top',timeout:800});
+      });
+      mdui.snackbar({message: 'favorite deleted.',position:'top',timeout:800});
+    }
+  });
+
+  $('#addtrade').on('opened.mdui.dialog',function(){
+    $('#tradeStockCode').val(stockData.code);
+    $('#tradeDate').val(Z.getCurrentDate(false));
+  });
+  $('#addtrade').on('confirm.mdui.dialog', function(){
+    addTradeData();
+  });
+  $('#searchbox').on('keyup',function(event){
+    if (event.key == "Enter") {
+      stock.verifyStockCode($('#searchbox').val()) ? stock.getStockData($('#searchbox').val()) : mdui.snackbar({message: 'stockcode formate is not correct',position:'top',timeout:800});;
+    }
+  });

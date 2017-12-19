@@ -100,10 +100,10 @@
                 action : 'getindexdata'
             }, 
             success : function (data) {
-                loadData(data.dataSH, chartSH);
-                loadData(data.dataSZ, chartSZ);
-                loadData(data.dataZX, chartZX);
-                loadData(data.dataCY, chartCY);
+                loadData(data.dataSH, document.getElementById('shindex'));
+                loadData(data.dataSZ, document.getElementById('szindex'));
+                loadData(data.dataZX, document.getElementById('zxindex'));
+                loadData(data.dataCY, document.getElementById('cyindex'));
                 Z.check.localStorageSupport() ? localStorage.setItem('indexData', JSON.stringify(data)) : mdui.alert('你的浏览器OUT了。要获得更好的浏览体验，请使用chrome浏览器！');
             }
         });

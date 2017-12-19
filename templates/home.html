@@ -26,8 +26,8 @@
         <a href="javascript:;" class="mdui-typo-title">个人中心</a>
         <div class="mdui-toolbar-spacer"></div>
         <a href="javascript:;" class="mdui-btn mdui-btn-icon mdui-ripple" mdui-tooltip="{content:'即将上线'}"><i class="mdui-icon material-icons">notifications_none</i></a>
-        <a href="javascript:;" class="mdui-btn mdui-btn-icon mdui-ripple" mdui-menu="{target: '#settingMenu'}"><i class="mdui-icon material-icons">settings</i></a>
-        <ul class="mdui-menu" id="settingMenu">
+        <a href="javascript:;" class="mdui-btn mdui-btn-icon mdui-ripple" mdui-menu="{target: '#settingMenu', covered: false}"><i class="mdui-icon material-icons">settings</i></a>
+        <ul class="mdui-menu mdui-menu-cascade" id="settingMenu">
           <li class="mdui-menu-item">
             <a id="logoutbtn" href="javascript:;" class="mdui-ripple">
             <i class="mdui-menu-item-icon mdui-icon material-icons">power_settings_new</i>退出
@@ -87,149 +87,28 @@
               <input id="groupname" name="groupname" type="text" class="mdui-textfield-input" value="" />
             </div>
           </div>
-      <div class="mdui-dialog-actions">
-        <button class="mdui-btn mdui-ripple" mdui-dialog-cancel>取消</button>
-        <button class="mdui-btn mdui-ripple" mdui-dialog-confirm>修改</button>
+          <div class="mdui-dialog-actions">
+            <button class="mdui-btn mdui-ripple" mdui-dialog-cancel>取消</button>
+            <button class="mdui-btn mdui-ripple" mdui-dialog-confirm>修改</button>
+          </div>
+      </div>
+    </div>
+    <div class="mdui-dialog" id="newgroup">
+      <div class="mdui-dialog-title">新建分组</div>
+      <div class="mdui-dialog-content">
+          <div class="mdui-p-a-2">
+            <div class="mdui-textfield mdui-textfield-floating-label">
+              <input id="groupname" name="groupname" type="text" class="mdui-textfield-input" value="" />
+            </div>
+          </div>
+          <div class="mdui-dialog-actions">
+            <button class="mdui-btn mdui-ripple" mdui-dialog-cancel>取消</button>
+            <button class="mdui-btn mdui-ripple" mdui-dialog-confirm>确定</button>
+          </div>
       </div>
     </div>
     <script src="//cdn.bootcss.com/mdui/0.3.0/js/mdui.min.js"></script>
     <script src="/static/js/echarts.min.js"></script>
-    <script>
-      var $ = mdui.JQ;
-      var favoriteData = null;
-      var editGroup = new mdui.Dialog('#editgroup', {closeOnCancel: true,modal: true});
-      var oldname = '';
-      var newname = '';
-      $.ajax({
-            url : '/ajax', 
-            method : 'POST',
-            dataType : 'json',
-            data:{action : 'getfavorite'}, 
-            success : function (data) {
-                Z.check.localStorageSupport ? localStorage.setItem("favoriteData", JSON.stringify(data)) : console.log("Your browser is not support localStorage!");
-                initFavorite(data.favorite, document.getElementById('favoritegrouplist'));
-                favoriteData = data;
-            }
-      });
-      $(document).on('click', '#logoutbtn', function(){
-                  Z.cookie.remove('loginname');
-                  Z.cookie.remove('token');
-                  window.location.href = '/';
-      });
-    $(document).on('click', '.favoritegroup span', function(){
-                    var stocklist = favoriteData.favorite[$(this).parent().index()].stock;
-                    var stockData = favoriteData.stockdata;
-                    var str = '<div class="mdui-row">';
-                    stocklist.forEach(function(e){
-                            str += '<div class="mdui-col-md-3"><div class="mdui-card height-150 gradient-45deg-light-blue-cyan gradient-shadow"><div class="chart"></div></div></div>';
-                    });
-                    str += '</div>';
-                    $('#container').html(str);
-                    list = document.querySelectorAll('.chart');
-                    list.forEach(function(e, i){
-                            var chart = echarts.init(e);
-                            option.title.text = stocklist[i][1];
-                            option.title.link = '/detail/?stockcode=' + stocklist[i][0];
-                            option.xAxis.data = stockData[stocklist[i][0]]['date'];
-                            option.series[0].data = stockData[stocklist[i][0]]['value'];
-                            chart.setOption(option);
-                        });
-                });
-    $(document).on('mouseover', '.favoritegroup', function(){
-                    $(this).children('.edit').css('display', 'inline');
-                });
-    $(document).on('mouseout', '.favoritegroup', function(){
-                    $(this).children('.edit').css('display', 'none');
-                });
-    $(document).on('click', '.edit', function(){
-                    oldname = $(this).parent().children('span').text();
-                    $('#groupname').val(oldname);
-                    editGroup.open();
-                });
-    $(document).on('confirm.mdui.dialog', '#editgroup', function(){
-                    newname = $('#groupname').val();
-                    if (oldname == newname){
-                        console.log('The oldname is equal to newname.');
-                    } else {
-                        $.ajax({
-                                url:'/ajax',
-                                method:'POST',
-                                data:{"action":"renamegroup", "oldname":oldname, "newname":newname},
-                                success:function(data){
-                                    data == 1 && mdui.snackbar('重命名成功', 2000);
-                                }
-                            });
-                    }
-                });
-function initFavorite(favorite, element) {
-    htmlstr = '';
-    for (i in favorite){
-        htmlstr += '<li class="mdui-list-item mdui-ripple favoritegroup"><span>' + favorite[i].name + '</span><i class="mdui-list-item-icon mdui-icon material-icons edit">edit</i></li>';
-    }
-    htmlstr += '<li id="addgroup" class="mdui-list-item mdui-ripple favoritegroup"><i class="mdui-list-item-icon mdui-icon material-icons">add</i>添加分组</li>';
-    element.innerHTML = htmlstr;
-}
-option = {
-    title: {
-        text: '1',
-        link: '',
-        target: 'black',
-        textStyle:{
-        color:'#eee',
-        }
-    },
-    tooltip: {
-        trigger: 'axis',
-        position: ['1%', '10%'],
-        backgroundColor: ''
-    },
-    grid: {top:0,left:0,bottom:0,right:0},
-    xAxis: {
-        type: 'category',
-        boundaryGap: false,
-        data: [],
-        axisLine:{show:false},
-        axisTick:{show:false},
-        axisLabel:{show:false}
-    },
-    yAxis: {
-        type: 'value',
-        min : 'dataMin',
-        max : 'dataMax', 
-        axisLine:{show:false},
-        axisTick:{show:false},
-        axisLabel:{show:false},
-        boundaryGap: [0, '100%']
-    },
-    series: [
-        {
-            name:'收盘',
-            type:'line',
-            smooth:false,
-            symbol:'none',
-            sampling: 'average',
-            itemStyle: {
-                normal: {
-                    color: 'rgb(204, 255, 51)'
-                }
-            },
-            areaStyle: {
-                normal: {
-                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-                        offset: 0,
-                        color: 'rgba(255, 255, 255, 0.2)'
-                    }, {
-                        offset: 1,
-                        color: 'rgba(255, 255, 255, 0.5)'
-                    }])
-                }
-            },
-            data: [],
-        }
-    ]
-};
-//var chartSH = echarts.init(document.getElementById('shindex'));
-//chartSH.setOption(optionIndex);
-    </script>
+    <script src="/static/js/home.js"></script>
   </body>
 </html>
