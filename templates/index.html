@@ -13,12 +13,15 @@
     </style>
   </head>
   <body class="mdui-theme-primary-indigo mdui-theme-accent-pink">
-    <div class="mdui-appbar">
+    <div id="header" class="mdui-appbar">
       <div class="mdui-toolbar mdui-color-theme">
         <a href="/" class="mdui-btn mdui-btn-icon"><i class="mdui-icon material-icons">trending_up</i></a>
         <a href="javascript:;" class="mdui-typo-title">波段实验室-WAVELAB</a>
         <div class="mdui-toolbar-spacer"></div>
-        <a href="javascript:;" class="mdui-btn mdui-btn-icon mdui-ripple" mdui-tooltip="{content:'登录'}"><i id="loginicon" class="mdui-icon material-icons">person_outline</i></a>
+        <div class="header-search-wrapper hide-on-med-and-down sideNav-lock">
+            <input type="text" name="Search" class="header-search-input z-depth-2" placeholder="Search stock" autocomplete="off">
+        </div>
+        <a href="javascript:;" class="mdui-btn mdui-btn-icon mdui-ripple" mdui-tooltip="{content:'登录'}" id="loginicon"><i class="mdui-icon material-icons">person_outline</i></a>
         <a href="javascript:;" class="mdui-btn mdui-btn-icon mdui-ripple" mdui-tooltip="{content:'注册'}"><i class="mdui-icon material-icons">person_add</i></a>
         <a href="javascript:;" class="mdui-btn mdui-btn-icon mdui-ripple" mdui-tooltip="{content:'分享'}"><i class="mdui-icon material-icons">share</i></a>
         <a href="javascript:;" class="mdui-btn mdui-btn-icon mdui-ripple" mdui-tooltip="{content:'语言'}"><i class="mdui-icon material-icons">language</i></a>
@@ -89,8 +92,8 @@
       var $ = mdui.JQ;
       var loginbox = new mdui.Dialog('#loginbox', {closeOnCancel: true,modal: true});
       if (!!Z.cookie.get('loginname')){
-        $('#loginicon').text('person');
-        $('#loginicon').parent().attr('mdui-tooltip', '{content:"' + Z.cookie.get('loginname') + ' 已登录"}');
+        $('#loginicon i').text('person');
+        $('#loginicon i').parent().attr('mdui-tooltip', '{content:"' + Z.cookie.get('loginname') + ' 已登录"}');
       }
         $.ajax({
             url : '/ajax', 

@@ -11,6 +11,7 @@ var newGroup = new mdui.Dialog('#newgroup', {
 var renameGroupObj = null;
 var oldname = '';
 var newname = '';
+$('#acount').css('display', 'block');
 $.ajax({
     url: '/ajax',
     method: 'POST',
@@ -30,16 +31,55 @@ function() {
     Z.cookie.remove('token');
     window.location.href = '/';
 });
+$(document).on('click', '.mdui-collapse-item',
+function() {
+    var list = $('.mdui-row');
+    if (index != 1) {
+    var index = $(this).index();
+        list.css('display', 'none');
+        list[index].style.display = 'block';
+        if (index == 2){
+            $.ajax({
+                url:'/ajax',
+                method:'POST',
+                dataType:'json',
+                data:{action:'gettrade'},
+                success:function(data){
+                    var list = Object.keys(data).sort();
+                    var htmlstr = '';
+                    for (var i in data){
+                        for (var j=0;j<data[i].length;j++){
+                            htmlstr += '<tr>';
+                            htmlstr += '<th>' + data[i][j].date + '</th>';
+                            htmlstr += '<th>' + i + '</th>';
+                            htmlstr += '<th>' + '' + '</th>';
+                            htmlstr += '<th>' + data[i][j].type + '</th>';
+                            htmlstr += '<th>' + data[i][j].price + '</th>';
+                            htmlstr += '<th>' + data[i][j].volume + '</th>';
+                            htmlstr += '<th>' + data[i][j].price * data[i][j].volume + '</th>';
+                            htmlstr += '</tr>';
+                        }
+                    }
+                    $('#trade-table-body').html(htmlstr);
+                }
+                });
+        }
+    }
+});
+$(document).on('click', '.favoritegroup',
+function() {
+    $('.mdui-row').css('display', 'none');
+    $('#favorite').css('display', 'block');
+});
 $(document).on('click', '.favoritegroup span',
 function() {
     var stocklist = favoriteData.favorite[$(this).parent().index()].stock;
     var stockData = favoriteData.stockdata;
-    var str = '<div class="mdui-row">';
+    var str = '';
     stocklist.forEach(function(e) {
         str += '<div class="mdui-col-md-3"><div class="mdui-card height-150 gradient-45deg-light-blue-cyan gradient-shadow"><div class="chart"></div></div></div>';
     });
-    str += '</div>';
-    $('#container').html(str);
+    $('#favorite').html(str);
     list = document.querySelectorAll('.chart');
     list.forEach(function(e, i) {
         var chart = echarts.init(e);

@@ -1,11 +1,11 @@
-function display(stockdata, chart){
+function display(pagedata){
   var option = {
     title: [
       {
         text: '分时图',
         left: '2%',
         top: 5,
-        link: 'https://gupiao.baidu.com/stock/'+stockdata.code+'.html',
+        link: 'https://gupiao.baidu.com/stock/'+pagedata.stockdata.code+'.html',
         target: 'blank',
         textStyle: {fontSize:14}
       },
@@ -13,7 +13,7 @@ function display(stockdata, chart){
         text: '一年',
         left: '5%',
         top: 5,
-        link: '/detail/?stockcode=' + stockdata.code + '&yearcount=1',
+        link: '/detail/?stockcode=' + pagedata.stockdata.code + '&yearcount=1',
         target: 'self',
         textStyle: {fontSize:14}
       },
@@ -21,7 +21,7 @@ function display(stockdata, chart){
         text: '两年',
         left: '7%',
         top: 5,
-        link: '/detail/?stockcode=' + stockdata.code + '&yearcount=2',
+        link: '/detail/?stockcode=' + pagedata.stockdata.code + '&yearcount=2',
         target: 'self',
         textStyle: {fontSize:14}
       },
@@ -29,7 +29,7 @@ function display(stockdata, chart){
         text: '三年',
         left: '9%',
         top: 5,
-        link: '/detail/?stockcode=' + stockdata.code + '&yearcount=3',
+        link: '/detail/?stockcode=' + pagedata.stockdata.code + '&yearcount=3',
         target: 'self',
         textStyle: {fontSize:14}
       },
@@ -37,7 +37,7 @@ function display(stockdata, chart){
         text: '五年',
         left: '11%',
         top: 5,
-        link: '/detail/?stockcode=' + stockdata.code + '&yearcount=5',
+        link: '/detail/?stockcode=' + pagedata.stockdata.code + '&yearcount=5',
         target: 'self',
         textStyle: {fontSize:14}
       },
@@ -45,18 +45,37 @@ function display(stockdata, chart){
         text: '十年',
         left: '13%',
         top: 5,
-        link: '/detail/?stockcode=' + stockdata.code + '&yearcount=10',
+        link: '/detail/?stockcode=' + pagedata.stockdata.code + '&yearcount=10',
         target: 'self',
         textStyle: {fontSize:14}
       }
     ],
     tooltip: {
-      trigger: 'axis',
-      position: ['3%', '5%'], 
-      axisPointer : {type : 'cross'}
+        trigger: 'axis',
+        position: ['3%', '4%'],
+        axisPointer: {type: 'cross'},
+        backgroundColor: '',
+        textStyle: {color: '#000'},
+        formatter: function(params){
+            //console.log(params);
+            if(params[0].seriesType == 'candlestick'){
+                str = params[0].axisValue+', 开盘:'+params[0].data[1]+', 收盘:'+params[0].data[2]+', 最高:'+params[0].data[4]+', 最低:'+params[0].data[3];
+                for (i=1; i<params.length; i++){
+                    str += ', '+params[i].marker+params[i].seriesName+':'+params[i].value;
+                }
+            } else {
+                str = params[3].axisValue+', 开盘:'+params[3].data[1]+', 收盘:'+params[3].data[2]+', 最高:'+params[3].data[4]+', 最低:'+params[3].data[3];
+                for (i=4; i<params.length; i++){
+                    str += ', '+params[i].marker+params[i].seriesName+':'+params[i].value;
+                }
+                for (i=0; i<3; i++){
+                    str += ', '+params[i].marker+params[i].seriesName+':'+params[i].value;
+                }
+            }
+            return str;
+        }
     },
     axisPointer : {
-        snap : true, 
         link : {xAxisIndex : 'all'}, 
         label : {show : true, backgroundColor : '#777'}
     },
@@ -90,25 +109,26 @@ function display(stockdata, chart){
 xAxis: [{
   type: 'category',
   gridIndex: 0,
-  data: stockdata.date,
+  data: pagedata.stockdata.date.slice(-(pagedata.dataamount)),
   scale: true,
   boundaryGap : false,
   axisLine: {onZero: false},
   splitLine: {show: false},
   splitNumber: 20,
   max: 'dataMax', 
-  axisPointer : {label : {show : false}}
+  axisPointer : {label : {show : false},snap:true}
 },
 {
   type: 'category',
   gridIndex: 1,
-  data: stockdata.date,
+  data: pagedata.stockdata.date.slice(-(pagedata.dataamount)),
   scale: true,
   boundaryGap : false,
   axisLine: {onZero: true,show: true},
   axisLabel: {show: false},
   splitLine: {show: false},
   splitNumber: 20,
+  axisPointer: {snap: true},
   max: 'dataMax'
 }
 ],
@@ -155,7 +175,7 @@ series: [
     type: 'candlestick',
     xAxisIndex: 0,
     yAxisIndex: 0,
-    data: stockdata.value,
+    data: pagedata.stockdata.value.slice(-(pagedata.dataamount)),
     itemStyle: {
       normal: {
         color: '#ec0000',
@@ -170,26 +190,13 @@ series: [
           formatter: '{b}',
         }
       },
-      data: [
-        {
-          name: '买',
-          coord: ['2017/06/21',4.04]
-        },
-        {
-          name: '买',
-          coord: ['2017/07/11',4.02]
-        },
-        {
-          name: '卖',
-          coord: ['2017/09/06',3.99]
-        }
-      ]
+      data: pagedata.stockdata.trade
     }
   },
   {
     name: 'MA5',
     type: 'line',
-    data: stockdata.ma5,
+    data: pagedata.stockdata.ma5.slice(-(pagedata.dataamount)),
     smooth: true,
     lineStyle: {
       normal: {opacity: 0.5}
@@ -198,7 +205,7 @@ series: [
   {
     name: 'MA10',
     type: 'line',
-    data: stockdata.ma10,
+    data: pagedata.stockdata.ma10.slice(-(pagedata.dataamount)),
     smooth: true,
     lineStyle: {
       normal: {opacity: 0.5}
@@ -207,7 +214,7 @@ series: [
   {
     name: 'MA20',
     type: 'line',
-    data: stockdata.ma20,
+    data: pagedata.stockdata.ma20.slice(-(pagedata.dataamount)),
     smooth: true,
     lineStyle: {
       normal: {opacity: 0.5}
@@ -218,7 +225,7 @@ series: [
     type: 'line',
     xAxisIndex: 0,
     yAxisIndex: 0,
-    data: stockdata.ma30,
+    data: pagedata.stockdata.ma30.slice(-(pagedata.dataamount)),
     smooth: true,
     lineStyle: {
       normal: {opacity: 0.5}
@@ -229,7 +236,7 @@ series: [
     type: 'line',
     xAxisIndex: 0,
     yAxisIndex: 0,
-    data: stockdata.ma60,
+    data: pagedata.stockdata.ma60.slice(-(pagedata.dataamount)),
     smooth: true,
     lineStyle: {
       normal: {opacity: 0.5}
@@ -240,7 +247,7 @@ series: [
     type: 'bar',
     xAxisIndex: 1,
     yAxisIndex: 1,
-    data: stockdata.bar,
+    data: pagedata.stockdata.bar.slice(-(pagedata.dataamount)),
     itemStyle: {
       normal: {
         color: function(params) {
@@ -260,41 +267,24 @@ series: [
     type: 'line',
     xAxisIndex: 1,
     yAxisIndex: 1,
-    data: stockdata.dif
+    data: pagedata.stockdata.dif.slice(-(pagedata.dataamount))
   },
   {
     name: 'DEA',
     type: 'line',
     xAxisIndex: 1,
     yAxisIndex: 1,
-    data: stockdata.dea
+    data: pagedata.stockdata.dea.slice(-(pagedata.dataamount))
   }
 ]
 };
-//option.series[0].markPoint.data = stockData.tradeData;//[{name: '买', coord: ['2017/09/21',4.04]}];
-chart.setOption(option);
+pagedata.chart.setOption(option);
 }
 function addFavoriteStock(favoriteStock,stockData){
     favoriteStock[stockData.name] = stockData.code;
 }
 function delFavoriteStock(favoriteStock,stockData){
     favoriteStock[stockData.name] = undefined;
-}
-function updateFavoriteStockUl(ulObj,favoriteStock){
-    let htmlstr = '';
-    for (let item in favoriteStock) {
-        if (favoriteStock[item]) {
-        htmlstr += '<a href="' + hostName + 'detail.html?stockcode=' + favoriteStock[item].substr(2) + '&yearcount=1" target="_self"><li class="mdui-list-item mdui-ripple">' + item + '</li></a>';
-        }
-    }
-    ulObj.innerHTML = htmlstr;
-}
-function displayTradeData(ulObj,tradeData){
-    let htmlstr = '';
-    for (let item in tradeData){
-        htmlstr += '<a href="' + hostName + 'detail.html?stockcode=' + item.substr(2) + '&yearcount=1" target="_self"><li class="mdui-list-item mdui-ripple">' + tradeData[item] + '</li></a>';
-    }
-    ulObj.innerHTML = htmlstr;
 }
 function addTradeData(){
     var xmlHttp = new XMLHttpRequest();
@@ -308,33 +298,83 @@ function addTradeData(){
         }
     };
 }
-  $('#favoriteCheckbox').on('click', function () {
-    if (document.getElementById('favoriteCheckbox').checked) {
-      addFavoriteStock(favoriteStock,stockData);
-      updateFavoriteStockUl(document.getElementById('favoriteStock'),favoriteStock);
-      stock.updateFavoriteStock(JSON.stringify(favoriteStock).replace(/"/g, '\\"'),'zhkf',function(str){
-        mdui.snackbar({message:'favorite added.' + str,position:'top',timeout:800});
-      });
-      mdui.snackbar({message: 'favorite added.',position:'top',timeout:800});
-    }else {
-      delFavoriteStock(favoriteStock,stockData);
-      updateFavoriteStockUl(document.getElementById('favoriteStock'),favoriteStock);
-      stock.updateFavoriteStock(JSON.stringify(favoriteStock).replace(/"/g, '\\"'),'zhkf',function(str){
-        mdui.snackbar({message: 'favorite deleted.' + str,position:'top',timeout:800});
-      });
-      mdui.snackbar({message: 'favorite deleted.',position:'top',timeout:800});
+function initPage(option){
+    var stockData = option.stockdata;
+    localStorage.setItem(stockData.code, JSON.stringify(stockData));
+    $('title').text(stockData.name + stockData.code + ' - WAVE LAB');
+    $('#title').text(stockData.name + stockData.code)
+    $('#title').prop('href', 'http://stockpage.10jqka.com.cn/' + stockData.code.substr(2) + '/');
+    document.getElementById('favoriteCheckbox').checked = (!!localStorage.getItem('favoriteData').indexOf(stockData.code));
+    updateRecentStock(stockData.code, stockData.name);
+    recentStockDisplay();
+    if(!!Z.cookie.get('loginname')){
+        $.ajax({
+            url:'/ajax', 
+            method:'POST', 
+            data:{action:'getsingletrade', stockcode:stockData.code}, 
+            dataType:'json', 
+            success:function (data){
+                stockData['trade'] = data;
+                console.log(stockData.trade);
+                var myChart = echarts.init(document.getElementById('main'));
+                myChart.showLoading();
+                display({stockdata:stockData, chart:myChart, dataamount:option.dataamount});
+                myChart.hideLoading();
+            }
+        });
+    } else {
+        var myChart = echarts.init(document.getElementById('main'));
+        myChart.showLoading();
+        display({stockdata:stockData, chart:myChart, dataamount:option.dataamount});
+        myChart.hideLoading();
     }
-  });
-
-  $('#addtrade').on('opened.mdui.dialog',function(){
-    $('#tradeStockCode').val(stockData.code);
-    $('#tradeDate').val(Z.getCurrentDate(false));
-  });
-  $('#addtrade').on('confirm.mdui.dialog', function(){
-    addTradeData();
-  });
-  $('#searchbox').on('keyup',function(event){
-    if (event.key == "Enter") {
-      stock.verifyStockCode($('#searchbox').val()) ? stock.getStockData($('#searchbox').val()) : mdui.snackbar({message: 'stockcode formate is not correct',position:'top',timeout:800});;
+}
+function getStockData(callback){
+    $.ajax({
+        method : 'POST',
+        url : '/ajax', 
+        dataType : 'json', 
+        data : {
+            action : 'getstockdata', 
+            stockcode : stockCode,
+            yearcount : yearCount
+        }, 
+        success : function (data) {
+            callback({stockdata:data, dataamount:(yearCount*250)});
+        }
+    });
+}
+function updateRecentStock(stockcode, stockname){ 
+    if (Z.check.localStorageSupport() && localStorage.getItem('recentStock')) {
+        var recentObj = JSON.parse(localStorage.getItem('recentStock'));
+        var len = recentObj.length;
+        var index = -1;
+        for (e in recentObj) {
+            if (recentObj[e][0] == stockcode) {
+                index = e;
+                recentObj.splice(e, 1);
+                recentObj.unshift([stockcode, stockname]);
+                break;
+            }
+        }
+        if (index == -1) {
+            if (len < 20) {
+                recentObj.unshift([stockcode, stockname]);
+            } else {
+                recentObj.pop();
+                recentObj.unshift([stockcode, stockname]);
+            }
+        }
+        localStorage.setItem('recentStock', JSON.stringify(recentObj));
+    } else {
+        Z.check.localStorageSupport() && localStorage.setItem('recentStock', JSON.stringify([[stockcode, stockname]]));
     }
-  });
+}
+function recentStockDisplay() {
+    recentObj = JSON.parse(localStorage.getItem('recentStock'));
+    htmlStr = '';
+    for (i in recentObj) {
+        htmlStr += '<a href="/detail/?stockcode=' + recentObj[i][0] + '"><li class="mdui-list-item mdui-ripple">' + recentObj[i][1] + '</li></a>';
+    }
+    $('#recentStock').html(htmlStr);
+}

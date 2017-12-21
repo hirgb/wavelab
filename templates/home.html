@@ -11,7 +11,7 @@
     </script>
     <style>
         div#left-drawer{border-right:solid 1px #eee}
-        .mdui-row{margin:25px 10px;}
+        .mdui-row{margin:25px 10px; display:none;}
         .mdui-card{margin:15px 5px;box-shadow: none;}
         .height-150{height:200px;}
         .chart{width:100%; height:100%;}
@@ -20,11 +20,14 @@
   </head>
 
   <body class="mdui-theme-primary-indigo mdui-theme-accent-pink mdui-drawer-body-left mdui-appbar-with-toolbar">
-    <div class="mdui-appbar mdui-appbar-fixed">
+    <div id="header" class="mdui-appbar mdui-appbar-fixed">
       <div class="mdui-toolbar mdui-color-theme">
         <a href="/" class="mdui-btn mdui-btn-icon"><i class="mdui-icon material-icons">trending_up</i></a>
         <a href="javascript:;" class="mdui-typo-title">个人中心</a>
         <div class="mdui-toolbar-spacer"></div>
+        <div class="header-search-wrapper hide-on-med-and-down sideNav-lock">
+            <input type="text" name="Search" class="header-search-input z-depth-2" placeholder="Search stock" autocomplete="off">
+        </div>
         <a href="javascript:;" class="mdui-btn mdui-btn-icon mdui-ripple" mdui-tooltip="{content:'即将上线'}"><i class="mdui-icon material-icons">notifications_none</i></a>
         <a href="javascript:;" class="mdui-btn mdui-btn-icon mdui-ripple" mdui-menu="{target: '#settingMenu', covered: false}"><i class="mdui-icon material-icons">settings</i></a>
         <ul class="mdui-menu mdui-menu-cascade" id="settingMenu">
@@ -78,6 +81,29 @@
     </ul>
   </div>
     <div id="container" class="mdui-container-fluid">
+        <div id="acount" class="mdui-row">acount</div>
+        <div id="favorite" class="mdui-row"></div>
+        <div id="tradedata" class="mdui-row">
+        <div class="mdui-col-md-12"></div>
+            <div class="mdui-table-fluid">
+                <table class="mdui-table mdui-table-hoverable">
+                    <thead>
+                        <tr>
+                            <th>日期</th>
+                            <th>股票代码</th>
+                            <th>股票名称</th>
+                            <th>买卖</th>
+                            <th>价格</th>
+                            <th>数量</th>
+                            <th>总价</th>
+                        </tr>
+                    </thead>
+                    <tbody id="trade-table-body"></tbody> 
+                </table>
+            </div>
+        </div>
+        <div id="stockchoose" class="mdui-row">stockchoose</div>
+        <div id="stockfilter" class="mdui-row">stockfilter</div>
     </div>
     <div class="mdui-dialog" id="editgroup">
       <div class="mdui-dialog-title">重命名分组</div>

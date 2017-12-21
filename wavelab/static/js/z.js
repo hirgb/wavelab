@@ -116,6 +116,30 @@
                 document.cookie = name + "='';" + expires + "; path = /";
             }
         },
+        getTime: function(flag) {
+                     var t = new Date();
+                     if (typeof(flag) == 'number') {
+                        t.setTime(t.getTime() + (flag * 24 * 60 * 60 *1000));
+                        return t;
+                     }
+                     else if (typeof(flag) == 'string') {
+                        switch(flag)
+                        {
+                            case 'year': return t.getFullYear(); break;
+                            case 'month': return t.getMonth() + 1; break;
+                            case 'day': return t.getDate(); break;
+                            case 'inweek': return t.getDay(); break;
+                            case 'hour': return t.getHours(); break;
+                            case 'minute': return t.getMinutes(); break;
+                            case 'second': return t.getSeconds(); break;
+                            case 'millisecond': return t.getMilliseconds(); break;
+                            default: return t; break;
+                        }
+                     }
+                     else {
+                        return t;
+                     }
+                 }
     };
     window.Z = commen;
 })();

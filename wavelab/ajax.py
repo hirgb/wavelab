@@ -82,8 +82,24 @@ def ajax(request):
         dif.reverse()
         dea.reverse()
         bar.reverse()
-        stockdata = {"code":code, "name":name, "date":date, "value":value, "ma5":ma5, "ma10":ma10, "ma20":ma20, "ma30":ma30, "ma60":ma60, "dif":dif, "dea":dea, "bar":bar}
+        stockdata = {"code":code, "name":name, "update":date[-1], "yearcount":request.POST['yearcount'], "date":date, "value":value, "ma5":ma5, "ma10":ma10, "ma20":ma20, "ma30":ma30, "ma60":ma60, "dif":dif, "dea":dea, "bar":bar}
         return HttpResponse(json.dumps(stockdata))
+    elif action == 'getsingletrade':
+        if db.md5(request.COOKIES['loginname'] + 'zhangkefei') == request.COOKIES['token']:
+            query = "select trade from wave_user where login = '%s'" % request.COOKIES['loginname']
+            cursor = db.sqlquery(query)
+            trade = json.loads(cursor.fetchone()[0])
+            trade = trade.get(request.POST.get('stockcode'), {})
+            dataFinal = []
+            for i in trade:
+                color = ('#cc3300' if i['type'] == 'buy' else '#009926')
+                dataFinal.append({"name":i['type'], "coord":[i['date'], i['price']], "itemStyle":{"normal":{"color":color}}})
+            return HttpResponse(json.dumps(dataFinal, ensure_ascii = False))
+    elif action == 'gettrade':
+        query = "select trade from wave_user where login = '%s'" % request.COOKIES['loginname']
+        cursor = db.sqlquery(query)
+        trade = cursor.fetchone()[0]
+        return HttpResponse(trade)
     elif action == 'getfavorite':
         query = "select favorite from wave_user where login = '%s'" % request.COOKIES['loginname']
         cursor = db.sqlquery(query)

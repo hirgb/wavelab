@@ -4,26 +4,26 @@
   <meta charset="utf-8">
   <title>WAVELAB</title>
   <link rel="stylesheet" href="//cdn.bootcss.com/mdui/0.3.0/css/mdui.min.css">
+  <link rel="stylesheet" href="/static/css/style.css">
   <script src="/static/js/echarts.min.js"></script>
   <script src="//cdn.bootcss.com/mdui/0.3.0/js/mdui.min.js"></script>
+  <style>
+    #main{padding-left:0;}
+  </style>
 </head>
 <body class="mdui-drawer-body-left mdui-appbar-with-toolbar mdui-theme-primary-indigo mdui-theme-accent-white mdui-loaded">
-  <header class="mdui-appbar mdui-appbar-fixed">
+  <div id="header" class="mdui-appbar mdui-appbar-fixed">
     <div class="mdui-toolbar mdui-color-theme">
-      <a class="mdui-btn mdui-btn-icon mdui-ripple"><i class="mdui-icon material-icons">trending_up</i></a>
+      <a href="/" class="mdui-btn mdui-btn-icon mdui-ripple"><i class="mdui-icon material-icons">trending_up</i></a>
       <a id="title" class="mdui-typo-title mdui-ripple" target="_blank"></a>
       <div class="mdui-toolbar-spacer"></div>
-      <div class="mdui-col-xs-2">
-        <div class="mdui-textfield mdui-textfield-expandable mdui-float-right">
-          <button class="mdui-textfield-icon mdui-btn mdui-btn-icon"><i class="mdui-icon material-icons">search</i></button>
-          <input class="mdui-textfield-input" type="text" placeholder="Search" id="searchbox">
-          <button class="mdui-textfield-close mdui-btn mdui-btn-icon"><i class="mdui-icon material-icons">close</i></button>
-        </div>
+      <div class="header-search-wrapper hide-on-med-and-down sideNav-lock">
+          <input type="text" name="Search" class="header-search-input z-depth-2" placeholder="Search stock" autocomplete="off">
       </div>
       <label class="mdui-checkbox"><input id="favoriteCheckbox" type="checkbox" /><i class="mdui-checkbox-icon"></i>添加自选</label>
       <button class="mdui-btn mdui-btn-icon mdui-ripple" mdui-tooltip="{content: '添加交易'}" mdui-dialog="{target: '#addtrade',modal: true}"><i class="mdui-icon material-icons">add</i></button>
     </div>
-  </header>
+  </div>
   <div class="mdui-drawer mdui-hidden-sm-down" id="left-drawer">
     <ul class="mdui-list" mdui-collapse="{accordion: false}">
       <li class="mdui-collapse-item mdui-collapse-item-open">
@@ -49,7 +49,7 @@
       </li>
     </ul>
   </div>
-  <div id="main" class="mdui-container-fluid" style="height:800px;"></div>
+  <div id="main" class="mdui-container-fluid"></div>
   <div class="mdui-dialog" id="addtrade">
     <div class="mdui-dialog-title">添加交易数据</div>
     <div class="mdui-dialog-content">
@@ -108,67 +108,49 @@
   <script src="/static/js/stock.js" charset="utf-8"></script>
   <script type="text/javascript">
   var $ = mdui.JQ;
+  $('#main').css('height', window.innerHeight - 64 + 'px');
   var stockCode = Z.getUrlParam().stockcode;
   var yearCount = Z.getUrlParam().yearcount ? Z.getUrlParam().yearcount : 1;
-  var stockData = {};
-    $.ajax({
-        method : 'POST',
-        url : '/ajax', 
-        dataType : 'json', 
-        data : {
-            action : 'getstockdata', 
-            stockcode : stockCode,
-            yearcount : yearCount
-        }, 
-        success : function (data) {
-            stockData = data;
-            $('title').text(data.name + data.code + ' - WAVE LAB');
-            $('#title').text(data.name + data.code)
-            $('#title').prop('href', 'http://stockpage.10jqka.com.cn/' + data.code.substr(2) + '/');
-            //document.getElementById('favoriteCheckbox').checked = (favoriteStock?(favoriteStock[stockData.name] !== undefined?true:false):false);
-            var myChart = echarts.init(document.getElementById('main'));
-            myChart.showLoading();
-            display(data, myChart);
-            myChart.hideLoading();
-            updateRecentStock(data.code, data.name);
-            recentStockDisplay();
-        }
-    });
+  var stockData = localStorage.getItem(stockCode) ? JSON.parse(localStorage.getItem(stockCode)) : {};
+  var yestoday = '' + Z.getTime(-1).getFullYear() + '/' + (Z.getTime(-1).getMonth() + 1) + '/' + Z.getTime(-1).getDate();
+  var today = '' + Z.getTime('year') + '/' + Z.getTime('month') + '/' + Z.getTime('day');
+  //Does it need to be updated?
+    if (!stockData || (Z.getTime('hour') < 15 && stockData.update != yestoday) || (Z.getTime('hour') < 15 && stockData.update == yestoday && stockData.yearcount < yearCount) || (Z.getTime('hour') >= 15 && stockData.update != today) || (Z.getTime('hour') >= 15 && stockData.update == today && stockData.yearcount < yearCount)){
+        getStockData(initPage);
+    }
+    else {
+        initPage({stockdata:stockData, dataamount:(yearCount*250)});
+    }
+  $('#favoriteCheckbox').on('click', function () {
+    if (document.getElementById('favoriteCheckbox').checked) {
+      addFavoriteStock(favoriteStock,stockData);
+      updateFavoriteStockUl(document.getElementById('favoriteStock'),favoriteStock);
+      stock.updateFavoriteStock(JSON.stringify(favoriteStock).replace(/"/g, '\\"'),'zhkf',function(str){
+        mdui.snackbar({message:'favorite added.' + str,position:'top',timeout:800});
+      });
+      mdui.snackbar({message: 'favorite added.',position:'top',timeout:800});
+    }else {
+      delFavoriteStock(favoriteStock,stockData);
+      updateFavoriteStockUl(document.getElementById('favoriteStock'),favoriteStock);
+      stock.updateFavoriteStock(JSON.stringify(favoriteStock).replace(/"/g, '\\"'),'zhkf',function(str){
+        mdui.snackbar({message: 'favorite deleted.' + str,position:'top',timeout:800});
+      });
+      mdui.snackbar({message: 'favorite deleted.',position:'top',timeout:800});
+    }
+  });
 
-function updateRecentStock(stockcode, stockname){ 
-    if (Z.check.localStorageSupport() && localStorage.getItem('recentStock')) {
-        var recentObj = JSON.parse(localStorage.getItem('recentStock'));
-        var len = recentObj.length;
-        var index = -1;
-        for (e in recentObj) {
-            if (recentObj[e][0] == stockcode) {
-                index = e;
-                recentObj.splice(e, 1);
-                recentObj.unshift([stockcode, stockname]);
-                break;
-            }
-        }
-        if (index == -1) {
-            if (len < 20) {
-                recentObj.unshift([stockcode, stockname]);
-            } else {
-                recentObj.pop();
-                recentObj.unshift([stockcode, stockname]);
-            }
-        }
-        localStorage.setItem('recentStock', JSON.stringify(recentObj));
-    } else {
-        Z.check.localStorageSupport() && localStorage.setItem('recentStock', JSON.stringify([[stockcode, stockname]]));
+  $('#addtrade').on('opened.mdui.dialog',function(){
+    $('#tradeStockCode').val(stockData.code);
+    $('#tradeDate').val(Z.getCurrentDate(false));
+  });
+  $('#addtrade').on('confirm.mdui.dialog', function(){
+    addTradeData();
+  });
+  $('#searchbox').on('keyup',function(event){
+    if (event.key == "Enter") {
+      stock.verifyStockCode($('#searchbox').val()) ? stock.getStockData($('#searchbox').val()) : mdui.snackbar({message: 'stockcode formate is not correct',position:'top',timeout:800});;
     }
-}
-function recentStockDisplay() {
-    recentObj = JSON.parse(localStorage.getItem('recentStock'));
-    htmlStr = '';
-    for (i in recentObj) {
-        htmlStr += '<a href="/detail/?stockcode=' + recentObj[i][0] + '"><li class="mdui-list-item mdui-ripple">' + recentObj[i][1] + '</li></a>';
-    }
-    $('#recentStock').html(htmlStr);
-}
+  });
   </script>
 </body>
 </html>
