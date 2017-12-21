@@ -144,7 +144,7 @@ function initFavorite(favorite, element) {
 }
 option = {
     title: {
-        text: '1',
+        text: '',
         link: '',
         target: 'black',
         textStyle: {

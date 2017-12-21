@@ -18,7 +18,7 @@
       <a id="title" class="mdui-typo-title mdui-ripple" target="_blank"></a>
       <div class="mdui-toolbar-spacer"></div>
       <div class="header-search-wrapper hide-on-med-and-down sideNav-lock">
-          <input type="text" name="Search" class="header-search-input z-depth-2" placeholder="Search stock" autocomplete="off">
+          <input id="searchbox" type="text" name="Search" class="header-search-input z-depth-2" placeholder="Search stock" autocomplete="off">
       </div>
       <label class="mdui-checkbox"><input id="favoriteCheckbox" type="checkbox" /><i class="mdui-checkbox-icon"></i>添加自选</label>
       <button class="mdui-btn mdui-btn-icon mdui-ripple" mdui-tooltip="{content: '添加交易'}" mdui-dialog="{target: '#addtrade',modal: true}"><i class="mdui-icon material-icons">add</i></button>
@@ -104,8 +104,8 @@
 </div>
   <script src="/static/js/z.js" charset="utf-8"></script>
   <script src="/static/js/config.js" charset="utf-8"></script>
-  <script src="/static/js/detail.js" charset="utf-8"></script>
   <script src="/static/js/stock.js" charset="utf-8"></script>
+  <script src="/static/js/detail.js" charset="utf-8"></script>
   <script type="text/javascript">
   var $ = mdui.JQ;
   $('#main').css('height', window.innerHeight - 64 + 'px');
@@ -115,7 +115,7 @@
   var yestoday = '' + Z.getTime(-1).getFullYear() + '/' + (Z.getTime(-1).getMonth() + 1) + '/' + Z.getTime(-1).getDate();
   var today = '' + Z.getTime('year') + '/' + Z.getTime('month') + '/' + Z.getTime('day');
   //Does it need to be updated?
-    if (!stockData || (Z.getTime('hour') < 15 && stockData.update != yestoday) || (Z.getTime('hour') < 15 && stockData.update == yestoday && stockData.yearcount < yearCount) || (Z.getTime('hour') >= 15 && stockData.update != today) || (Z.getTime('hour') >= 15 && stockData.update == today && stockData.yearcount < yearCount)){
+    if (!stockData.code || (Z.getTime('hour') < 15 && stockData.update != yestoday) || (Z.getTime('hour') < 15 && stockData.update == yestoday && stockData.yearcount < yearCount) || (Z.getTime('hour') >= 15 && stockData.update != today) || (Z.getTime('hour') >= 15 && stockData.update == today && stockData.yearcount < yearCount)){
         getStockData(initPage);
     }
     else {
@@ -148,7 +148,7 @@
   });
   $('#searchbox').on('keyup',function(event){
     if (event.key == "Enter") {
-      stock.verifyStockCode($('#searchbox').val()) ? stock.getStockData($('#searchbox').val()) : mdui.snackbar({message: 'stockcode formate is not correct',position:'top',timeout:800});;
+      stock.transCode($('#searchbox').val()) ? window.location.href='/detail/?stockcode='+stock.transCode($('#searchbox').val()) : mdui.snackbar({message: '股票代码格式不正确',position:'top',timeout:2000});;
     }
   });
   </script>

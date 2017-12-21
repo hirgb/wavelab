@@ -52,38 +52,41 @@ def ajax(request):
         indexData = {"dataSH":dataSH, "dataSZ":dataSZ, "dataZX":dataZX, "dataCY":dataCY}
         return HttpResponse(json.dumps(indexData))
     elif action == 'getstockdata':
-        query = "select code, name from wave_stocklist where code = '%s'" % request.POST['stockcode']
-        cursor = db.sqlquery(query)
-        result = cursor.fetchone()
-        code = result[0]
-        name = result[1]
-        del result
-        query = "select date,open,close,lowest,highest,ma5,ma10,ma20,ma30,ma60,dif,dea,bar from %s order by id desc limit %d" % (request.POST['stockcode'], int(request.POST['yearcount']) * 250)
-        cursor = db.sqlquery(query)
-        result1 = cursor.fetchall()
-        date = [i[0] for i in result1]
-        value = [[i[1],i[2],i[3],i[4]] for i in result1]
-        ma5 = [i[5] for i in result1]
-        ma10 = [i[6] for i in result1]
-        ma20 = [i[7] for i in result1]
-        ma30 = [i[8] for i in result1]
-        ma60 = [i[9] for i in result1]
-        dif = [i[10] for i in result1]
-        dea = [i[11] for i in result1]
-        bar = [i[12] for i in result1]
-        del result1
-        date.reverse()
-        value.reverse()
-        ma5.reverse()
-        ma10.reverse()
-        ma20.reverse()
-        ma30.reverse()
-        ma60.reverse()
-        dif.reverse()
-        dea.reverse()
-        bar.reverse()
-        stockdata = {"code":code, "name":name, "update":date[-1], "yearcount":request.POST['yearcount'], "date":date, "value":value, "ma5":ma5, "ma10":ma10, "ma20":ma20, "ma30":ma30, "ma60":ma60, "dif":dif, "dea":dea, "bar":bar}
-        return HttpResponse(json.dumps(stockdata))
+        try:
+            query = "select code, name from wave_stocklist where code = '%s'" % request.POST['stockcode']
+            cursor = db.sqlquery(query)
+            result = cursor.fetchone()
+            code = result[0]
+            name = result[1]
+            del result
+            query = "select date,open,close,lowest,highest,ma5,ma10,ma20,ma30,ma60,dif,dea,bar from %s order by id desc limit %d" % (request.POST['stockcode'], int(request.POST['yearcount']) * 250)
+            cursor = db.sqlquery(query)
+            result1 = cursor.fetchall()
+            date = [i[0] for i in result1]
+            value = [[i[1],i[2],i[3],i[4]] for i in result1]
+            ma5 = [i[5] for i in result1]
+            ma10 = [i[6] for i in result1]
+            ma20 = [i[7] for i in result1]
+            ma30 = [i[8] for i in result1]
+            ma60 = [i[9] for i in result1]
+            dif = [i[10] for i in result1]
+            dea = [i[11] for i in result1]
+            bar = [i[12] for i in result1]
+            del result1
+            date.reverse()
+            value.reverse()
+            ma5.reverse()
+            ma10.reverse()
+            ma20.reverse()
+            ma30.reverse()
+            ma60.reverse()
+            dif.reverse()
+            dea.reverse()
+            bar.reverse()
+            stockdata = {"code":code, "name":name, "update":date[-1], "yearcount":request.POST['yearcount'], "date":date, "value":value, "ma5":ma5, "ma10":ma10, "ma20":ma20, "ma30":ma30, "ma60":ma60, "dif":dif, "dea":dea, "bar":bar}
+            return HttpResponse(json.dumps(stockdata))
+        except:
+            return HttpResponse('{}')
     elif action == 'getsingletrade':
         if db.md5(request.COOKIES['loginname'] + 'zhangkefei') == request.COOKIES['token']:
             query = "select trade from wave_user where login = '%s'" % request.COOKIES['loginname']
