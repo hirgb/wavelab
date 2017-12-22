@@ -36,8 +36,9 @@ function loadData(data, element) {
         },
         yAxis: {
             type: 'value',
-            min: 'dataMin',
-            max: 'dataMax',
+            min: function(value){return value.min - (value.max - value.min)/5},
+            max: function(value){return value.max + (value.max - value.min)/5},
+            splitLine: {show: false}, 
             axisLine: {
                 show: false
             },
@@ -64,11 +65,11 @@ function loadData(data, element) {
                 normal: {
                     color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
                         offset: 0,
-                        color: 'rgba(255, 255, 255, 0.2)'
+                        color: 'rgba(255, 255, 255, 0.7)'
                     },
                     {
                         offset: 1,
-                        color: 'rgba(255, 255, 255, 0.5)'
+                        color: 'rgba(255, 255, 255, 0.1)'
                     }])
                 }
             },

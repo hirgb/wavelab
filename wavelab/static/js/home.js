@@ -110,7 +110,27 @@ $(document).on('click', '.edit-del',
 function() {
     name = $(this).parent().children('span').text();
     mdui.alert('删除后分组内股票也将全部删除。确定删除此分组吗？','删除分组 - ' + name, function(){
-            mdui.snackbar({message:'success', timeout:2000, position:'top'});
+            $.ajax({
+                url:'/ajax', 
+                method:'POST', 
+                data:{"action":"deletegroup", "groupname":name},
+                success:function(data){
+                    if(data == 1){
+                        mdui.snackbar({message:'删除成功', timeout:2000, position:'top'});
+                        var favoriteData = JSON.parse(localStorage.getItem(user + 'favoriteData'));
+                        for (i in favoriteData.favorite){
+                            if(favoriteData.favorite[i].name == name){
+                                favoriteData.favorite.splice(i, 1);
+                                break;
+                            }
+                        }
+                        localStorage.setItem(user + 'favoriteData', JSON.stringify(favoriteData));
+                        initFavorite(favoriteData.favorite, document.getElementById('favoritegrouplist'));
+                    } else {
+                        mdui.snackbar({message:'删除失败', timeout:2000, position:'top'});
+                    }
+                }
+            });
         }, {confirmText:'确定'});
 });
 $(document).on('confirm.mdui.dialog', '#editgroup',
@@ -118,7 +138,7 @@ function() {
     var newname = $('#groupname').val();
     if (oldname == newname) {
         console.log('The oldname is equal to newname.');
-    } else {
+    } else if(localStorage.getItem(user + 'favoriteData').indexOf('"' + newname + '"') == -1){
         $.ajax({
             url: '/ajax',
             method: 'POST',
@@ -128,14 +148,32 @@ function() {
                 "newname": newname
             },
             success: function(data) {
-                data == 1 && mdui.snackbar({
-                    message: "重命名成功",
+                if(data == 1){
+                    mdui.snackbar({
+                        message: "重命名成功",
+                        timeout: "2000",
+                        position: "top"
+                    });
+                    var favoriteData = JSON.parse(localStorage.getItem(user + 'favoriteData'));
+                    for(var i = 0; i < favoriteData.favorite.length; i ++ ){
+                        if(favoriteData.favorite[i].name == oldname){
+                            favoriteData.favorite[i].name = newname;
+                            break;
+                        }
+                    }
+                    localStorage.setItem(user + 'favoriteData', JSON.stringify(favoriteData));
+                    initFavorite(favoriteData.favorite, document.getElementById('favoritegrouplist'));
+                }else{
+                mdui.snackbar({
+                    message: "重命名失败",
                     timeout: "2000",
                     position: "top"
                 });
-                renameGroupObj.text(newname);
+                }
             }
         });
+    } else {
+        mdui.alert('分组名已存在，请更换分组名称。');
     }
 });
 $(document).on('confirm.mdui.dialog', '#newgroup', 
@@ -150,12 +188,18 @@ function() {
                 "newgroupname":$('#newgroupname').val()
             },
             success:function(data){
-                if(data == 1){mdui.snackbar({message:'创建成功', timeout:2000, position:'top'});}
+                if(data == 1){
+                    mdui.snackbar({message:'创建成功', timeout:2000, position:'top'});
+                    var favoriteData = JSON.parse(localStorage.getItem(user + 'favoriteData'));
+                    favoriteData.favorite.push({name:newgroupname, stock:[]});
+                    localStorage.setItem(user + 'favoriteData', JSON.stringify(favoriteData));
+                    initFavorite(favoriteData.favorite, document.getElementById('favoritegrouplist'));
+                }
                 else {mdui.snackbar({message:'创建失败', timeout:2000, position:'top'});}
             }
         });
     } else {
-        mdui.alert('分组名已存在，请更换分组名称。')
+        mdui.alert('分组名已存在，请更换分组名称。');
     }
 }
 );
@@ -207,8 +251,9 @@ option = {
     },
     yAxis: {
         type: 'value',
-        min: 'dataMin',
-        max: 'dataMax',
+        min: function(value){return value.min - (value.max - value.min)/5},
+        max: function(value){return value.max + (value.max - value.min)/5},
+        splitLine: {show: false}, 
         axisLine: {
             show: false
         },
@@ -235,11 +280,11 @@ option = {
             normal: {
                 color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
                     offset: 0,
-                    color: 'rgba(255, 255, 255, 0.2)'
+                    color: 'rgba(255, 255, 255, 0.7)'
                 },
                 {
                     offset: 1,
-                    color: 'rgba(255, 255, 255, 0.5)'
+                    color: 'rgba(255, 255, 255, 0.1)'
                 }])
             }
         },

@@ -2,7 +2,7 @@
 
 from django.http import HttpResponse, HttpRequest, JsonResponse
 from . import db
-import json, hashlib
+import json, hashlib, traceback
 
 def ajax(request):
     action = request.POST['action']
@@ -145,6 +145,23 @@ def ajax(request):
             db.sqlquery(query)
             return HttpResponse(1)
         except:
+            return HttpResponse(0)
+    elif action == 'deletegroup':
+        try:
+            user = request.COOKIES['loginname']
+            groupname = request.POST['groupname']
+            query = "select favorite from wave_user where login = '%s'" % user
+            cursor = db.sqlquery(query)
+            favorite = json.loads(cursor.fetchone()[0])
+            for i in favorite:
+                if i['name'] == groupname:
+                    favorite.remove(i)
+                    break
+            query = "update wave_user set favorite = '%s' where login = '%s'" % (json.dumps(favorite, ensure_ascii = False), user)
+            db.sqlquery(query)
+            return HttpResponse(1)
+        except:
+            print('traceback.format_exc():\n%s' % traceback.format_exc())
             return HttpResponse(0)
     elif action == 'login':
         loginname = request.POST['loginname']
