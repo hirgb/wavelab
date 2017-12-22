@@ -129,9 +129,23 @@ def ajax(request):
         for i in range(len(favoriteStock)):
             if favoriteStock[i]['name'] == request.POST['oldname']:
                 favoriteStock[i] = {"name":request.POST['newname'], "stock":favoriteStock[i]['stock']}
+                break
         query = "update wave_user set favorite = '%s' where login = '%s'" % (json.dumps(favoriteStock, ensure_ascii = False), request.COOKIES['loginname'])
         db.sqlquery(query)
         return HttpResponse(1)
+    elif action == 'creategroup':
+        try:
+            name = request.POST['newgroupname']
+            user = request.COOKIES['loginname']
+            query = "select favorite from wave_user where login = '%s'" % user
+            cursor = db.sqlquery(query)
+            favorite = json.loads(cursor.fetchone()[0])
+            favorite.append({"name":name, "stock":[]})
+            query = "update wave_user set favorite = '%s' where login = '%s'" % (json.dumps(favorite, ensure_ascii = False), user)
+            db.sqlquery(query)
+            return HttpResponse(1)
+        except:
+            return HttpResponse(0)
     elif action == 'login':
         loginname = request.POST['loginname']
         password = request.POST['password']

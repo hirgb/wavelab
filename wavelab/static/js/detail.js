@@ -1,3 +1,4 @@
+var user = Z.cookie.get('loginname') ? Z.cookie.get('loginname') : '';
 function display(pagedata) {
     var option = {
         title: [{
@@ -361,7 +362,7 @@ function initPage(option) {
     $('title').text(stockData.name + stockData.code + ' - WAVE LAB');
     $('#title').text(stockData.name + stockData.code);
     $('#title').prop('href', 'http://stockpage.10jqka.com.cn/' + stockData.code.substr(2) + '/');
-    document.getElementById('favoriteCheckbox').checked = !(localStorage.getItem('favoriteData').indexOf(stockData.code) == -1);
+    if (user != '') {document.getElementById('favoriteCheckbox').checked = !(localStorage.getItem(user + 'favoriteData').indexOf(stockData.code) == -1);}
     updateRecentStock(stockData.code, stockData.name);
     recentStockDisplay();
     if ( !! Z.cookie.get('loginname')) {
@@ -421,8 +422,8 @@ function getStockData(callback) {
     });
 }
 function updateRecentStock(stockcode, stockname) {
-    if (Z.check.localStorageSupport() && localStorage.getItem('recentStock')) {
-        var recentObj = JSON.parse(localStorage.getItem('recentStock'));
+    if (Z.check.localStorageSupport() && localStorage.getItem(user + 'recentStock')) {
+        var recentObj = JSON.parse(localStorage.getItem(user + 'recentStock'));
         var len = recentObj.length;
         var index = -1;
         for (e in recentObj) {
@@ -441,13 +442,13 @@ function updateRecentStock(stockcode, stockname) {
                 recentObj.unshift([stockcode, stockname]);
             }
         }
-        localStorage.setItem('recentStock', JSON.stringify(recentObj));
+        localStorage.setItem(user + 'recentStock', JSON.stringify(recentObj));
     } else {
-        Z.check.localStorageSupport() && localStorage.setItem('recentStock', JSON.stringify([[stockcode, stockname]]));
+        Z.check.localStorageSupport() && localStorage.setItem(user + 'recentStock', JSON.stringify([[stockcode, stockname]]));
     }
 }
 function recentStockDisplay() {
-    recentObj = JSON.parse(localStorage.getItem('recentStock'));
+    recentObj = JSON.parse(localStorage.getItem(user + 'recentStock'));
     htmlStr = '';
     for (i in recentObj) {
         htmlStr += '<a href="/detail/?stockcode=' + recentObj[i][0] + '"><li class="mdui-list-item mdui-ripple">' + recentObj[i][1] + '</li></a>';

@@ -147,7 +147,7 @@
       });
       $('#searchbox').on('keyup',function(event){
         if (event.key == "Enter") {
-          stock.transCode($('#searchbox').val()) ? window.location.href='/detail/?stockcode='+stock.transCode($('#searchbox').val()) : mdui.snackbar({message: '股票代码格式不正确',position:'top',timeout:2000});;
+          stock.transCode($('#searchbox').val()) ? window.open('/detail/?stockcode='+stock.transCode($('#searchbox').val())) : mdui.snackbar({message: '股票代码格式不正确',position:'top',timeout:2000});;
         }
       });
     </script>

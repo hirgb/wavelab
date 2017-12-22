@@ -1,5 +1,9 @@
 var $ = mdui.JQ;
+var user = Z.cookie.get('loginname') ? Z.cookie.get('loginname') : '';
 var favoriteData = null;
+var renameGroupObj = null;
+var oldname = '';
+var newname = '';
 var editGroup = new mdui.Dialog('#editgroup', {
     closeOnCancel: true,
     modal: true
@@ -8,9 +12,6 @@ var newGroup = new mdui.Dialog('#newgroup', {
     closeOnCancel: true,
     modal: true
 });
-var renameGroupObj = null;
-var oldname = '';
-var newname = '';
 $('#acount').css('display', 'block');
 $.ajax({
     url: '/ajax',
@@ -20,7 +21,7 @@ $.ajax({
         action: 'getfavorite'
     },
     success: function(data) {
-        Z.check.localStorageSupport ? localStorage.setItem("favoriteData", JSON.stringify(data)) : console.log("Your browser is not support localStorage!");
+        Z.check.localStorageSupport ? localStorage.setItem(user + "favoriteData", JSON.stringify(data)) : console.log("Your browser is not support localStorage!");
         initFavorite(data.favorite, document.getElementById('favoritegrouplist'));
         favoriteData = data;
     }
@@ -98,16 +99,23 @@ $(document).on('mouseout', '.favoritegroup',
 function() {
     $(this).children('.edit').css('display', 'none');
 });
-$(document).on('click', '.edit',
+$(document).on('click', '.edit-edit',
 function() {
     renameGroupObj = $(this).parent().children('span');
     oldname = $(this).parent().children('span').text();
     $('#groupname').val(oldname);
     editGroup.open();
 });
+$(document).on('click', '.edit-del',
+function() {
+    name = $(this).parent().children('span').text();
+    mdui.alert('删除后分组内股票也将全部删除。确定删除此分组吗？','删除分组 - ' + name, function(){
+            mdui.snackbar({message:'success', timeout:2000, position:'top'});
+        }, {confirmText:'确定'});
+});
 $(document).on('confirm.mdui.dialog', '#editgroup',
 function() {
-    newname = $('#groupname').val();
+    var newname = $('#groupname').val();
     if (oldname == newname) {
         console.log('The oldname is equal to newname.');
     } else {
@@ -130,6 +138,27 @@ function() {
         });
     }
 });
+$(document).on('confirm.mdui.dialog', '#newgroup', 
+function() {
+    var newgroupname = $('#newgroupname').val();
+    if(localStorage.getItem(user + 'favoriteData').indexOf(newgroupname) == -1){
+        $.ajax({
+            url:'/ajax',
+            method:'POST',
+            data:{
+                "action":'creategroup', 
+                "newgroupname":$('#newgroupname').val()
+            },
+            success:function(data){
+                if(data == 1){mdui.snackbar({message:'创建成功', timeout:2000, position:'top'});}
+                else {mdui.snackbar({message:'创建失败', timeout:2000, position:'top'});}
+            }
+        });
+    } else {
+        mdui.alert('分组名已存在，请更换分组名称。')
+    }
+}
+);
 $(document).on('click', '#addgroup',
 function() {
     newGroup.open();
@@ -137,7 +166,7 @@ function() {
 function initFavorite(favorite, element) {
     htmlstr = '';
     for (i in favorite) {
-        htmlstr += '<li class="mdui-list-item mdui-ripple favoritegroup"><span>' + favorite[i].name + '</span><i class="mdui-list-item-icon mdui-icon material-icons edit">edit</i></li>';
+        htmlstr += '<li class="mdui-list-item favoritegroup"><span>' + favorite[i].name + '</span><i class="mdui-list-item-icon mdui-icon material-icons edit edit-edit">edit</i><i class="mdui-list-item-icon mdui-icon material-icons edit edit-del">delete_forever</i></li>';
     }
     htmlstr += '<li id="addgroup" class="mdui-list-item mdui-ripple favoritegroup"><i class="mdui-list-item-icon mdui-icon material-icons">add</i>添加分组</li>';
     element.innerHTML = htmlstr;

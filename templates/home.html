@@ -15,7 +15,8 @@
         .mdui-card{margin:15px 5px;box-shadow: none;}
         .height-150{height:200px;}
         .chart{width:100%; height:100%;}
-        .edit{position:absolute; right:6%; display:none;}
+        .edit-edit{position:absolute; right:10%; display:none;}
+        .edit-del{position:absolute; right:0%; display:none;}
     </style>
   </head>
 
@@ -124,7 +125,7 @@
       <div class="mdui-dialog-content">
           <div class="mdui-p-a-2">
             <div class="mdui-textfield mdui-textfield-floating-label">
-              <input id="groupname" name="groupname" type="text" class="mdui-textfield-input" value="" />
+              <input id="newgroupname" name="groupname" type="text" class="mdui-textfield-input" value="" />
             </div>
           </div>
           <div class="mdui-dialog-actions">
@@ -140,7 +141,7 @@
     <script>
       $('#searchbox').on('keyup',function(event){
         if (event.key == "Enter") {
-          stock.transCode($('#searchbox').val()) ? window.location.href='/detail/?stockcode='+stock.transCode($('#searchbox').val()) : mdui.snackbar({message: '股票代码格式不正确',position:'top',timeout:2000});;
+          stock.transCode($('#searchbox').val()) ? window.open('/detail/?stockcode='+stock.transCode($('#searchbox').val())) : mdui.snackbar({message: '股票代码格式不正确',position:'top',timeout:2000});;
         }
       });
     </script>
