@@ -34,7 +34,7 @@ function() {
 });
 $(document).on('click', '.mdui-collapse-item',
 function() {
-    var list = $('.mdui-row');
+    var list = $('.panel');
     if (index != 1) {
     var index = $(this).index();
         list.css('display', 'none');
@@ -69,7 +69,7 @@ function() {
 });
 $(document).on('click', '.favoritegroup',
 function() {
-    $('.mdui-row').css('display', 'none');
+    $('.panel').css('display', 'none');
     $('#favorite').css('display', 'block');
 });
 $(document).on('click', '.favoritegroup span',

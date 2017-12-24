@@ -451,7 +451,7 @@ function recentStockDisplay() {
     recentObj = JSON.parse(localStorage.getItem(user + 'recentStock'));
     htmlStr = '';
     for (i in recentObj) {
-        htmlStr += '<a href="/detail/?stockcode=' + recentObj[i][0] + '"><li class="mdui-list-item mdui-ripple">' + recentObj[i][1] + '</li></a>';
+        htmlStr += '<a href="/detail/?stockcode=' + recentObj[i][0] + '"><li class="mdui-list-item">' + recentObj[i][1] + '</li></a>';
     }
     $('#recentStock').html(htmlStr);
 }

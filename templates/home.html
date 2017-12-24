@@ -11,10 +11,12 @@
     </script>
     <style>
         div#left-drawer{border-right:solid 1px #eee}
-        .mdui-row{margin:25px 10px; display:none;}
+        .mdui-row{margin:25px 10px;}
         .mdui-card{margin:15px 5px;box-shadow: none;}
+        .mdui-checkbox{margin-right:20px;}
         .height-150{height:200px;}
         .chart{width:100%; height:100%;}
+        .panel{display:none;}
         .edit-edit{position:absolute; right:10%; display:none;}
         .edit-del{position:absolute; right:0%; display:none;}
     </style>
@@ -82,29 +84,44 @@
     </ul>
   </div>
     <div id="container" class="mdui-container-fluid">
-        <div id="acount" class="mdui-row">acount</div>
-        <div id="favorite" class="mdui-row"></div>
-        <div id="tradedata" class="mdui-row">
-        <div class="mdui-col-md-12"></div>
-            <div class="mdui-table-fluid">
-                <table class="mdui-table mdui-table-hoverable">
-                    <thead>
-                        <tr>
-                            <th>日期</th>
-                            <th>股票代码</th>
-                            <th>股票名称</th>
-                            <th>买卖</th>
-                            <th>价格</th>
-                            <th>数量</th>
-                            <th>总价</th>
-                        </tr>
-                    </thead>
-                    <tbody id="trade-table-body"></tbody> 
-                </table>
+        <div id="acount" class="mdui-row panel">acount</div>
+        <div id="favorite" class="mdui-row panel"></div>
+        <div id="tradedata" class="mdui-row panel">
+            <div class="mdui-col-md-12">
+                <div class="mdui-table-fluid">
+                    <table class="mdui-table mdui-table-hoverable">
+                        <thead>
+                            <tr>
+                                <th>日期</th>
+                                <th>股票代码</th>
+                                <th>股票名称</th>
+                                <th>买卖</th>
+                                <th>价格</th>
+                                <th>数量</th>
+                                <th>总价</th>
+                            </tr>
+                        </thead>
+                        <tbody id="trade-table-body"></tbody> 
+                    </table>
+                </div>
             </div>
         </div>
-        <div id="stockchoose" class="mdui-row">stockchoose</div>
-        <div id="stockfilter" class="mdui-row">stockfilter</div>
+        <div id="stockchoose" class="mdui-row panel">stockchoose</div>
+        <div id="stockfilter" class="mdui-row panel">
+        <div class="mdui-row">
+            <button class="mdui-btn mdui-col-md-1">K线特征</button>
+            <label class="mdui-checkbox"><input type="checkbox"/><i class="mdui-checkbox-icon"></i>连续5天以上上涨</label>
+            <label class="mdui-checkbox"><input type="checkbox"/><i class="mdui-checkbox-icon"></i>连续10天以上上涨</label>
+            <label class="mdui-checkbox"><input type="checkbox"/><i class="mdui-checkbox-icon"></i>连续5天以上下跌</label>
+            <label class="mdui-checkbox"><input type="checkbox"/><i class="mdui-checkbox-icon"></i>连续10天以上下跌</label>
+        </div>
+        <div class="mdui-row">
+            <button class="mdui-btn mdui-col-md-1">MACD特征</button>
+            <label class="mdui-checkbox"><input type="checkbox"/><i class="mdui-checkbox-icon"></i>出现金叉</label>
+            <label class="mdui-checkbox"><input type="checkbox"/><i class="mdui-checkbox-icon"></i>出现死叉</label>
+            <div class="mdui-divider"></div>
+        </div>
+        </div>
     </div>
     <div class="mdui-dialog" id="editgroup">
       <div class="mdui-dialog-title">重命名分组</div>

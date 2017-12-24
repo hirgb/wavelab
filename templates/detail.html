@@ -16,6 +16,11 @@
     <div class="mdui-toolbar mdui-color-theme">
       <a href="/" class="mdui-btn mdui-btn-icon mdui-ripple"><i class="mdui-icon material-icons">trending_up</i></a>
       <a id="title" class="mdui-typo-title mdui-ripple" target="_blank"></a>
+      <button id="infobtn" class="mdui-btn" mdui-menu="{target: '#infomenu', postion: 'bottom'}">信息聚合<i class="mdui-icon material-icons">keyboard_arrow_down</i></button>
+      <ul class="mdui-menu mdui-menu-cascade" id="infomenu">
+        <li class="mdui-menu-item"><a>同花顺</a></li>
+        <li class="mdui-menu-item"><a>GAF10</a></li>
+      </ul>
       <div class="mdui-toolbar-spacer"></div>
       <div class="header-search-wrapper hide-on-med-and-down sideNav-lock">
           <input id="searchbox" type="text" name="Search" class="header-search-input z-depth-2" placeholder="Search stock" autocomplete="off">
@@ -34,17 +39,6 @@
         </div>
         <ul id="recentStock" class="mdui-collapse-item-body mdui-list mdui-list-dense">
           <!-- <li class="mdui-list-item mdui-ripple">New vs Returning</li> -->
-        </ul>
-      </li>
-
-      <li class="mdui-collapse-item mdui-collapse-item-open">
-        <div class="mdui-collapse-item-header mdui-list-item mdui-ripple">
-          <i class="mdui-list-item-icon mdui-icon material-icons">favorite_border</i>
-          <div class="mdui-list-item-content">自选股</div>
-          <i class="mdui-collapse-item-arrow mdui-icon material-icons">keyboard_arrow_down</i>
-        </div>
-        <ul id="favoriteStock" class="mdui-collapse-item-body mdui-list mdui-list-dense">
-          <!-- <li class="mdui-list-item mdui-ripple">Overview</li> -->
         </ul>
       </li>
     </ul>
@@ -114,6 +108,7 @@
   var stockData = localStorage.getItem(stockCode) ? JSON.parse(localStorage.getItem(stockCode)) : {};
   var yestoday = '' + Z.getTime(-1).getFullYear() + '/' + (Z.getTime(-1).getMonth() + 1) + '/' + Z.getTime(-1).getDate();
   var today = '' + Z.getTime('year') + '/' + Z.getTime('month') + '/' + Z.getTime('day');
+  var infomenu = new mdui.Menu('#infobtn', '#infomenu', {position:'bottom'});
   //Does it need to be updated?
     if (!stockData.code || (Z.getTime('hour') < 15 && stockData.update != yestoday) || (Z.getTime('hour') < 15 && stockData.update == yestoday && stockData.yearcount < yearCount) || (Z.getTime('hour') >= 15 && stockData.update != today) || (Z.getTime('hour') >= 15 && stockData.update == today && stockData.yearcount < yearCount)){
         getStockData(initPage);
