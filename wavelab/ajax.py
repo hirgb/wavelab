@@ -163,6 +163,44 @@ def ajax(request):
         except:
             print('traceback.format_exc():\n%s' % traceback.format_exc())
             return HttpResponse(0)
+    elif action == 'deletefavoritestock':
+        try:
+            user = request.COOKIES['loginname']
+            infolist = request.POST['stock'].split('-')
+            query = "select favorite from wave_user where login = '%s'" % user
+            cursor = db.sqlquery(query)
+            favorite = json.loads(cursor.fetchone()[0])
+            for e in favorite:
+                if e['name'] == infolist[0]:
+                    for i in e['stock']:
+                        if i[0] == infolist[1]:
+                            e['stock'].remove(i)
+                            break
+                    break
+            query = "update wave_user set favorite = '%s' where login = '%s'" % (json.dumps(favorite, ensure_ascii = False), user)
+            db.sqlquery(query)
+            return HttpResponse(1)
+        except:
+            print('traceback.format_exc():\n%s' % traceback.format_exc())
+            return HttpResponse(0)
+    elif action == 'addfavoritestock':
+        try:
+            user = request.COOKIES['loginname']
+            stockcode = request.POST['stockcode']
+            stockname = request.POST['stockname']
+            group = request.POST['group']
+            query = "select favorite from wave_user where login = '%s'" % user
+            cursor = db.sqlquery(query)
+            favorite = json.loads(cursor.fetchone()[0])
+            for e in favorite:
+                if e['name'] == group:
+                    e['stock'].append([stockcode, stockname])
+                    break
+            query = "update wave_user set favorite = '%s' where login = '%s'" % (json.dumps(favorite, ensure_ascii = False), user)
+            db.sqlquery(query)
+            return HttpResponse(1)
+        except:
+            return HttpResponse(0)
     elif action == 'login':
         loginname = request.POST['loginname']
         password = request.POST['password']

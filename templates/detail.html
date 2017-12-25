@@ -18,8 +18,9 @@
       <a id="title" class="mdui-typo-title mdui-ripple" target="_blank"></a>
       <button id="infobtn" class="mdui-btn" mdui-menu="{target: '#infomenu', postion: 'bottom'}">信息聚合<i class="mdui-icon material-icons">keyboard_arrow_down</i></button>
       <ul class="mdui-menu mdui-menu-cascade" id="infomenu">
-        <li class="mdui-menu-item"><a>同花顺</a></li>
-        <li class="mdui-menu-item"><a>GAF10</a></li>
+        <li class="mdui-menu-item"><a id="tonghuashun" target="_black">同花顺</a></li>
+        <li class="mdui-menu-item"><a id="gaf10" target="_black">GAF10</a></li>
+        <li class="mdui-menu-item"><a id="f10" target="_black">F10</a></li>
       </ul>
       <div class="mdui-toolbar-spacer"></div>
       <div class="header-search-wrapper hide-on-med-and-down sideNav-lock">
@@ -95,57 +96,22 @@
       <button class="mdui-btn mdui-ripple" mdui-dialog-confirm>确定</button>
     </div>
   </div>
+<div class="mdui-dialog" id="addFavorite">
+    <div class="mdui-dialog-title">添加自选 - 选择分组</div>
+    <div class="mdui-dialog-content">
+        <div class="mdui-container">
+            <div class="mdui-row"></div>
+        </div>
+    </div>
+    <div class="mdui-dialog-actions">
+        <button class="mdui-btn" mdui-dialog-cancel>取消</button>
+        <button class="mdui-btn" mdui-dialog-confirm>确定</button>
+    </div>
+</div>
 </div>
   <script src="/static/js/z.js" charset="utf-8"></script>
   <script src="/static/js/config.js" charset="utf-8"></script>
   <script src="/static/js/stock.js" charset="utf-8"></script>
   <script src="/static/js/detail.js" charset="utf-8"></script>
-  <script type="text/javascript">
-  var $ = mdui.JQ;
-  $('#main').css('height', window.innerHeight - 64 + 'px');
-  var stockCode = Z.getUrlParam().stockcode;
-  var yearCount = Z.getUrlParam().yearcount ? Z.getUrlParam().yearcount : 1;
-  var stockData = localStorage.getItem(stockCode) ? JSON.parse(localStorage.getItem(stockCode)) : {};
-  var yestoday = '' + Z.getTime(-1).getFullYear() + '/' + (Z.getTime(-1).getMonth() + 1) + '/' + Z.getTime(-1).getDate();
-  var today = '' + Z.getTime('year') + '/' + Z.getTime('month') + '/' + Z.getTime('day');
-  var infomenu = new mdui.Menu('#infobtn', '#infomenu', {position:'bottom'});
-  //Does it need to be updated?
-    if (!stockData.code || (Z.getTime('hour') < 15 && stockData.update != yestoday) || (Z.getTime('hour') < 15 && stockData.update == yestoday && stockData.yearcount < yearCount) || (Z.getTime('hour') >= 15 && stockData.update != today) || (Z.getTime('hour') >= 15 && stockData.update == today && stockData.yearcount < yearCount)){
-        getStockData(initPage);
-    }
-    else {
-        initPage({stockdata:stockData, dataamount:(yearCount*250)});
-    }
-  $('#favoriteCheckbox').on('click', function () {
-    if (document.getElementById('favoriteCheckbox').checked) {
-      addFavoriteStock(favoriteStock,stockData);
-      updateFavoriteStockUl(document.getElementById('favoriteStock'),favoriteStock);
-      stock.updateFavoriteStock(JSON.stringify(favoriteStock).replace(/"/g, '\\"'),'zhkf',function(str){
-        mdui.snackbar({message:'favorite added.' + str,position:'top',timeout:800});
-      });
-      mdui.snackbar({message: 'favorite added.',position:'top',timeout:800});
-    }else {
-      delFavoriteStock(favoriteStock,stockData);
-      updateFavoriteStockUl(document.getElementById('favoriteStock'),favoriteStock);
-      stock.updateFavoriteStock(JSON.stringify(favoriteStock).replace(/"/g, '\\"'),'zhkf',function(str){
-        mdui.snackbar({message: 'favorite deleted.' + str,position:'top',timeout:800});
-      });
-      mdui.snackbar({message: 'favorite deleted.',position:'top',timeout:800});
-    }
-  });
-
-  $('#addtrade').on('opened.mdui.dialog',function(){
-    $('#tradeStockCode').val(stockData.code);
-    $('#tradeDate').val(Z.getCurrentDate(false));
-  });
-  $('#addtrade').on('confirm.mdui.dialog', function(){
-    addTradeData();
-  });
-  $('#searchbox').on('keyup',function(event){
-    if (event.key == "Enter") {
-      stock.transCode($('#searchbox').val()) ? window.location.href='/detail/?stockcode='+stock.transCode($('#searchbox').val()) : mdui.snackbar({message: '股票代码格式不正确',position:'top',timeout:2000});;
-    }
-  });
-  </script>
 </body>
 </html>

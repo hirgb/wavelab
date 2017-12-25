@@ -1,11 +1,126 @@
+var $ = mdui.JQ;
+$('#main').css('height', window.innerHeight - 64 + 'px');
 var user = Z.cookie.get('loginname') ? Z.cookie.get('loginname') : '';
+var stockCode = Z.getUrlParam().stockcode;
+var yearCount = Z.getUrlParam().yearcount ? Z.getUrlParam().yearcount: 1;
+var stockData = localStorage.getItem(stockCode) ? JSON.parse(localStorage.getItem(stockCode)) : {};
+var favorite = localStorage.getItem(user + 'favoriteData') ? JSON.parse(localStorage.getItem(user + 'favoriteData')).favorite : {};
+var yestoday = '' + Z.getTime( - 1).getFullYear() + '/' + (Z.getTime( - 1).getMonth() + 1) + '/' + Z.getTime( - 1).getDate();
+var today = '' + Z.getTime('year') + '/' + Z.getTime('month') + '/' + Z.getTime('day');
+var infomenu = new mdui.Menu('#infobtn', '#infomenu', {
+    position: 'bottom'
+});
+//Does it need to be updated?
+if (!stockData.code || (Z.getTime('hour') < 15 && stockData.update != yestoday) || (Z.getTime('hour') < 15 && stockData.update == yestoday && stockData.yearcount < yearCount) || (Z.getTime('hour') >= 15 && stockData.update != today) || (Z.getTime('hour') >= 15 && stockData.update == today && stockData.yearcount < yearCount)) {
+    getStockData(initPage);
+} else {
+    initPage({
+        stockdata: stockData,
+        dataamount: (yearCount * 250)
+    });
+}
+//init addFavorite dialog
+if(favorite[0]){
+    var htmlstr = '<form id="addFavoriteForm">';
+    for(var i = 0; i < favorite.length; i ++ ){
+        htmlstr += '<div class="mdui-col-md-4"><label class="mdui-radio"><input type="radio" name = "group" value="' + favorite[i].name + '" /><i class="mdui-radio-icon"></i>' + favorite[i].name + '</label></div>';
+    }
+    htmlstr += '</form>';
+    $('#addFavorite .mdui-row').html(htmlstr);
+    var addFavorite = new mdui.Dialog('#addFavorite', {history:false,modal:true,closeOnEsc:false});
+}
+$('#favoriteCheckbox').on('click',
+function() {
+    if (document.getElementById('favoriteCheckbox').checked) {
+        if(user){
+            addFavorite.open();
+        }else{
+            mdui.alert('请登录后再进行此操作。', '提示', 
+            function() {
+                $('#favoriteCheckbox').prop('checked', false);
+            },
+            {
+                confirmText: '确定'
+            });
+        }
+    } else {
+        mdui.alert('由于一支股票可能收藏于多个分组，为避免误删，请在个人中心  >  自选股页面进行删除操作。', '提示',
+        function() {
+            $('#favoriteCheckbox').prop('checked', true);
+        },
+        {
+            confirmText: '确定'
+        });
+    }
+});
+
+$('#addtrade').on('opened.mdui.dialog',
+function() {
+    $('#tradeStockCode').val(stockData.code);
+    $('#tradeDate').val(Z.getCurrentDate(false));
+});
+$('#addtrade').on('confirm.mdui.dialog',
+function() {
+    addTradeData();
+});
+$('#addFavorite').on('confirm.mdui.dialog',
+function() {
+    var grouplist = $('#addFavoriteForm').serializeArray();
+    if(grouplist.length == 0){
+        $('#favoriteCheckbox').prop('checked', false);
+    } else {
+        $.ajax({
+            url:'/ajax', 
+            method:'POST', 
+            data:{"action":"addfavoritestock", "group":grouplist[0].value, "stockcode":stockData.code, "stockname":stockData.name}, 
+            success:function(data){
+                if(data == 1){
+                    var favoriteData = JSON.parse(localStorage.getItem(user + 'favoriteData'));
+                    var favorite = favoriteData.favorite;
+                    for(var i = 0; i < favorite.length; i ++ ){
+                        if(favorite[i].name == grouplist[0].value){
+                            favorite[i].stock.push([stockData.code, stockData.name]);
+                            break;
+                        }
+                    }
+                    localStorage.setItem(user + 'favoriteData', JSON.stringify(favoriteData));
+                    mdui.snackbar({
+                        message: '添加成功',
+                        timeout: 800,
+                        position: 'top'
+                    });
+                } else {
+                    mdui.snackbar({
+                        message: '操作失败',
+                        timeout: 800,
+                        position: 'top'
+                    });
+                }
+            }
+            });
+    }
+});
+$('#addFavorite').on('cancel.mdui.dialog',
+function() {
+    $('#favoriteCheckbox').prop('checked', false);
+});
+$('#searchbox').on('keyup',
+function(event) {
+    if (event.key == "Enter") {
+        stock.transCode($('#searchbox').val()) ? window.location.href = '/detail/?stockcode=' + stock.transCode($('#searchbox').val()) : mdui.snackbar({
+            message: '股票代码格式不正确',
+            position: 'top',
+            timeout: 800
+        });;
+    }
+});
 function display(pagedata) {
     var option = {
         title: [{
             text: '分时图',
             left: '2%',
             top: 5,
-            link: 'https://gupiao.baidu.com/stock/' + pagedata.stockdata.code + '.html',
+            link: 'http://stockpage.10jqka.com.cn/' + pagedata.stockdata.code.substring(2) + '/',
             target: 'blank',
             textStyle: {
                 fontSize: 14
@@ -361,8 +476,14 @@ function initPage(option) {
     localStorage.setItem(stockData.code, JSON.stringify(stockData));
     $('title').text(stockData.name + stockData.code + ' - WAVE LAB');
     $('#title').text(stockData.name + stockData.code);
-    $('#title').prop('href', 'http://stockpage.10jqka.com.cn/' + stockData.code.substr(2) + '/');
-    if (user != '') {document.getElementById('favoriteCheckbox').checked = !(localStorage.getItem(user + 'favoriteData').indexOf(stockData.code) == -1);}
+    //$('#title').prop('href', 'http://stockpage.10jqka.com.cn/' + stockData.code.substr(2) + '/');
+    $('#tonghuashun').prop('href', 'http://stockpage.10jqka.com.cn/' + stockData.code.substr(2) + '/');
+    $('#gaf10').prop('href', 'http://www.gaf10.com/shareDetails.html?code=' + stockData.code.substr(2));
+    $('#f10').prop('href', 'http://www.gaf10.com/f10.html?code=' + stockData.code.substr(2));
+    if (user != '') {
+        var favoritestr = JSON.stringify(JSON.parse(localStorage.getItem(user + 'favoriteData')).favorite)
+        document.getElementById('favoriteCheckbox').checked = !(favoritestr.indexOf(stockData.code) == -1);
+    }
     updateRecentStock(stockData.code, stockData.name);
     recentStockDisplay();
     if ( !! Z.cookie.get('loginname')) {
@@ -408,7 +529,7 @@ function getStockData(callback) {
             yearcount: yearCount
         },
         success: function(data) {
-            if (!!data.code){
+            if ( !! data.code) {
                 callback({
                     stockdata: data,
                     dataamount: (yearCount * 250)

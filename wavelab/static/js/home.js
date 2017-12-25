@@ -74,11 +74,13 @@ function() {
 });
 $(document).on('click', '.favoritegroup span',
 function() {
+    favoriteData = JSON.parse(localStorage.getItem(user + 'favoriteData'));
     var stocklist = favoriteData.favorite[$(this).parent().index()].stock;
+    var stockGroup = favoriteData.favorite[$(this).parent().index()].name;
     var stockData = favoriteData.stockdata;
     var str = '';
     stocklist.forEach(function(e) {
-        str += '<div class="mdui-col-md-3"><div class="mdui-card height-150 gradient-45deg-light-blue-cyan gradient-shadow"><div class="chart"></div></div></div>';
+        str += '<div class="mdui-col-md-3"><div class="mdui-card height-150 gradient-45deg-light-blue-cyan gradient-shadow"><div class="chart"></div><i id="'+ stockGroup + '-' + e[0] + '-' + e[1] + '" class="delete-favorite mdui-list-item-icon mdui-icon material-icons">delete_forever</i></div></div>';
     });
     $('#favorite').html(str);
     list = document.querySelectorAll('.chart');
@@ -91,6 +93,46 @@ function() {
         chart.setOption(option);
     });
 });
+$(document).on('mouseover', '.mdui-card', function(){
+            $(this).children('i').css('display', 'block');
+            });
+$(document).on('mouseout', '.mdui-card', function(){
+            $(this).children('i').css('display', 'none');
+            });
+$(document).on('click', '.delete-favorite', function(){
+            var _this = $(this);
+            var stock = $(this).prop('id');
+            var infolist = stock.split('-');
+            mdui.alert('你将删除股票 - ' + stock + '，请确认。', '提示', function(){
+                $.ajax({
+                    url:'/ajax', 
+                    method:'POST', 
+                    data:{"action":"deletefavoritestock", "stock":stock}, 
+                    success:function(data){
+                        if(data == 1){
+                            var favoriteData = JSON.parse(localStorage.getItem(user + 'favoriteData'));
+                            var favorite = favoriteData.favorite;
+                            for(var i = 0; i < favorite.length; i ++ ){
+                                if(favorite[i].name == infolist[0]){
+                                    for(var j = 0; j < favorite[i].stock.length; j ++ ){
+                                        if(favorite[i].stock[j][0] == infolist[1]){
+                                            favorite[i].stock.splice(j, 1);
+                                            break;
+                                        }
+                                    }
+                                    break;
+                                }
+                            }
+                            localStorage.setItem(user + 'favoriteData', JSON.stringify(favoriteData));
+                            _this.parent().parent().remove();
+                            mdui.snackbar({message:'删除成功', timeout:800, position:'top'});
+                        } else {
+                            mdui.snackbar({message:'删除失败', timeout:800, position:'top'});
+                        }
+                    }
+                    });
+                }, {confirmText:'确定'});
+            })
 $(document).on('mouseover', '.favoritegroup',
 function() {
     $(this).children('.edit').css('display', 'inline');
@@ -116,7 +158,7 @@ function() {
                 data:{"action":"deletegroup", "groupname":name},
                 success:function(data){
                     if(data == 1){
-                        mdui.snackbar({message:'删除成功', timeout:2000, position:'top'});
+                        mdui.snackbar({message:'删除成功', timeout:800, position:'top'});
                         var favoriteData = JSON.parse(localStorage.getItem(user + 'favoriteData'));
                         for (i in favoriteData.favorite){
                             if(favoriteData.favorite[i].name == name){
@@ -127,7 +169,7 @@ function() {
                         localStorage.setItem(user + 'favoriteData', JSON.stringify(favoriteData));
                         initFavorite(favoriteData.favorite, document.getElementById('favoritegrouplist'));
                     } else {
-                        mdui.snackbar({message:'删除失败', timeout:2000, position:'top'});
+                        mdui.snackbar({message:'删除失败', timeout:800, position:'top'});
                     }
                 }
             });
@@ -151,7 +193,7 @@ function() {
                 if(data == 1){
                     mdui.snackbar({
                         message: "重命名成功",
-                        timeout: "2000",
+                        timeout: 800,
                         position: "top"
                     });
                     var favoriteData = JSON.parse(localStorage.getItem(user + 'favoriteData'));
@@ -166,7 +208,7 @@ function() {
                 }else{
                 mdui.snackbar({
                     message: "重命名失败",
-                    timeout: "2000",
+                    timeout: 800,
                     position: "top"
                 });
                 }
@@ -189,13 +231,13 @@ function() {
             },
             success:function(data){
                 if(data == 1){
-                    mdui.snackbar({message:'创建成功', timeout:2000, position:'top'});
+                    mdui.snackbar({message:'创建成功', timeout:800, position:'top'});
                     var favoriteData = JSON.parse(localStorage.getItem(user + 'favoriteData'));
                     favoriteData.favorite.push({name:newgroupname, stock:[]});
                     localStorage.setItem(user + 'favoriteData', JSON.stringify(favoriteData));
                     initFavorite(favoriteData.favorite, document.getElementById('favoritegrouplist'));
                 }
-                else {mdui.snackbar({message:'创建失败', timeout:2000, position:'top'});}
+                else {mdui.snackbar({message:'创建失败', timeout:800, position:'top'});}
             }
         });
     } else {
