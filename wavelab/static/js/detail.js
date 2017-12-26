@@ -2,6 +2,7 @@ var $ = mdui.JQ;
 $('#main').css('height', window.innerHeight - 64 + 'px');
 var user = Z.cookie.get('loginname') ? Z.cookie.get('loginname') : '';
 var stockCode = Z.getUrlParam().stockcode;
+var hash = window.location.hash;
 var yearCount = Z.getUrlParam().yearcount ? Z.getUrlParam().yearcount: 1;
 var stockData = localStorage.getItem(stockCode) ? JSON.parse(localStorage.getItem(stockCode)) : {};
 var favorite = localStorage.getItem(user + 'favoriteData') ? JSON.parse(localStorage.getItem(user + 'favoriteData')).favorite : {};
@@ -10,8 +11,9 @@ var today = '' + Z.getTime('year') + '/' + Z.getTime('month') + '/' + Z.getTime(
 var infomenu = new mdui.Menu('#infobtn', '#infomenu', {
     position: 'bottom'
 });
+var addtrade = new mdui.Dialog('#addtrade');
 //Does it need to be updated?
-if (!stockData.code || (Z.getTime('hour') < 15 && stockData.update != yestoday) || (Z.getTime('hour') < 15 && stockData.update == yestoday && stockData.yearcount < yearCount) || (Z.getTime('hour') >= 15 && stockData.update != today) || (Z.getTime('hour') >= 15 && stockData.update == today && stockData.yearcount < yearCount)) {
+if (!stockData.code || hash == '#refresh' || (Z.getTime('hour') < 15 && stockData.update != yestoday) || (Z.getTime('hour') < 15 && stockData.update == yestoday && stockData.yearcount < yearCount) || (Z.getTime('hour') >= 15 && stockData.update != today) || (Z.getTime('hour') >= 15 && stockData.update == today && stockData.yearcount < yearCount)) {
     getStockData(initPage);
 } else {
     initPage({
@@ -53,7 +55,18 @@ function() {
         });
     }
 });
-
+$('#addtradebtn').on('click', function(){
+            if(user){
+                addtrade.open();
+            }else{
+                mdui.alert('请登录后再进行此操作。', '提示', 
+                function() {
+                },
+                {
+                    confirmText: '确定'
+                });
+            }
+            });
 $('#addtrade').on('opened.mdui.dialog',
 function() {
     $('#tradeStockCode').val(stockData.code);
@@ -449,12 +462,6 @@ function display(pagedata) {
     };
     pagedata.chart.setOption(option);
 }
-function addFavoriteStock(favoriteStock, stockData) {
-    favoriteStock[stockData.name] = stockData.code;
-}
-function delFavoriteStock(favoriteStock, stockData) {
-    favoriteStock[stockData.name] = undefined;
-}
 function addTradeData() {
     var xmlHttp = new XMLHttpRequest();
     var queryStr = $('form').serialize();
@@ -472,7 +479,7 @@ function addTradeData() {
     };
 }
 function initPage(option) {
-    var stockData = option.stockdata;
+    stockData = option.stockdata;
     localStorage.setItem(stockData.code, JSON.stringify(stockData));
     $('title').text(stockData.name + stockData.code + ' - WAVE LAB');
     $('#title').text(stockData.name + stockData.code);
@@ -556,7 +563,7 @@ function updateRecentStock(stockcode, stockname) {
             }
         }
         if (index == -1) {
-            if (len < 20) {
+            if (len < 15) {
                 recentObj.unshift([stockcode, stockname]);
             } else {
                 recentObj.pop();
