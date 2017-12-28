@@ -92,12 +92,35 @@ def ajax(request):
             query = "select trade from wave_user where login = '%s'" % request.COOKIES['loginname']
             cursor = db.sqlquery(query)
             trade = json.loads(cursor.fetchone()[0])
+            print('trade=', trade)
             trade = trade.get(request.POST.get('stockcode'), {})
             dataFinal = []
             for i in trade:
                 color = ('#cc3300' if i['type'] == 'buy' else '#009926')
                 dataFinal.append({"name":i['type'], "coord":[i['date'], i['price']], "itemStyle":{"normal":{"color":color}}})
             return HttpResponse(json.dumps(dataFinal, ensure_ascii = False))
+        else:
+            return HttpResponse('[]')
+    elif action == 'addtrade':
+        code = request.POST['code']
+        date = request.POST['date']
+        price = request.POST['price']
+        volumn = request.POST['volumn']
+        tradetype = request.POST['type']
+        user = request.COOKIES['loginname']
+        if user and code and date and price and volumn and tradetype:
+            query = "select trade from wave_user where login = '%s'" % user
+            cursor = db.sqlquery(query)
+            trade = json.loads(cursor.fetchone()[0])
+            if code in trade:
+                trade[code].append({'date':date, 'price':price, 'volumn':volumn, 'type':tradetype})
+            else:
+                trade[code] = [{'date':date, 'price':price, 'volumn':volumn, 'type':tradetype}]
+            query = "update wave_user set trade = '%s' where login = '%s'" % (json.dumps(trade, ensure_ascii = False), user)
+            db.sqlquery(query)
+            return HttpResponse(1)
+        else:
+            return HttpResponse(0)
     elif action == 'gettrade':
         query = "select trade from wave_user where login = '%s'" % request.COOKIES['loginname']
         cursor = db.sqlquery(query)
@@ -204,7 +227,7 @@ def ajax(request):
     elif action == 'login':
         loginname = request.POST['loginname']
         password = request.POST['password']
-        rawstr = password + 'zhangkefei'
+        rawstr = loginname + 'zhangkefei'
         token = db.md5(rawstr)
         query = "select count(*) from wave_user where login = '%s' and password = '%s'" % (loginname, db.md5(password))
         cursor = db.sqlquery(query)

@@ -70,11 +70,18 @@ $('#addtradebtn').on('click', function(){
 $('#addtrade').on('opened.mdui.dialog',
 function() {
     $('#tradeStockCode').val(stockData.code);
-    $('#tradeDate').val(Z.getCurrentDate(false));
+    $('#tradeDate').val(today);
 });
 $('#addtrade').on('confirm.mdui.dialog',
 function() {
-    addTradeData();
+    var code=$('#tradeStockCode').val();
+    var date=$('#tradeDate').val();
+    var price=$('#tradePrice').val();
+    var volumn=$('#tradeVolume').val();
+    var type=$('#tradeType').prop('checked') ? 'buy' : 'sell';
+    if(code && date && price && volumn && type){
+        addTradeData(code,date,price,volumn,type);
+    }
 });
 $('#addFavorite').on('confirm.mdui.dialog',
 function() {
@@ -462,21 +469,27 @@ function display(pagedata) {
     };
     pagedata.chart.setOption(option);
 }
-function addTradeData() {
-    var xmlHttp = new XMLHttpRequest();
-    var queryStr = $('form').serialize();
-    // console.log(queryStr);
-    xmlHttp.open('get', hostName + 'addtradedata?' + queryStr);
-    xmlHttp.send();
-    xmlHttp.onreadystatechange = function() {
-        if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
-            mdui.snackbar({
-                message: xmlHttp.responseText,
-                position: 'top',
-                timeout: 1000
-            });
+function addTradeData(code, date, price, volumn, type) {
+    $.ajax({
+        url:'/ajax',
+        method:'POST',
+        data:{"action":"addtrade","code":code,"date":date,"price":price,"volumn":volumn,"type":type},
+        success:function(data){
+            if(data==1){
+                mdui.snackbar({
+                    message: '添加成功',
+                    timeout: 800,
+                    position: 'top'
+                });
+            }else{
+                mdui.snackbar({
+                    message: '操作失败',
+                    timeout: 800,
+                    position: 'top'
+                });
+            }
         }
-    };
+    });
 }
 function initPage(option) {
     stockData = option.stockdata;
@@ -493,7 +506,7 @@ function initPage(option) {
     }
     updateRecentStock(stockData.code, stockData.name);
     recentStockDisplay();
-    if ( !! Z.cookie.get('loginname')) {
+    if (!!user) {
         $.ajax({
             url: '/ajax',
             method: 'POST',
