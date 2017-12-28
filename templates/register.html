@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>WAVELAB</title>
+    <link rel="stylesheet" href="//cdn.bootcss.com/mdui/0.3.0/css/mdui.min.css">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <style>
+        .mdui-row{margin:25px 10px;}
+        .mdui-card{margin:0px 5px;box-shadow: none;}
+        .height-150{height:150px;}
+        .height-350{height:350px;}
+    </style>
+  </head>
+  <body class="mdui-theme-primary-indigo mdui-theme-accent-pink">
+    <div id="header" class="mdui-appbar">
+      <div class="mdui-toolbar mdui-color-theme">
+        <a href="/" class="mdui-btn mdui-btn-icon"><i class="mdui-icon material-icons">trending_up</i></a>
+        <a href="javascript:;" class="mdui-typo-title">波段实验室-WAVELAB</a>
+        <div class="mdui-toolbar-spacer"></div>
+        <div class="header-search-wrapper hide-on-med-and-down sideNav-lock">
+            <input id="searchbox" type="text" name="Search" class="header-search-input z-depth-2" placeholder="Search stock" autocomplete="off">
+        </div>
+        <a href="javascript:;" class="mdui-btn mdui-btn-icon mdui-ripple" mdui-tooltip="{content:'帮助'}"><i class="mdui-icon material-icons">help</i></a>
+      </div>
+    </div>
+    <div class="mdui-container">
+        <form>
+        <div class="mdui-row">
+            <div class="mdui-col-md-6 mdui-col-offset-md-3 mdui-typo-display-2-opacity">注册新用户</div>
+            <div class="mdui-col-md-6 mdui-col-offset-md-3 mdui-textfield">
+                <i class="mdui-icon material-icons">smartphone</i>
+                <input id="phone" class="mdui-textfield-input" type="text" maxlength="11" placeholder="手机号码，用于登录、接收提醒、通知等" pattern="^[1][0-9]{10}$" required />
+                <div class="mdui-textfield-error">手机号码格式错误</div>
+            </div>
+            <div class="mdui-col-md-6 mdui-col-offset-md-3 mdui-textfield">
+                <i class="mdui-icon material-icons">account_circle</i>
+                <input id="username" class="mdui-textfield-input" type="text" maxlength="10" placeholder="显示用户名" required />
+                <div class="mdui-textfield-error">用户名不能为空</div>
+            </div>
+            <div class="mdui-col-md-6 mdui-col-offset-md-3 mdui-textfield">
+                <i class="mdui-icon material-icons">lock</i>
+                <input id="password" class="mdui-textfield-input" type="password" maxlength="16" placeholder="密码6 位至16位" pattern="^[0-9a-zA-Z]{6,16}$" required />
+                <div class="mdui-textfield-error">密码6 位至16位</div>
+            </div>
+            <div class="mdui-row">
+            <div class="mdui-col-md-6 mdui-col-offset-md-3 mdui-m-t-3 mdui-m-b-3">
+            <span class="mdui-typo-caption-opacity">点击注册按钮视同已阅读并同意《使用条款》</span>
+            </div>
+            </div>
+            <div class="mdui-row">
+            <div class="mdui-col-md-6 mdui-col-offset-md-3 mdui-m-b-4">
+                <button id="registerbtn" class="mdui-btn mdui-btn-block mdui-btn-raised mdui-color-theme-accent">注册</button>
+            </div>
+            <div class="mdui-col-md-6 mdui-col-offset-md-3">
+                <a href="/" target="_self" class="mdui-btn mdui-btn-block mdui-btn-raised mdui-color-theme-accent">已有账户，去登录</a>
+            </div>
+            </div>
+        </div>
+        </form>
+    </div>
+    <script src="//cdn.bootcss.com/mdui/0.3.0/js/mdui.min.js"></script>
+    <script src="/static/js/z.js"></script>
+    <script>
+        var $=mdui.JQ;
+
+        $(document).on('click', '#registerbtn', function(){
+            var phone=$('#phone').val();
+            var username=$('#username').val();
+            var password=$('#password').val();
+            if(phone && username && password){
+                $.ajax({
+                    url:'/ajax',
+                    method:'POST',
+                    data:{"action":"register", "loginname":phone, "username":username, "password":password},
+                    success:function(data){
+                        if(data == 1){
+                            mdui.alert('注册成功，请返回首页登录','提示',function(){
+                                window.location.href = '/';
+                                },{confirmText: '确定'});
+                        }else{
+                            mdui.alert('注册失败','提示',function(){
+                                },{confirmText: '确定'});
+                        }
+                    }
+                });
+            }else{mdui.snackbar({message:'请将信息补充完整', position:'top'})}
+        });
+    </script>
+  </body>
+</html>

@@ -21,6 +21,7 @@ urlpatterns = [
     path('', view.index), 
     path('home/', view.home),
     path('detail/', view.detail), 
+    path('register/', view.register),
     path('ajax', ajax.ajax),
     path('admin/', admin.site.urls),
 ]

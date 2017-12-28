@@ -205,15 +205,25 @@ def ajax(request):
         loginname = request.POST['loginname']
         password = request.POST['password']
         rawstr = password + 'zhangkefei'
-        md5 = hashlib.md5()
-        md5.update(rawstr.encode('utf-8'))
-        token = md5.hexdigest()
-        query = "select count(*) from wave_user where login = '%s' and password = '%s'" % (loginname, password)
+        token = db.md5(rawstr)
+        query = "select count(*) from wave_user where login = '%s' and password = '%s'" % (loginname, db.md5(password))
         cursor = db.sqlquery(query)
         if cursor.fetchone()[0] > 0:
             jsonstr = '{"loginname":"%s", "token":"%s", "status":1}' % (loginname, token)
         else:
             jsonstr = '{"status":0}'
         return HttpResponse(jsonstr)
+    elif action == 'register':
+        loginname = request.POST['loginname']
+        username = request.POST['username']
+        password = request.POST['password']
+        query = "select * from wave_user where login = '%s'" % str(loginname)
+        cursor = db.sqlquery(query)
+        if str(type(cursor.fetchone())) == "<class 'NoneType'>":
+            query = "insert ignore into wave_user (login, name, password, favorite) values ('%s', '%s', '%s', '[{\"name\":\"默认分组\", \"stock\":[]}]')" % (str(loginname), username, db.md5(password))
+            db.sqlquery(query)
+            return HttpResponse(1)
+        else:
+            return HttpResponse(0)
     else:
         return HttpResponse(db.md5('zhangkefei'))
