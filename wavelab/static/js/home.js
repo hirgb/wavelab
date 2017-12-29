@@ -46,22 +46,18 @@ function() {
                 dataType:'json',
                 data:{action:'gettrade'},
                 success:function(data){
-                    var list = Object.keys(data).sort();
-                    var htmlstr = '';
+                    console.log(data);
+                    var htmlstr = '<div class="mdui-panel mdui-panel-gapless">';
                     for (var i in data){
+                        htmlstr += '<div class="mdui-panel-item"><div class="mdui-panel-item-header">'+ i +'</div><div class="mdui-panel-item-body"><div class="mdui-table-fluid"><table class="mdui-table mdui-table-hoverable"><thead><tr><th>日期</th><th>买卖</th><th>价格</th><th>数量</th><th>总价</th></tr></thead><tbody>';
                         for (var j=0;j<data[i].length;j++){
-                            htmlstr += '<tr>';
-                            htmlstr += '<th>' + data[i][j].date + '</th>';
-                            htmlstr += '<th>' + i + '</th>';
-                            htmlstr += '<th>' + '' + '</th>';
-                            htmlstr += '<th>' + data[i][j].type + '</th>';
-                            htmlstr += '<th>' + data[i][j].price + '</th>';
-                            htmlstr += '<th>' + data[i][j].volume + '</th>';
-                            htmlstr += '<th>' + data[i][j].price * data[i][j].volume + '</th>';
-                            htmlstr += '</tr>';
+                            htmlstr += '<tr><th>' + data[i][j].date + '</th><th>' + data[i][j].type + '</th><th>' + data[i][j].price + '</th><th>' + data[i][j].volume + '</th><th>' + data[i][j].price * data[i][j].volume + '</th></tr>';
                         }
+                        htmlstr += '</tbody></table></div></div></div>';
                     }
-                    $('#trade-table-body').html(htmlstr);
+                    htmlstr += '</div>';
+                    $('#tradedata>.mdui-row').html(htmlstr);
+                    var tradedataPanel = new mdui.Panel('#tradedata .mdui-panel', {accordion:true});
                 }
                 });
         }

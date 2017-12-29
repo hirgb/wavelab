@@ -14,7 +14,6 @@
         .mdui-row{margin:25px 10px;}
         .mdui-card{margin:15px 5px;box-shadow: none;}
         .mdui-checkbox{margin-right:20px;}
-        .mdui-panel-item-body{}
         .mdui-panel-item-body .mdui-row{margin:0;}
         .mdui-panel-item-body .mdui-row label.mdui-radio{padding-left:30px;}
         .mdui-typo-subheading{line-height:36px}
@@ -24,6 +23,7 @@
         .edit-edit{position:absolute; right:10%; display:none;}
         .edit-del{position:absolute; right:0%; display:none;}
         .delete-favorite{position:absolute; left:0; bottom:0; height:25px; width:25px; color:rgba(255,  255,  255,  0.5); cursor:pointer; display:none}
+        #tradedata .mdui-table-fluid{box-shadow:none;}
     </style>
   </head>
 
@@ -91,26 +91,7 @@
     <div id="container" class="mdui-container-fluid">
         <div id="acount" class="mdui-row panel">acount</div>
         <div id="favorite" class="mdui-row panel"></div>
-        <div id="tradedata" class="mdui-row panel">
-            <div class="mdui-col-md-12">
-                <div class="mdui-table-fluid">
-                    <table class="mdui-table mdui-table-hoverable">
-                        <thead>
-                            <tr>
-                                <th>日期</th>
-                                <th>股票代码</th>
-                                <th>股票名称</th>
-                                <th>买卖</th>
-                                <th>价格</th>
-                                <th>数量</th>
-                                <th>总价</th>
-                            </tr>
-                        </thead>
-                        <tbody id="trade-table-body"></tbody> 
-                    </table>
-                </div>
-            </div>
-        </div>
+        <div id="tradedata" class="mdui-row panel"><div class="mdui-row"></div></div>
         <div id="stockchoose" class="mdui-row panel">stockchoose</div>
         <div id="stockfilter" class="mdui-row panel">
         <div class="mdui-row">
