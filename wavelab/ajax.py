@@ -92,7 +92,6 @@ def ajax(request):
             query = "select trade from wave_user where login = '%s'" % request.COOKIES['loginname']
             cursor = db.sqlquery(query)
             trade = json.loads(cursor.fetchone()[0])
-            print('trade=', trade)
             trade = trade.get(request.POST.get('stockcode'), {})
             dataFinal = []
             for i in trade:
@@ -105,17 +104,17 @@ def ajax(request):
         code = request.POST['code']
         date = request.POST['date']
         price = request.POST['price']
-        volumn = request.POST['volumn']
+        volume = request.POST['volume']
         tradetype = request.POST['type']
         user = request.COOKIES['loginname']
-        if user and code and date and price and volumn and tradetype:
+        if user and code and date and price and volume and tradetype:
             query = "select trade from wave_user where login = '%s'" % user
             cursor = db.sqlquery(query)
             trade = json.loads(cursor.fetchone()[0])
             if code in trade:
-                trade[code].append({'date':date, 'price':price, 'volumn':volumn, 'type':tradetype})
+                trade[code].append({'date':date, 'price':price, 'volume':volume, 'type':tradetype})
             else:
-                trade[code] = [{'date':date, 'price':price, 'volumn':volumn, 'type':tradetype}]
+                trade[code] = [{'date':date, 'price':price, 'volume':volume, 'type':tradetype}]
             query = "update wave_user set trade = '%s' where login = '%s'" % (json.dumps(trade, ensure_ascii = False), user)
             db.sqlquery(query)
             return HttpResponse(1)

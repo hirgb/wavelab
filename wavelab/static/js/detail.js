@@ -77,10 +77,10 @@ function() {
     var code=$('#tradeStockCode').val();
     var date=$('#tradeDate').val();
     var price=$('#tradePrice').val();
-    var volumn=$('#tradeVolume').val();
+    var volume=$('#tradeVolume').val();
     var type=$('#tradeType').prop('checked') ? 'buy' : 'sell';
-    if(code && date && price && volumn && type){
-        addTradeData(code,date,price,volumn,type);
+    if(code && date && price && volume && type){
+        addTradeData(code,date,price,volume,type);
     }
 });
 $('#addFavorite').on('confirm.mdui.dialog',
@@ -469,11 +469,11 @@ function display(pagedata) {
     };
     pagedata.chart.setOption(option);
 }
-function addTradeData(code, date, price, volumn, type) {
+function addTradeData(code, date, price, volume, type) {
     $.ajax({
         url:'/ajax',
         method:'POST',
-        data:{"action":"addtrade","code":code,"date":date,"price":price,"volumn":volumn,"type":type},
+        data:{"action":"addtrade","code":code,"date":date,"price":price,"volume":volume,"type":type},
         success:function(data){
             if(data==1){
                 mdui.snackbar({

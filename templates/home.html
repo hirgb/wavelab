@@ -14,6 +14,10 @@
         .mdui-row{margin:25px 10px;}
         .mdui-card{margin:15px 5px;box-shadow: none;}
         .mdui-checkbox{margin-right:20px;}
+        .mdui-panel-item-body{}
+        .mdui-panel-item-body .mdui-row{margin:0;}
+        .mdui-panel-item-body .mdui-row label.mdui-radio{padding-left:30px;}
+        .mdui-typo-subheading{line-height:36px}
         .height-150{height:200px;}
         .chart{width:100%; height:100%;}
         .panel{display:none;}
@@ -110,17 +114,96 @@
         <div id="stockchoose" class="mdui-row panel">stockchoose</div>
         <div id="stockfilter" class="mdui-row panel">
         <div class="mdui-row">
-            <button class="mdui-btn mdui-col-md-1">K线特征</button>
-            <label class="mdui-checkbox"><input type="checkbox"/><i class="mdui-checkbox-icon"></i>连续5天以上上涨</label>
-            <label class="mdui-checkbox"><input type="checkbox"/><i class="mdui-checkbox-icon"></i>连续10天以上上涨</label>
-            <label class="mdui-checkbox"><input type="checkbox"/><i class="mdui-checkbox-icon"></i>连续5天以上下跌</label>
-            <label class="mdui-checkbox"><input type="checkbox"/><i class="mdui-checkbox-icon"></i>连续10天以上下跌</label>
+            <div class="mdui-panel mdui-panel-gapless" mdui-panel>
+                <div class="mdui-panel-item">
+                    <div class="mdui-panel-item-header">股票特征</div>
+                    <div class="mdui-panel-item-body">
+                        <div class="mdui-row">
+                            <p class="mdui-typo-subheading-opacity">根据上市公司特征、条件进行筛选。</p>
+                        </div>
+                        <div class="mdui-row">
+                            <span class="mdui-typo-subheading mdui-col-md-2 mdui-text-right">评级（星以上）</span>
+                            <label class="mdui-slider mdui-slider-discrete mdui-col-md-4">
+                                <input name="" id="" type="range" step="1" min="0" max="5"/>
+                            </label>
+                        </div>
+                        <div class="mdui-row">
+                            <span class="mdui-typo-subheading mdui-col-md-2 mdui-text-right">市盈率（最低）</span>
+                            <label class="mdui-slider mdui-slider-discrete mdui-col-md-4">
+                                <input name="" id="" type="range" step="1" min="0" max="5"/>
+                            </label>
+                            <span class="mdui-typo-subheading mdui-col-md-2 mdui-text-right">市盈率（最高）</span>
+                            <label class="mdui-slider mdui-slider-discrete mdui-col-md-4">
+                                <input name="" id="" type="range" step="1" min="0" max="5"/>
+                            </label>
+                        </div>
+                        <div class="mdui-row">
+                            <span class="mdui-typo-subheading mdui-col-md-2 mdui-text-right">总市值（最低）</span>
+                            <label class="mdui-slider mdui-slider-discrete mdui-col-md-4">
+                                <input name="" id="" type="range" step="1" min="0" max="5"/>
+                            </label>
+                            <span class="mdui-typo-subheading mdui-col-md-2 mdui-text-right">总市值（最高）</span>
+                            <label class="mdui-slider mdui-slider-discrete mdui-col-md-4">
+                                <input name="" id="" type="range" step="1" min="0" max="5"/>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="mdui-panel-item">
+                    <div class="mdui-panel-item-header">K线特征</div>
+                    <div class="mdui-panel-item-body">
+                        <div class="mdui-row">
+                            <p class="mdui-typo-subheading-opacity">根据股票价格走势进行筛选。</p>
+                        </div>
+                        <div class="mdui-row">
+                            <div class="mdui-col-md-1"></div>
+                            <label class="mdui-radio mdui-col-md-2">
+                            <input name="group1" id="" type="radio" />
+                            <i class="mdui-radio-icon"></i>
+                            连续5天以上上涨
+                            </label>
+                            <label class="mdui-slider mdui-slider-discrete mdui-col-md-9">
+                                <input name="" id="" type="range" step="1" min="0" max="30"/>
+                            </label>
+                        </div>
+                        <div class="mdui-row">
+                            <div class="mdui-col-md-1"></div>
+                            <label class="mdui-radio mdui-col-md-2">
+                            <input name="group1" id="" type="radio" />
+                            <i class="mdui-radio-icon"></i>
+                            连续5天以上下跌
+                            </label>
+                            <label class="mdui-slider mdui-slider-discrete mdui-col-md-9">
+                                <input name="" id="" type="range" step="1" min="1" max="30"/>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="mdui-panel-item">
+                    <div class="mdui-panel-item-header">MACD特征</div>
+                    <div class="mdui-panel-item-body">
+                        <div class="mdui-row">
+                            <p class="mdui-typo-subheading-opacity">根据股票MACD指标进行筛选。</p>
+                        </div>
+                        <div class="mdui-row">
+                            <div class="mdui-col-md-1"></div>
+                            <label class="mdui-radio mdui-col-md-2">
+                            <input name="group2" id="" type="radio" />
+                            <i class="mdui-radio-icon"></i>
+                            出现金叉
+                            </label>
+                            <label class="mdui-radio mdui-col-md-2">
+                            <input name="group2" id="" type="radio" />
+                            <i class="mdui-radio-icon"></i>
+                            出现死叉
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="mdui-row">
-            <button class="mdui-btn mdui-col-md-1">MACD特征</button>
-            <label class="mdui-checkbox"><input type="checkbox"/><i class="mdui-checkbox-icon"></i>出现金叉</label>
-            <label class="mdui-checkbox"><input type="checkbox"/><i class="mdui-checkbox-icon"></i>出现死叉</label>
-            <div class="mdui-divider"></div>
+            <button class="mdui-btn mdui-color-theme-accent mdui-ripple mdui-btn-raised">按条件筛选股票</button>
         </div>
         </div>
     </div>
