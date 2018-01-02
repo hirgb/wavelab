@@ -493,13 +493,13 @@ function addTradeData(code, date, price, volume, type) {
 }
 function initPage(option) {
     stockData = option.stockdata;
-    var upordown = (stockData.value[stockData.value.length - 1][1] - stockData.value[stockData.value.length - 1][0])/stockData.value[stockData.value.length - 1][0];
+    var upordown = 100 * (stockData.value[stockData.value.length - 1][1] - stockData.value[stockData.value.length - 2][1])/stockData.value[stockData.value.length - 1][0];
     var closeprice = stockData.value[stockData.value.length - 1][1];
     localStorage.setItem(stockData.code, JSON.stringify(stockData));
     $('title').text(stockData.name + stockData.code + ' - WAVE LAB');
     $('#title').text(stockData.name + stockData.code);
     $('#closeprice').text(closeprice);
-    $('#upordown').text(upordown.toFixed(2));
+    $('#upordown').text(upordown.toFixed(2) + '%');
     if(upordown > 0){$('#priceinfo').addClass('mdui-text-color-red');}
     else if(upordown < 0){$('#priceinfo').addClass('mdui-text-color-green');$('#priceinfo i').eq(0).text('arrow_downward');}
     $('#tonghuashun').prop('href', 'http://stockpage.10jqka.com.cn/' + stockData.code.substr(2) + '/');
