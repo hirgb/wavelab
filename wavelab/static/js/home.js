@@ -76,7 +76,7 @@ function() {
     var stockData = favoriteData.stockdata;
     var str = '';
     stocklist.forEach(function(e) {
-        str += '<div class="mdui-col-md-3"><div class="mdui-card height-150 gradient-45deg-light-blue-cyan gradient-shadow"><div class="chart"></div><i id="'+ stockGroup + '-' + e[0] + '-' + e[1] + '" class="delete-favorite mdui-list-item-icon mdui-icon material-icons">delete_forever</i></div></div>';
+        str += '<div class="mdui-col-md-3 mdui-col-sm-6 mdui-col-xs-12"><div class="mdui-card height-150 gradient-45deg-light-blue-cyan gradient-shadow"><div class="chart"></div><i id="'+ stockGroup + '-' + e[0] + '-' + e[1] + '" class="delete-favorite mdui-list-item-icon mdui-icon material-icons">delete_forever</i></div></div>';
     });
     $('#favorite').html(str);
     list = document.querySelectorAll('.chart');
