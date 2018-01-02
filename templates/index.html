@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="/static/css/style.css">
     <style>
         .mdui-row{margin:25px 10px;}
+        .mdui-row > div{margin:15px 0;}
         .mdui-card{margin:0px 5px;box-shadow: none;}
         .height-150{height:150px;}
         .height-350{height:350px;}
@@ -15,42 +16,42 @@
   <body class="mdui-theme-primary-indigo mdui-theme-accent-pink">
     <div id="header" class="mdui-appbar">
       <div class="mdui-toolbar mdui-color-theme">
-        <a href="/" class="mdui-btn mdui-btn-icon"><i class="mdui-icon material-icons">trending_up</i></a>
+        <a href="/" class="mdui-btn mdui-btn-icon mdui-hidden-sm-down"><i class="mdui-icon material-icons">trending_up</i></a>
         <a href="javascript:;" class="mdui-typo-title">波段实验室-WAVELAB</a>
         <div class="mdui-toolbar-spacer"></div>
-        <div class="header-search-wrapper hide-on-med-and-down sideNav-lock">
+        <div class="header-search-wrapper sideNav-lock mdui-hidden-md-down">
             <input id="searchbox" type="text" name="Search" class="header-search-input z-depth-2" placeholder="Search stock" autocomplete="off">
         </div>
         <a href="javascript:;" class="mdui-btn mdui-btn-icon mdui-ripple" mdui-tooltip="{content:'登录'}" id="loginicon"><i class="mdui-icon material-icons">person_outline</i></a>
         <a href="/register/" target="_self" class="mdui-btn mdui-btn-icon mdui-ripple" mdui-tooltip="{content:'注册'}"><i class="mdui-icon material-icons">person_add</i></a>
-        <a href="javascript:;" class="mdui-btn mdui-btn-icon mdui-ripple" mdui-tooltip="{content:'分享'}"><i class="mdui-icon material-icons">share</i></a>
-        <a href="javascript:;" class="mdui-btn mdui-btn-icon mdui-ripple" mdui-tooltip="{content:'语言'}"><i class="mdui-icon material-icons">language</i></a>
-        <a href="javascript:;" class="mdui-btn mdui-btn-icon mdui-ripple" mdui-tooltip="{content:'帮助'}"><i class="mdui-icon material-icons">help</i></a>
+        <a href="javascript:;" class="mdui-btn mdui-btn-icon mdui-hidden-sm-down" mdui-tooltip="{content:'分享'}"><i class="mdui-icon material-icons">share</i></a>
+        <a href="javascript:;" class="mdui-btn mdui-btn-icon mdui-hidden-sm-down" mdui-tooltip="{content:'语言'}"><i class="mdui-icon material-icons">language</i></a>
+        <a href="javascript:;" class="mdui-btn mdui-btn-icon mdui-hidden-sm-down" mdui-tooltip="{content:'帮助'}"><i class="mdui-icon material-icons">help</i></a>
       </div>
     </div>
     <div class="mdui-container-fluid">
         <div class="mdui-row">
-            <div class="mdui-col-xs-3">
+            <div class="mdui-col-md-3 mdui-col-sm-6 mdui-col-xs-12">
                <div class="mdui-card height-150 gradient-45deg-light-blue-cyan gradient-shadow white-text"><div id="shindex" style="height:100%;width:100%"></div></div> 
             </div>
-            <div class="mdui-col-xs-3">
+            <div class="mdui-col-md-3 mdui-col-sm-6 mdui-col-xs-12">
                <div class="mdui-card height-150 gradient-45deg-red-pink gradient-shadow white-text"><div id="szindex" style="height:100%;width:100%"></div></div> 
             </div>
-            <div class="mdui-col-xs-3">
+            <div class="mdui-col-md-3 mdui-col-sm-6 mdui-col-xs-12">
                <div class="mdui-card height-150 gradient-45deg-amber-amber gradient-shadow white-text"><div id="zxindex" style="height:100%;width:100%"></div></div> 
             </div>
-            <div class="mdui-col-xs-3">
+            <div class="mdui-col-md-3 mdui-col-sm-6 mdui-col-xs-12">
                <div class="mdui-card height-150 gradient-45deg-green-teal gradient-shadow white-text"><div id="cyindex" style="height:100%;width:100%"></div></div> 
             </div>
         </div>
         <div class="mdui-row">
-            <div class="mdui-col-xs-6">
+            <div class="mdui-col-md-6 mdui-col-sm-12 mdui-col-xs-12">
                 <div id="industry" class="mdui-card height-350"></div>
             </div>
-            <div class="mdui-col-xs-3">
+            <div class="mdui-col-md-3 mdui-col-sm-6 mdui-col-xs-12">
                 <div id="riseorfall" class="mdui-card height-350"></div>
             </div>
-            <div class="mdui-col-xs-3">
+            <div class="mdui-col-md-3 mdui-col-sm-6 mdui-col-xs-12">
                 <div id="hot" class="mdui-card height-350"></div>
             </div>
         </div>
