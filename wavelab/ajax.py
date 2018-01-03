@@ -123,8 +123,16 @@ def ajax(request):
     elif action == 'gettrade':
         query = "select trade from wave_user where login = '%s'" % request.COOKIES['loginname']
         cursor = db.sqlquery(query)
-        trade = cursor.fetchone()[0]
-        return HttpResponse(trade)
+        trade = json.loads(cursor.fetchone()[0])
+        stocklist = trade.keys()
+        stockliststr = '\'' + '\',\''.join(stocklist) + '\''
+        query = "select code, name from wave_stocklist where code in (%s)" % stockliststr
+        cursor = db.sqlquery(query)
+        result = cursor.fetchall()
+        tradeData = []
+        for i in result:
+            tradeData.append({'code':i[0], 'name':i[1], 'value':trade[i[0]]})
+        return HttpResponse(json.dumps(tradeData, ensure_ascii = False))
     elif action == 'getfavorite':
         query = "select favorite from wave_user where login = '%s'" % request.COOKIES['loginname']
         cursor = db.sqlquery(query)
