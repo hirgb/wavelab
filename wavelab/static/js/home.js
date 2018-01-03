@@ -49,7 +49,7 @@ function() {
                     console.log(data);
                     var htmlstr = '<div class="mdui-panel mdui-panel-gapless">';
                     for (var i in data){
-                        htmlstr += '<div class="mdui-panel-item"><div class="mdui-panel-item-header">'+ i +'</div><div class="mdui-panel-item-body"><div class="mdui-table-fluid"><table class="mdui-table mdui-table-hoverable"><thead><tr><th>日期</th><th>买卖</th><th>价格</th><th>数量</th><th>总价</th></tr></thead><tbody>';
+                        htmlstr += '<div class="mdui-panel-item"><div class="mdui-panel-item-header"><div class="mdui-panel-item-title">'+ i +'<a href="/detail/?stockcode='+i+'" target="_self" mdui-tooltip="{content:\'在K线图中查看\'}"><i class="mdui-icon material-icons">trending_up</i></a></div><i class="mdui-panel-item-arrow mdui-icon material-icons">keyboard_arrow_down</i></div><div class="mdui-panel-item-body"><div class="mdui-table-fluid"><table class="mdui-table mdui-table-hoverable"><thead><tr><th>日期</th><th>买卖</th><th>价格</th><th>数量</th><th>总价</th></tr></thead><tbody>';
                         for (var j=0;j<data[i].length;j++){
                             htmlstr += '<tr><th>' + data[i][j].date + '</th><th>' + data[i][j].type + '</th><th>' + data[i][j].price + '</th><th>' + data[i][j].volume + '</th><th>' + data[i][j].price * data[i][j].volume + '</th></tr>';
                         }
