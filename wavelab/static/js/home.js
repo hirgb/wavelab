@@ -48,9 +48,10 @@ function() {
                 success:function(data){
                     var htmlstr = '<div class="mdui-panel mdui-panel-gapless">';
                     for (var i = 0; i < data.length; i ++ ){
-                        htmlstr += '<div class="mdui-panel-item"><div class="mdui-panel-item-header"><div class="mdui-panel-item-title">'+ data[i].name + ' - ' + data[i].code +'<a href="/detail/?stockcode='+data[i].code+'" target="_blank"><i class="mdui-icon material-icons">trending_up</i></a></div><i class="mdui-panel-item-arrow mdui-icon material-icons">keyboard_arrow_down</i></div><div class="mdui-panel-item-body"><div class="mdui-table-fluid"><table class="mdui-table mdui-table-hoverable"><thead><tr><th>日期</th><th>买卖</th><th>价格</th><th>数量</th><th>总价</th></tr></thead><tbody>';
+                        htmlstr += '<div class="mdui-panel-item"><div class="mdui-panel-item-header"><div class="mdui-panel-item-title">'+ data[i].name + ' - ' + data[i].code +'<a href="/detail/?stockcode='+data[i].code+'" target="_blank"><i class="mdui-icon material-icons">trending_up</i></a></div><i class="mdui-panel-item-arrow mdui-icon material-icons">keyboard_arrow_down</i></div><div class="mdui-panel-item-body"><div class="mdui-table-fluid"><table class="mdui-table mdui-table-hoverable"><thead><tr><th>日期</th><th>买卖</th><th>价格</th><th>数量</th><th>总价</th><th>编辑</th></tr></thead><tbody>';
                         for (var j = 0;j < data[i].value.length ; j++ ){
-                            htmlstr += '<tr><th>' + data[i].value[j].date + '</th><th>' + data[i].value[j].type + '</th><th>' + data[i].value[j].price + '</th><th>' + data[i].value[j].volume + '</th><th>' + data[i].value[j].price * data[i].value[j].volume + '</th></tr>';
+                            var tradedata = data[i].code+'-'+data[i].value[j].date+'-'+data[i].value[j].type+'-'+data[i].value[j].price+'-'+data[i].value[j].volume;
+                            htmlstr += '<tr><th>' + data[i].value[j].date + '</th><th>' + data[i].value[j].type + '</th><th>' + data[i].value[j].price + '</th><th>' + data[i].value[j].volume + '</th><th>' + data[i].value[j].price * data[i].value[j].volume + '</th><th><i class="mdui-icon material-icons" data-trade="edit-'+tradedata+'">edit</i><i class="mdui-icon material-icons" data-trade="delete-'+tradedata+'">delete</i></th></tr>';
                         }
                         htmlstr += '</tbody></table></div></div></div>';
                     }
@@ -60,6 +61,42 @@ function() {
                 }
                 });
         }
+    }
+});
+$(document).on('click', '.mdui-table th i',
+function() {
+    //console.log($(this).data());
+    var tradearray = $(this).data().trade.split('-');
+    if (tradearray[0] == 'edit'){
+        mdui.alert('Coming soon...');
+    } else if (tradearray[0] == 'delete'){
+        mdui.dialog({
+            title:'提示', 
+            content:'确定要删除交易记录{' + tradearray.join(' - ') + '}吗?',
+            buttons: [
+                  {
+                      text: '取消'
+                  },
+                  {
+                      text: '确认',
+                      onClick: function(){
+                        $.ajax({
+                            url:'/ajax',
+                            method:'POST',
+                            data:{"action":"deletetrade", "data":JSON.stringify(tradearray)},
+                            success:function(result) {
+                                if(result==1){
+                                    mdui.snackbar({message:'删除成功', timeout:800, position:'top'});
+                                }
+                                else{
+                                    mdui.snackbar({message:'删除失败', timeout:800, position:'top'});
+                                }
+                            }
+                            });
+                          }
+                  }
+                ]
+            });
     }
 });
 $(document).on('click', '.favoritegroup',

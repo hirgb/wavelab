@@ -133,6 +133,21 @@ def ajax(request):
         for i in result:
             tradeData.append({'code':i[0], 'name':i[1], 'value':trade[i[0]]})
         return HttpResponse(json.dumps(tradeData, ensure_ascii = False))
+    elif action == 'deletetrade':
+        try:
+            datalist = json.loads(request.POST['data'])
+            query = "select trade from wave_user where login = '%s'" % request.COOKIES['loginname']
+            cursor = db.sqlquery(query)
+            trade = json.loads(cursor.fetchone()[0])
+            print(trade[datalist[1]])
+            for i in trade[datalist[1]]:
+                if datalist[2] == i['date'] and datalist[3] == i['type'] and datalist[4] == i['price'] and datalist[5] == i['volume']:
+                    trade[datalist[1]].remove(i)
+                    query = "update wave_user set trade = '%s' where login = '%s'" % (json.dumps(trade, ensure_ascii = False), request.COOKIES['loginname'])
+                    db.sqlquery(query)
+                    return HttpResponse(1)
+        except:
+            return HttpResponse(0)
     elif action == 'getfavorite':
         query = "select favorite from wave_user where login = '%s'" % request.COOKIES['loginname']
         cursor = db.sqlquery(query)
