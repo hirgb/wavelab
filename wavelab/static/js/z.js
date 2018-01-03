@@ -126,8 +126,8 @@
                         switch(flag)
                         {
                             case 'year': return t.getFullYear(); break;
-                            case 'month': return t.getMonth() + 1; break;
-                            case 'day': return t.getDate(); break;
+                            case 'month': return (t.getMonth() + 1)<10?'0'+(t.getMonth() + 1):(t.getMonth() + 1); break;
+                            case 'day': return (t.getDate())<10?'0'+(t.getDate()):(t.getDate()); break;
                             case 'inweek': return t.getDay(); break;
                             case 'hour': return t.getHours(); break;
                             case 'minute': return t.getMinutes(); break;
