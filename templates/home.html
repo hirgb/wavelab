@@ -105,29 +105,29 @@
                             <p class="mdui-typo-subheading-opacity">根据上市公司特征、条件进行筛选。</p>
                         </div>
                         <div class="mdui-row">
-                            <span class="mdui-typo-subheading mdui-col-md-2 mdui-text-right">评级（星以上）</span>
+                            <span class="mdui-typo-subheading mdui-col-md-2 mdui-text-right">评级（<span id="rate">4</span>星以上）</span>
                             <label class="mdui-slider mdui-slider-discrete mdui-col-md-4">
-                                <input name="" id="" type="range" step="1" min="0" max="5"/>
+                                <input name="filter-rate" type="range" data-contrul="rate" step="1" min="0" max="5" defaultValue="4"/>
                             </label>
                         </div>
                         <div class="mdui-row">
-                            <span class="mdui-typo-subheading mdui-col-md-2 mdui-text-right">市盈率（最低）</span>
+                            <span class="mdui-typo-subheading mdui-col-md-2 mdui-text-right">市盈率（最低<span id="ratiolow">1</span>）</span>
                             <label class="mdui-slider mdui-slider-discrete mdui-col-md-4">
-                                <input name="" id="" type="range" step="1" min="0" max="5"/>
+                                <input name="filter-ratiolow" type="range" data-contrul="ratiolow" step="1" min="1" max="100" defaultValue="1"/>
                             </label>
-                            <span class="mdui-typo-subheading mdui-col-md-2 mdui-text-right">市盈率（最高）</span>
+                            <span class="mdui-typo-subheading mdui-col-md-2 mdui-text-right">市盈率（最高<span id="ratiohigh">50</span>）</span>
                             <label class="mdui-slider mdui-slider-discrete mdui-col-md-4">
-                                <input name="" id="" type="range" step="1" min="0" max="5"/>
+                                <input name="filter-ratiohigh" type="range" data-contrul="ratiohigh" step="1" min="20" max="200" defaultValue="50"/>
                             </label>
                         </div>
                         <div class="mdui-row">
-                            <span class="mdui-typo-subheading mdui-col-md-2 mdui-text-right">总市值（最低）</span>
+                            <span class="mdui-typo-subheading mdui-col-md-2 mdui-text-right">总市值（最低<span id="marketvaluelow">50</span>亿元）</span>
                             <label class="mdui-slider mdui-slider-discrete mdui-col-md-4">
-                                <input name="" id="" type="range" step="1" min="0" max="5"/>
+                                <input name="filter-marketvalue" type="range" data-contrul="marketvaluelow" step="10" min="10" max="500" defaultValue="50"/>
                             </label>
-                            <span class="mdui-typo-subheading mdui-col-md-2 mdui-text-right">总市值（最高）</span>
+                            <span class="mdui-typo-subheading mdui-col-md-2 mdui-text-right">总市值（最高<span id="marketvaluehigh">500</span>亿元）</span>
                             <label class="mdui-slider mdui-slider-discrete mdui-col-md-4">
-                                <input name="" id="" type="range" step="1" min="0" max="5"/>
+                                <input name="filter-marketvalue" type="range" data-contrul="marketvaluehigh" step="10" min="100" max="5000" defaultValue="500"/>
                             </label>
                         </div>
                     </div>
@@ -143,10 +143,10 @@
                             <label class="mdui-radio mdui-col-md-2">
                             <input name="group1" id="" type="radio" />
                             <i class="mdui-radio-icon"></i>
-                            连续5天以上上涨
+                            连续<span id="pricerise">5</span>天以上上涨
                             </label>
                             <label class="mdui-slider mdui-slider-discrete mdui-col-md-9">
-                                <input name="" id="" type="range" step="1" min="0" max="30"/>
+                                <input name="filter-pricerise" type="range" data-contrul="pricerise" step="1" min="3" max="30" defaultValue="5"/>
                             </label>
                         </div>
                         <div class="mdui-row">
@@ -154,10 +154,10 @@
                             <label class="mdui-radio mdui-col-md-2">
                             <input name="group1" id="" type="radio" />
                             <i class="mdui-radio-icon"></i>
-                            连续5天以上下跌
+                            连续<span id="pricefall">5</span>天以上下跌
                             </label>
                             <label class="mdui-slider mdui-slider-discrete mdui-col-md-9">
-                                <input name="" id="" type="range" step="1" min="1" max="30"/>
+                                <input name="filter-pricefall" type="range" data-contrul="pricefall" step="1" min="3" max="30" defaultValue="5"/>
                             </label>
                         </div>
                     </div>

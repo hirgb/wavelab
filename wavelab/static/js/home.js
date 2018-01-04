@@ -12,6 +12,7 @@ var newGroup = new mdui.Dialog('#newgroup', {
     closeOnCancel: true,
     modal: true
 });
+var stockfilter = {};
 $('#acount').css('display', 'block');
 $.ajax({
     url: '/ajax',
@@ -26,6 +27,17 @@ $.ajax({
         favoriteData = data;
     }
 });
+$(document).on('change', '#stockfilter input',
+function () {
+    if ($(this)[0].type == 'range') {
+        var contrul = $(this).data().contrul;
+        stockfilter[contrul] = $(this).val();
+        $('#'+contrul).text($(this).val());
+    } else {
+        console.log('you have none selector');
+    }
+}
+);
 $(document).on('click', '#logoutbtn',
 function() {
     Z.cookie.remove('loginname');
