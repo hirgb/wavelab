@@ -39,20 +39,20 @@ function() {
         }else{
             mdui.alert('请登录后再进行此操作。', '提示', 
             function() {
-                $('#favoriteCheckbox').prop('checked', false);
             },
             {
                 confirmText: '确定'
             });
+            $('#favoriteCheckbox').prop('checked', false);
         }
     } else {
         mdui.alert('由于一支股票可能收藏于多个分组，为避免误删，请在个人中心  >  自选股页面进行删除操作。', '提示',
         function() {
-            $('#favoriteCheckbox').prop('checked', true);
         },
         {
             confirmText: '确定'
         });
+        $('#favoriteCheckbox').prop('checked', true);
     }
 });
 $('#addtradebtn').on('click', function(){

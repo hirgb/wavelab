@@ -2,6 +2,7 @@
 *.backup
 wavelab/static/docs/
 wavelab/static/canvas/
+wavelab/static/tools/
 wavelab/settings.py
 # Byte-compiled / optimized / DLL files
 __pycache__/
