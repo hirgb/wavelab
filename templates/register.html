@@ -69,22 +69,26 @@
             var username=$('#username').val();
             var password=$('#password').val();
             if(phone && username && password){
-                $.ajax({
-                    url:'/ajax',
-                    method:'POST',
-                    data:{"action":"register", "loginname":phone, "username":username, "password":password},
-                    success:function(data){
-                        if(data == 1){
-                            mdui.alert('注册成功，请返回首页登录','提示',function(){
-                                window.location.href = '/';
-                                },{confirmText: '确定'});
-                        }else{
-                            mdui.alert('注册失败','提示',function(){
-                                },{confirmText: '确定'});
+                if(/^[1][0-9]{10}$/.test(phone) && /^[0-9a-zA-Z]{6,16}$/.test(password)){
+                    $.ajax({
+                        url:'/ajax',
+                        method:'POST',
+                        data:{"action":"register", "loginname":phone, "username":username, "password":password},
+                        success:function(data){
+                            if(data == 1){
+                                mdui.alert('注册成功，请返回首页登录','提示',function(){
+                                    window.location.href = '/';
+                                    },{confirmText: '确定'});
+                            }else{
+                                mdui.alert('注册失败','提示',function(){
+                                    },{confirmText: '确定'});
+                            }
                         }
-                    }
-                });
-            }else{mdui.snackbar({message:'请将信息补充完整', position:'top'})}
+                    });
+                }else{
+                    mdui.snackbar({message:'信息格式不正确', position:'top'});
+                }
+            }else{mdui.snackbar({message:'请将信息补充完整', position:'top'});}
         });
     </script>
   </body>
