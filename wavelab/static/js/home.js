@@ -33,9 +33,14 @@ function () {
         var contrul = $(this).data().contrul;
         stockfilter[contrul] = $(this).val();
         $('#'+contrul).text($(this).val());
-    } else {
-        console.log('you have none selector');
+    } else if ($(this)[0].type == 'checkbox') {
+        var contrul = $(this).data().contrul;
+        stockfilter[contrul] = $(this).val();
+    } else if ($(this)[0].type == 'radio') {
+        var contrul = $(this).data().contrul;
+        stockfilter[contrul] = $(this).val();
     }
+
 }
 );
 $(document).on('click', '#logoutbtn',

@@ -15,7 +15,7 @@
         .mdui-card{margin:15px 5px;box-shadow: none;}
         .mdui-checkbox{margin-right:20px;}
         .mdui-panel-item-body .mdui-row{margin:0;}
-        .mdui-panel-item-body .mdui-row label.mdui-radio{padding-left:30px;}
+        .mdui-panel-item-body .mdui-row label.mdui-radio,label.mdui-checkbox{padding-left:30px;}
         .mdui-typo-subheading{line-height:36px}
         .mdui-table th i{color:rgba(0,0,0,.4);margin-right:10px;cursor:pointer;}
         .height-150{height:200px;}
@@ -141,7 +141,7 @@
                         <div class="mdui-row">
                             <div class="mdui-col-md-1"></div>
                             <label class="mdui-radio mdui-col-md-2">
-                            <input name="group1" id="" type="radio" />
+                            <input name="kline" id="" type="radio" data-contrul="kline" value="rise" />
                             <i class="mdui-radio-icon"></i>
                             连续<span id="pricerise">5</span>天以上上涨
                             </label>
@@ -152,7 +152,7 @@
                         <div class="mdui-row">
                             <div class="mdui-col-md-1"></div>
                             <label class="mdui-radio mdui-col-md-2">
-                            <input name="group1" id="" type="radio" />
+                            <input name="kline" id="" type="radio" data-contrul="kline" value="fall"/>
                             <i class="mdui-radio-icon"></i>
                             连续<span id="pricefall">5</span>天以上下跌
                             </label>
@@ -171,14 +171,30 @@
                         <div class="mdui-row">
                             <div class="mdui-col-md-1"></div>
                             <label class="mdui-radio mdui-col-md-2">
-                            <input name="group2" id="" type="radio" />
+                            <input name="macd" id="" type="radio" data-contrul="macd" value="up"/>
                             <i class="mdui-radio-icon"></i>
                             出现金叉
                             </label>
                             <label class="mdui-radio mdui-col-md-2">
-                            <input name="group2" id="" type="radio" />
+                            <input name="macd" id="" type="radio" data-contrul="macd" value="down"/>
                             <i class="mdui-radio-icon"></i>
                             出现死叉
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="mdui-panel-item">
+                    <div class="mdui-panel-item-header"><div class="mdui-panel-item-title">其他</div><i class="mdui-panel-item-arrow mdui-icon material-icons">keyboard_arrow_down</i></div>
+                    <div class="mdui-panel-item-body">
+                        <div class="mdui-row">
+                            <p class="mdui-typo-subheading-opacity"></p>
+                        </div>
+                        <div class="mdui-row">
+                            <div class="mdui-col-md-1"></div>
+                            <label class="mdui-checkbox mdui-col-md-2">
+                            <input name="" id="" type="checkbox" data-contrul="inmyfavorite" />
+                            <i class="mdui-checkbox-icon"></i>
+                            仅在我的自选股中筛选
                             </label>
                         </div>
                     </div>
