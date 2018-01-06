@@ -14,3 +14,6 @@ def detail(request):
 
 def register(request):
     return render(request, 'register.html')
+
+def zhkf(request):
+    return render(request, 'zhkf.html')

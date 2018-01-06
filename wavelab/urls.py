@@ -22,6 +22,7 @@ urlpatterns = [
     path('home/', view.home),
     path('detail/', view.detail), 
     path('register/', view.register),
+    path('zhkf', view.zhkf),
     path('ajax', ajax.ajax),
     path('admin/', admin.site.urls),
 ]
