@@ -1,4 +1,13 @@
 var $ = mdui.JQ;
+$.ajax({
+    url:'/zhkfmanage', 
+    method:'POST', 
+    dataType:'json', 
+    data:{action:'getpublicstrategy'}, 
+    success:function(data){
+        initPublicStrategy(data, '#publicstrategy');
+    }
+});
 $(document).on('click', '#left-drawer .mdui-list-item', 
 function(){
     var contrul = $(this).data().contrul;
@@ -25,3 +34,15 @@ function(){
         }
         });
 });
+$(document).on('click', '#publicstrategy button',
+function(){
+    console.log($(this).data());
+}
+);
+function initPublicStrategy(data, elementselector) {
+    htmlstr = '';
+    for (var i = 0; i < data.length; i ++ ){
+    htmlstr += '<div class="mdui-col"><div class="mdui-card mdui-hoverable"><div class="mdui-card-primary"><div class="mdui-card-primary-title">' +data[i][1]+ '</div><div class="mdui-card-primary-subtitle">' +data[i][2]+ '</div></div><div class="mdui-card-content">' +data[i][3]+ '</div><div class="mdui-card-actions"><button class="mdui-btn" data-id="'+data[i][0]+'" data-action="modify">修改</button><button class="mdui-btn" data-id="'+data[i][0]+'" data-action="delete">删除</button></div></div></div>';
+    }
+    $(elementselector).html(htmlstr);
+}

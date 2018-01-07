@@ -22,8 +22,8 @@
         #favorite .mdui-card{margin:15px 5px;}
         #tradedata .mdui-table-fluid{box-shadow:none;}
         #tradedata .mdui-row a{color:rgba(0,0,0,.54)}
-        #stockchoose .mdui-card{margin:10px 0;}
-        #stockchoose .mdui-card .mdui-card-content{height:120px;}
+        #publicstrategy .mdui-card{margin:10px 0;}
+        #publicstrategy .mdui-card .mdui-card-content{height:120px;}
     </style>
   </head>
 
@@ -53,7 +53,7 @@
         </div>
         <ul class="mdui-collapse-item-body mdui-list mdui-list-dense">
             <li class="mdui-list-item mdui-ripple" data-contrul="panel-addstrategy">添加公共策略</li>
-            <li class="mdui-list-item mdui-ripple" data-contrul="panel-delstrategy">删除公共策略</li>
+            <li class="mdui-list-item mdui-ripple" data-contrul="panel-delstrategy">修改/删除公共策略</li>
         </ul>
       </li>
     </ul>
@@ -86,7 +86,9 @@
                 </div>
             </div>
         </div>
-        <div id="panel-delstrategy" class="mdui-row panel">panel-delstartegy</div>
+        <div id="panel-delstrategy" class="mdui-row panel">
+            <div id="publicstrategy" class="mdui-row-lg-6 mdui-row-xs-2 mdui-row-sm-3"></div>
+        </div>
     </div>
     <script src="//cdn.bootcss.com/mdui/0.3.0/js/mdui.min.js"></script>
     <script src="/static/js/z.js"></script>
