@@ -17,6 +17,7 @@ from django.contrib import admin
 from django.urls import path
 from . import view
 from . import ajax
+from . import zhkfmanage
 urlpatterns = [
     path('', view.index), 
     path('home/', view.home),
@@ -24,5 +25,6 @@ urlpatterns = [
     path('register/', view.register),
     path('zhkf', view.zhkf),
     path('ajax', ajax.ajax),
+    path('zhkfmanage', zhkfmanage.manage),
     path('admin/', admin.site.urls),
 ]

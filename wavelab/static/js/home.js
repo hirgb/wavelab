@@ -1,7 +1,8 @@
 var $ = mdui.JQ;
 var user = Z.cookie.get('loginname') ? Z.cookie.get('loginname') : '';
 var favoriteData = null;
-var renameGroupObj = null;
+var strategy = null;
+//var renameGroupObj = null;
 var oldname = '';
 var newname = '';
 var editGroup = new mdui.Dialog('#editgroup', {
@@ -25,6 +26,16 @@ $.ajax({
         Z.check.localStorageSupport ? localStorage.setItem(user + "favoriteData", JSON.stringify(data)) : console.log("Your browser is not support localStorage!");
         initFavorite(data.favorite, document.getElementById('favoritegrouplist'));
         favoriteData = data;
+    }
+});
+$.ajax({
+    url:'/zhkfmanage', 
+    method:'POST', 
+    dataType:'json', 
+    data:{action:'getpublicstrategy'}, 
+    success:function(data){
+        Z.check.localStorageSupport ? localStorage.setItem('publicStrategy', JSON.stringify(data)) : console.log("Your browser is not support localStorage!");
+        initPublicStrategy(data, '#publicstrategy');
     }
 });
 $(document).on('change', '#stockfilter input',
@@ -192,7 +203,7 @@ function() {
 });
 $(document).on('click', '.edit-edit',
 function() {
-    renameGroupObj = $(this).parent().children('span');
+    //renameGroupObj = $(this).parent().children('span');
     oldname = $(this).parent().children('span').text();
     $('#groupname').val(oldname);
     editGroup.open();
@@ -305,6 +316,13 @@ function initFavorite(favorite, element) {
     }
     htmlstr += '<li id="addgroup" class="mdui-list-item mdui-ripple favoritegroup"><i class="mdui-list-item-icon mdui-icon material-icons">add</i>添加分组</li>';
     element.innerHTML = htmlstr;
+}
+function initPublicStrategy(data, elementselector) {
+    htmlstr = '';
+    for (var i = 0; i < data.length; i ++ ){
+    htmlstr += '<div class="mdui-col"><div class="mdui-card mdui-hoverable"><div class="mdui-card-primary"><div class="mdui-card-primary-title">' +data[i][1]+ '</div><div class="mdui-card-primary-subtitle">' +data[i][2]+ '</div></div><div class="mdui-card-content">' +data[i][3]+ '</div><div class="mdui-card-actions"><button class="mdui-btn">搜索股票</button></div></div></div>';
+    }
+    $(elementselector).html(htmlstr);
 }
 option = {
     title: {

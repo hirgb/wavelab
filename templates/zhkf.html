@@ -5,10 +5,6 @@
     <title>WAVELAB</title>
     <link rel="stylesheet" href="//cdn.bootcss.com/mdui/0.3.0/css/mdui.min.css">
     <link rel="stylesheet" href="/static/css/style.css">
-    <script src="/static/js/z.js"></script>
-    <script>
-        if(!Z.cookie.get('loginname')){window.location.href='/';}
-    </script>
     <style>
         div#left-drawer{border-right:solid 1px #eee}
         .mdui-row{margin:25px 10px;}
@@ -31,7 +27,7 @@
     </style>
   </head>
 
-  <body class="mdui-theme-primary-indigo mdui-theme-accent-pink mdui-drawer-body-left mdui-appbar-with-toolbar">
+  <body class="mdui-theme-primary-red mdui-theme-accent-blue mdui-drawer-body-left mdui-appbar-with-toolbar">
     <div id="header" class="mdui-appbar mdui-appbar-fixed">
       <div class="mdui-toolbar mdui-color-theme">
         <a href="/" class="mdui-btn mdui-btn-icon mdui-hidden-sm-down"><i class="mdui-icon material-icons">trending_up</i></a>
@@ -51,60 +47,49 @@
     <ul class="mdui-list" mdui-collapse="{accordion: false}">
       <li class="mdui-collapse-item">
         <div class="mdui-collapse-item-header mdui-list-item mdui-ripple">
-          <i class="mdui-list-item-icon mdui-icon material-icons">person_outline</i>
-          <div class="mdui-list-item-content">账户概览</div>
-        </div>
-      </li>
-
-      <li class="mdui-collapse-item">
-        <div class="mdui-collapse-item-header mdui-list-item mdui-ripple">
-          <i class="mdui-list-item-icon mdui-icon material-icons">favorite_border</i>
-          <div class="mdui-list-item-content">自选股</div>
-          <i class="mdui-collapse-item-arrow mdui-icon material-icons">keyboard_arrow_down</i>
-        </div>
-        <ul id="favoritegrouplist" class="mdui-collapse-item-body mdui-list mdui-list-dense">
-        </ul>
-      </li>
-
-      <li class="mdui-collapse-item">
-        <div class="mdui-collapse-item-header mdui-list-item mdui-ripple">
-          <i class="mdui-list-item-icon mdui-icon material-icons">attach_money</i>
-          <div class="mdui-list-item-content">交易数据</div>
-        </div>
-      </li>
-
-      <li class="mdui-collapse-item">
-        <div class="mdui-collapse-item-header mdui-list-item mdui-ripple">
           <i class="mdui-list-item-icon mdui-icon material-icons">equalizer</i>
           <div class="mdui-list-item-content">策略管理</div>
           <i class="mdui-collapse-item-arrow mdui-icon material-icons">keyboard_arrow_down</i>
         </div>
         <ul class="mdui-collapse-item-body mdui-list mdui-list-dense">
-            <li class="mdui-list-item mdui-ripple">Overview</li>
-            <li class="mdui-list-item mdui-ripple">All Traffic</li>
-            <li class="mdui-list-item mdui-ripple">Direct Traffic</li>
-            <li class="mdui-list-item mdui-ripple">Search Overview</li>
+            <li class="mdui-list-item mdui-ripple" data-contrul="panel-addstrategy">添加公共策略</li>
+            <li class="mdui-list-item mdui-ripple" data-contrul="panel-delstrategy">删除公共策略</li>
         </ul>
-      </li>
-
-      <li class="mdui-collapse-item">
-        <div class="mdui-collapse-item-header mdui-list-item mdui-ripple">
-          <i class="mdui-list-item-icon mdui-icon material-icons">filter_list</i>
-          <div class="mdui-list-item-content">股票筛选器</div>
-        </div>
       </li>
     </ul>
   </div>
     <div id="container" class="mdui-container-fluid">
-        <div id="acount" class="mdui-row panel"></div>
-        <div id="favorite" class="mdui-row panel"></div>
-        <div id="tradedata" class="mdui-row panel"><div class="mdui-row"></div></div>
-        <div id="stockchoose" class="mdui-row panel">
+        <div id="panel-addstrategy" class="mdui-row panel">
+            <div class="mdui-row">
+                <div class="mdui-col-md-12">
+                    <div class="mdui-textfield">
+                        <input name="" id="addstrategy-title" type="text" class="mdui-textfield-input" placeholder="Title"/>
+                    </div>
+                </div>
+                <div class="mdui-col-md-12">
+                    <div class="mdui-textfield">
+                        <input name="" id="addstrategy-subtitle" type="text" class="mdui-textfield-input" placeholder="Subtitle"/>
+                    </div>
+                </div>
+                <div class="mdui-col-md-12">
+                    <div class="mdui-textfield">
+                        <textarea name="" id="addstrategy-introduce" type="text" class="mdui-textfield-input" placeholder="Introduce"></textarea>
+                    </div>
+                </div>
+                <div class="mdui-col-md-12">
+                    <div class="mdui-textfield">
+                        <textarea name="" id="addstrategy-querystr" type="text" class="mdui-textfield-input" placeholder="Querystring"></textarea>
+                    </div>
+                </div>
+                <div class="mdui-col-md-12">
+                    <button id="addstrategybtn" class="mdui-btn mdui-color-theme-accent">ADD STRATEGY</button>
+                </div>
+            </div>
         </div>
-        <div id="stockfilter" class="mdui-row panel">
-        </div>
+        <div id="panel-delstrategy" class="mdui-row panel">panel-delstartegy</div>
     </div>
     <script src="//cdn.bootcss.com/mdui/0.3.0/js/mdui.min.js"></script>
+    <script src="/static/js/z.js"></script>
     <script src="/static/js/zhkf.js"></script>
   </body>
 </html>
