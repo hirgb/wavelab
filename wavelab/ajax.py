@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 from django.http import HttpResponse, HttpRequest, JsonResponse
-from . import db
+from . import db, stockfilter
 import json, hashlib, traceback
 
 def ajax(request):
@@ -246,6 +246,9 @@ def ajax(request):
             return HttpResponse(1)
         except:
             return HttpResponse(0)
+    elif action == 'search':
+        strategyid = request.POST['strategyid']
+        return HttpResponse(json.dumps(stockfilter.filter(int(strategyid)), ensure_ascii = False))
     elif action == 'login':
         loginname = request.POST['loginname']
         password = request.POST['password']

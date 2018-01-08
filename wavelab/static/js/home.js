@@ -2,6 +2,7 @@ var $ = mdui.JQ;
 var user = Z.cookie.get('loginname') ? Z.cookie.get('loginname') : '';
 var favoriteData = null;
 var strategy = null;
+var stockchoosePanel = new mdui.Panel('#stockchoosepanel');
 //var renameGroupObj = null;
 var oldname = '';
 var newname = '';
@@ -143,7 +144,7 @@ function() {
         str += '<div class="mdui-col-md-3 mdui-col-sm-6 mdui-col-xs-12"><div class="mdui-card height-150 gradient-45deg-light-blue-cyan gradient-shadow"><div class="chart"></div><i id="'+ stockGroup + '-' + e[0] + '-' + e[1] + '" class="delete-favorite mdui-list-item-icon mdui-icon material-icons">delete_forever</i></div></div>';
     });
     $('#favorite').html(str);
-    list = document.querySelectorAll('.chart');
+    list = document.querySelectorAll('#favorite .chart');
     list.forEach(function(e, i) {
         var chart = echarts.init(e);
         option.title.text = stocklist[i][1];
@@ -309,6 +310,40 @@ $(document).on('click', '#addgroup',
 function() {
     newGroup.open();
 });
+$(document).on('click', '#publicstrategy button', 
+function(){
+    let searchObj = $(this).data();
+    stockchoosePanel.closeAll();
+    $('#searchprogress').css('display', 'block');
+    $.ajax({
+        url:'/ajax',
+        method:'POST',
+        dataType:'json',
+        data:searchObj,
+        success:function(data){
+            $('#searchprogress').css('display', 'none');
+            if(data.length > 0){
+                var str = '';
+                data.forEach(function(e) {
+                    str += '<div class="mdui-col-md-3 mdui-col-sm-6 mdui-col-xs-12"><div class="mdui-card height-150 gradient-45deg-light-blue-cyan gradient-shadow"><div class="chart"></div></div></div>';
+                });
+                $('#searchresult').html(str);
+                let list = document.querySelectorAll('#searchresult .chart');
+                list.forEach(function(e, i) {
+                    var chart = echarts.init(e);
+                    option.title.text = data[i].name;
+                    option.title.link = '/detail/?stockcode=' + data[i].code;
+                    option.xAxis.data = data[i].date;
+                    option.series[0].data = data[i].value;
+                    chart.setOption(option);
+                });
+            }else{
+                $('#searchprogress').css('display', 'none');
+                mdui.snackbar({message:'无搜索结果', timeout:800, position:'top'});
+            }
+        }
+        });
+});
 function initFavorite(favorite, element) {
     htmlstr = '';
     for (i in favorite) {
@@ -320,7 +355,7 @@ function initFavorite(favorite, element) {
 function initPublicStrategy(data, elementselector) {
     htmlstr = '';
     for (var i = 0; i < data.length; i ++ ){
-    htmlstr += '<div class="mdui-col"><div class="mdui-card mdui-hoverable"><div class="mdui-card-primary"><div class="mdui-card-primary-title">' +data[i][1]+ '</div><div class="mdui-card-primary-subtitle">' +data[i][2]+ '</div></div><div class="mdui-card-content">' +data[i][3]+ '</div><div class="mdui-card-actions"><button class="mdui-btn">搜索股票</button></div></div></div>';
+    htmlstr += '<div class="mdui-col"><div class="mdui-card mdui-hoverable"><div class="mdui-card-primary"><div class="mdui-card-primary-title">' +data[i][1]+ '</div><div class="mdui-card-primary-subtitle">' +data[i][2]+ '</div></div><div class="mdui-card-content">' +data[i][3]+ '</div><div class="mdui-card-actions"><button class="mdui-btn" data-strategyid="'+data[i][0]+'" data-action="search">搜索股票</button></div></div></div>';
     }
     $(elementselector).html(htmlstr);
 }

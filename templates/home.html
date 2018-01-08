@@ -28,6 +28,7 @@
         #tradedata .mdui-row a{color:rgba(0,0,0,.54)}
         #stockchoose .mdui-card{margin:10px 0;}
         #stockchoose .mdui-card .mdui-card-content{height:120px;}
+#searchprogress{display:none}
     </style>
   </head>
 
@@ -98,7 +99,7 @@
         <div id="tradedata" class="mdui-row panel"><div class="mdui-row"></div></div>
         <div id="stockchoose" class="mdui-row panel">
             <div class="mdui-row">
-                <div class="mdui-panel mdui-panel-gapless" mdui-panel>
+                <div id="stockchoosepanel" class="mdui-panel mdui-panel-gapless">
                     <div class="mdui-panel-item">
                         <div class="mdui-panel-item-header">
                             <div class="mdui-panel-item-title">全部策略</div><i class="mdui-panel-item-arrow mdui-icon material-icons">keyboard_arrow_down</i>
@@ -124,6 +125,9 @@
                         </div>
                     </div>
                 </div>
+            </div>
+            <div id="searchprogress" class="mdui-row mdui-progress"><div class="mdui-progress-indeterminate"></div></div>
+            <div id="searchresult" class="mdui-row">
             </div>
         </div>
         <div id="stockfilter" class="mdui-row panel">
