@@ -30,7 +30,7 @@ $.ajax({
     }
 });
 $.ajax({
-    url:'/zhkfmanage', 
+    url:'/ajax', 
     method:'POST', 
     dataType:'json', 
     data:{action:'getpublicstrategy'}, 

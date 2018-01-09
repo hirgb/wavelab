@@ -246,6 +246,15 @@ def ajax(request):
             return HttpResponse(1)
         except:
             return HttpResponse(0)
+    elif action == 'getpublicstrategy':
+        try:
+            query = "select id, title, subtitle, introduce from wave_strategy where userid is null"
+            cursor = db.sqlquery(query)
+            result = cursor.fetchall()
+            strategy = [[i[0], i[1], i[2], i[3]] for i in result]
+            return HttpResponse(json.dumps(strategy, ensure_ascii = False))
+        except:
+            return HttpResponse(0)
     elif action == 'search':
         strategyid = request.POST['strategyid']
         return HttpResponse(json.dumps(stockfilter.filter(int(strategyid)), ensure_ascii = False))

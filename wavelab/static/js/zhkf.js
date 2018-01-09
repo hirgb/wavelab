@@ -20,11 +20,10 @@ function(){
     var title = $('#addstrategy-title').val();
     var subtitle = $('#addstrategy-subtitle').val();
     var introduce = $('#addstrategy-introduce').val();
-    var querystr = $('#addstrategy-querystr').val();
     $.ajax({
         url:'/zhkfmanage',
         method:'POST',
-        data:{action:"addstrategy", title:title, subtitle:subtitle, introduce:introduce, querystr:querystr},
+        data:{action:"addstrategy", title:title, subtitle:subtitle, introduce:introduce},
         success:function(data){
             if(data == 1){
                 mdui.snackbar({message:'添加成功', timeout:800, position:'top'});

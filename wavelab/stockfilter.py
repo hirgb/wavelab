@@ -3,7 +3,7 @@
 from . import db
 
 def filter(strategyid):
-    query = "select code from wave_stocklist where calculated = 1"
+    query = "select code from wave_stocklist where calculated = 1 and issuspend = 0"
     cursor = db.sqlquery(query)
     result = cursor.fetchall()
     stocklist = [i[0] for i in result]
@@ -32,9 +32,20 @@ def filter(strategyid):
         return finaldata
     #lian xu shang zhang
     elif strategyid == 13:
-        stocklist = getStockList("select code from wave_stocklist where riseday > 5")
+        stocklist = getStockList("select code from wave_stocklist where riseday > 5 and issuspend = 0")
         while len(stocklist):
             finaldata.append(getStockData(stocklist[-1]))
+            stocklist.pop()
+        return finaldata
+    #chuang xin di
+    elif strategyid == 14:
+        while len(stocklist):
+            query = "select close from %s order by date desc limit 60" % stocklist[-1]
+            cursor = db.sqlquery(query)
+            result = cursor.fetchall()
+            closelist = [float(i[0]) for i in result]
+            if min(closelist) == closelist[0]:
+                finaldata.append(getStockData(stocklist[-1]))
             stocklist.pop()
         return finaldata
     else:

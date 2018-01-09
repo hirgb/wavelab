@@ -25,7 +25,7 @@ if (!stockData.code || hash == '#refresh' || (Z.getTime('hour') < 15 && stockDat
 if(favorite[0]){
     var htmlstr = '<form id="addFavoriteForm">';
     for(var i = 0; i < favorite.length; i ++ ){
-        htmlstr += '<div class="mdui-col-md-4"><label class="mdui-radio"><input type="radio" name = "group" value="' + favorite[i].name + '" /><i class="mdui-radio-icon"></i>' + favorite[i].name + '</label></div>';
+        htmlstr += '<div class="mdui-col-md-4"><label class="mdui-radio mdui-text-truncate"><input type="radio" name = "group" value="' + favorite[i].name + '" /><i class="mdui-radio-icon"></i>' + favorite[i].name + '</label></div>';
     }
     htmlstr += '</form>';
     $('#addFavorite .mdui-row').html(htmlstr);
