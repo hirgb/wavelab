@@ -248,7 +248,7 @@ def ajax(request):
             return HttpResponse(0)
     elif action == 'getpublicstrategy':
         try:
-            query = "select id, title, subtitle, introduce from wave_strategy where userid is null"
+            query = "select id, title, subtitle, introduce from wave_strategy where userid is null order by sequence"
             cursor = db.sqlquery(query)
             result = cursor.fetchall()
             strategy = [[i[0], i[1], i[2], i[3]] for i in result]

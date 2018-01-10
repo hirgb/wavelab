@@ -3,19 +3,16 @@
 from . import db
 
 def filter(strategyid):
-    query = "select code from wave_stocklist where calculated = 1 and issuspend = 0"
-    cursor = db.sqlquery(query)
-    result = cursor.fetchall()
-    stocklist = [i[0] for i in result]
     finaldata = []
     #fan tan xian feng
     if strategyid == 11:
+        stocklist = getStockList()
         while len(stocklist):
             query = "select bar from %s order by date desc limit 10" % stocklist[-1]
             cursor = db.sqlquery(query)
             result = cursor.fetchall()
             barlist = [float(i[0]) for i in result]
-            if isNegetive(barlist) and barlist[0] > -0.02:
+            if isNegetive(barlist) and barlist[0] > -0.05:
                 finaldata.append(getStockData(stocklist[-1]))
             stocklist.pop()
         return finaldata
@@ -32,7 +29,7 @@ def filter(strategyid):
         return finaldata
     #lian xu shang zhang
     elif strategyid == 13:
-        stocklist = getStockList("select code from wave_stocklist where riseday > 5 and issuspend = 0")
+        stocklist = getStockList("select code from wave_stocklist where riseday > 5 and issuspend = 0 and code not in ('sh000001', 'sz399001', 'sz399005', 'sz399006') order by riseday desc")
         while len(stocklist):
             finaldata.append(getStockData(stocklist[-1]))
             stocklist.pop()
@@ -48,6 +45,13 @@ def filter(strategyid):
                 finaldata.append(getStockData(stocklist[-1]))
             stocklist.pop()
         return finaldata
+    #LianXuXiaDie
+    elif strategyid == 15:
+        stocklist = getStockList("select code from wave_stocklist where fallday > 5 and issuspend = 0 and code not in ('sh000001', 'sz399001', 'sz399005', 'sz399006') order by fallday desc")
+        while len(stocklist):
+            finaldata.append(getStockData(stocklist[-1]))
+            stocklist.pop()
+        return finaldata
     else:
         print('im in the else')
 
@@ -59,7 +63,7 @@ def isNegetive(numlist):
             return False
     else:
         return True
-def getStockList(query):
+def getStockList(query = "select code from wave_stocklist where calculated = 1 and issuspend = 0 and code not in ('sh000001', 'sz399001', 'sz399005', 'sz399006')"):
     cursor = db.sqlquery(query)
     result = cursor.fetchall()
     stocklist = [i[0] for i in result]
