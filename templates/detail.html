@@ -20,11 +20,36 @@
           <i class="mdui-icon material-icons">arrow_upward</i><span id="upordown" class="mdui-typo-title"></span>
           <i class="mdui-icon material-icons">attach_money</i><span id="closeprice" class="mdui-typo-title"></span>
       </div>
+      <button id="stockinfobtn" class="mdui-btn mdui-hidden-sm-down" mdui-menu="{target: '#stockinfomenu', postion: 'bottom'}">个股数据<i class="mdui-icon material-icons">keyboard_arrow_down</i></button>
       <button id="infobtn" class="mdui-btn mdui-hidden-sm-down" mdui-menu="{target: '#infomenu', postion: 'bottom'}">信息聚合<i class="mdui-icon material-icons">keyboard_arrow_down</i></button>
       <ul class="mdui-menu mdui-menu-cascade" id="infomenu">
+        <li class="mdui-menu-item"><a id="tencent" target="_blank">腾讯财经</a></li>
+        <li class="mdui-menu-item"><a id="sina" target="_blank">新浪财经</a></li>
+        <li class="mdui-menu-item"><a id="ifeng" target="_blank">凤凰财经</a></li>
+        <li class="mdui-menu-item"><a id="xueqiu" target="_blank">雪球财经</a></li>
         <li class="mdui-menu-item"><a id="tonghuashun" target="_blank">同花顺</a></li>
+        <li class="mdui-menu-item"><a id="dongfangcaifu" target="_blank">东方财富网</a></li>
+        <li class="mdui-menu-item"><a id="hexun" target="_blank">和讯网</a></li>
+        <li class="mdui-menu-item"><a id="jinrongjie" target="_blank">金融界</a></li>
         <li class="mdui-menu-item"><a id="gaf10" target="_blank">GAF10</a></li>
-        <li class="mdui-menu-item"><a id="f10" target="_blank">F10</a></li>
+      </ul>
+      <button id="cullbtn" class="mdui-btn mdui-hidden-sm-down" mdui-menu="{target: '#cullmenu', postion: 'bottom'}">精选资讯<i class="mdui-icon material-icons">keyboard_arrow_down</i></button>
+      <ul class="mdui-menu mdui-menu-cascade" id="cullmenu">
+        <li class="mdui-menu-item"><a id="gsjj" target="_blank">公司简介</a></li>
+        <li class="mdui-menu-item"><a id="ggxw" target="_blank">个股新闻</a></li>
+        <li class="mdui-menu-item"><a id="hyxw" target="_blank">行业新闻</a></li>
+        <li class="mdui-menu-item"><a id="gggg" target="_blank">个股公告</a></li>
+        <li class="mdui-menu-item"><a id="zdsx" target="_blank">重大事项</a></li>
+        <li class="mdui-menu-item"><a id="jbnb" target="_blank">季报/年报</a></li>
+        <li class="mdui-menu-item"><a id="yjbg" target="_blank">研究报告</a></li>
+        <li class="mdui-menu-item"><a id="gbgd" target="_blank">股东股本</a></li>
+        <li class="mdui-menu-item"><a id="fhsp" target="_blank">分红送配</a></li>
+        <li class="mdui-menu-item"><a id="cwbb" target="_blank">财务报表</a></li>
+        <li class="mdui-menu-item"><a id="cwzb" target="_blank">财务指标</a></li>
+        <li class="mdui-menu-item"><a id="cwfx" target="_blank">财务分析</a></li>
+        <li class="mdui-menu-item"><a id="yjyg" target="_blank">业绩预告</a></li>
+        <li class="mdui-menu-item"><a id="tzts" target="_blank">投资提示</a></li>
+        <li class="mdui-menu-item"><a id="jgyc" target="_blank">机构预测</a></li>
       </ul>
       <div class="mdui-toolbar-spacer"></div>
       <div class="header-search-wrapper sideNav-lock mdui-hidden-md-down">

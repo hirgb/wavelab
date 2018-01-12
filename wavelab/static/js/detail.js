@@ -503,8 +503,29 @@ function initPage(option) {
     if(upordown > 0){$('#priceinfo').addClass('mdui-text-color-red');}
     else if(upordown < 0){$('#priceinfo').addClass('mdui-text-color-green');$('#priceinfo i').eq(0).text('arrow_downward');}
     $('#tonghuashun').prop('href', 'http://stockpage.10jqka.com.cn/' + stockData.code.substr(2) + '/');
+    $('#dongfangcaifu').prop('href', 'http://quote.eastmoney.com/'+stockData.code+'.html');
+    $('#hexun').prop('href', 'http://stockdata.stock.hexun.com/'+stockData.code.substr(2)+'.shtml');
+    $('#jinrongjie').prop('href', 'http://stock.jrj.com.cn/share,'+stockData.code.substr(2)+'.shtml');
+    $('#sina').prop('href', 'http://finance.sina.com.cn/realstock/company/'+stockData.code+'/nc.shtml');
+    $('#tencent').prop('href', 'http://gu.qq.com/'+stockData.code+'/gp');
+    $('#ifeng').prop('href', 'http://finance.ifeng.com/app/hq/stock/'+stockData.code+'/index.shtml');
+    $('#xueqiu').prop('href', 'https://xueqiu.com/s/'+stockData.code);
     $('#gaf10').prop('href', 'http://www.gaf10.com/shareDetails.html?code=' + stockData.code.substr(2));
-    $('#f10').prop('href', 'http://www.gaf10.com/f10.html?code=' + stockData.code.substr(2));
+    $('#gsjj').prop('href', 'http://gu.qq.com/'+stockData.code+'/gp/jbzl');
+    $('#ggxw').prop('href', 'http://gu.qq.com/'+stockData.code+'/gp/news');
+    $('#hyxw').prop('href', 'http://gu.qq.com/'+stockData.code+'/gp/hyxw');
+    $('#gggg').prop('href', 'http://gu.qq.com/'+stockData.code+'/gp/notice');
+    $('#zdsx').prop('href', 'http://gu.qq.com/'+stockData.code+'/gp/zdsx');
+    $('#jbnb').prop('href', 'http://gu.qq.com/'+stockData.code+'/gp/jbnb');
+    $('#yjbg').prop('href', 'http://gu.qq.com/'+stockData.code+'/gp/yjbg');
+    $('#gbgd').prop('href', 'http://gu.qq.com/'+stockData.code+'/gp/gbgd');
+    $('#fhsp').prop('href', 'http://gu.qq.com/'+stockData.code+'/gp/fhsp');
+    $('#cwbb').prop('href', 'http://gu.qq.com/'+stockData.code+'/gp/cwbb');
+    $('#cwzb').prop('href', 'http://gu.qq.com/'+stockData.code+'/gp/cwzb');
+    $('#cwfx').prop('href', 'http://gu.qq.com/'+stockData.code+'/gp/cwfx');
+    $('#yjyg').prop('href', 'http://gu.qq.com/'+stockData.code+'/gp/yjyg');
+    $('#tzts').prop('href', 'http://gu.qq.com/'+stockData.code+'/gp/tzts');
+    $('#jgyc').prop('href', 'http://gu.qq.com/'+stockData.code+'/gp/jgyc');
     if (user != '') {
         var favoritestr = JSON.stringify(JSON.parse(localStorage.getItem(user + 'favoriteData')).favorite)
         document.getElementById('favoriteCheckbox').checked = !(favoritestr.indexOf(stockData.code) == -1);
