@@ -140,7 +140,7 @@ function display(pagedata) {
             text: '分时图',
             left: '2%',
             top: 5,
-            link: 'http://stockpage.10jqka.com.cn/' + pagedata.stockdata.code.substring(2) + '/',
+            link: 'http://gu.qq.com/' + pagedata.stockdata.code + '/gp',
             target: 'blank',
             textStyle: {
                 fontSize: 14
