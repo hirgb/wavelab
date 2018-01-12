@@ -12,7 +12,7 @@ def filter(strategyid):
             cursor = db.sqlquery(query)
             result = cursor.fetchall()
             barlist = [float(i[0]) for i in result]
-            if isNegetive(barlist) and barlist[0] > -0.05:
+            if isNegetive(barlist) and barlist[0] > -0.2:
                 finaldata.append(getStockData(stocklist[-1]))
             stocklist.pop()
         return finaldata
