@@ -6,14 +6,16 @@ var hash = window.location.hash;
 var yearCount = Z.getUrlParam().yearcount ? Z.getUrlParam().yearcount: 1;
 var stockData = localStorage.getItem(stockCode) ? JSON.parse(localStorage.getItem(stockCode)) : {};
 var favorite = localStorage.getItem(user + 'favoriteData') ? JSON.parse(localStorage.getItem(user + 'favoriteData')).favorite : {};
-var yestoday = '' + Z.getTime( - 1).getFullYear() + '/' + (Z.getTime( - 1).getMonth() + 1) + '/' + Z.getTime( - 1).getDate();
-var today = '' + Z.getTime('year') + '/' + Z.getTime('month') + '/' + Z.getTime('day');
+var yestoday = Z.timeFormat('yyyy/MM/dd', -1);
+var today = Z.timeFormat('yyyy/MM/dd');
 var infomenu = new mdui.Menu('#infobtn', '#infomenu', {
     position: 'bottom'
 });
 var addtrade = new mdui.Dialog('#addtrade');
-//Does it need to be updated?
-if (!stockData.code || hash == '#refresh' || (Z.getTime('hour') < 15 && stockData.update != yestoday) || (Z.getTime('hour') < 15 && stockData.update == yestoday && stockData.yearcount < yearCount) || (Z.getTime('hour') >= 15 && stockData.update != today) || (Z.getTime('hour') >= 15 && stockData.update == today && stockData.yearcount < yearCount)) {
+//******************************
+//Does stockData need to be updated?
+//******************************
+if (!stockData.code || hash == '#refresh' || stockData.yearcount < yearCount || (Z.getTime('inweek') < 6 && Z.getTime('hour') >= 15 && stockData.update != today) || (Z.getTime('inweek') < 6 && Z.getTime('hour') < 15 && stockData.update != yestoday)) {
     getStockData(initPage);
 } else {
     initPage({
@@ -21,7 +23,9 @@ if (!stockData.code || hash == '#refresh' || (Z.getTime('hour') < 15 && stockDat
         dataamount: (yearCount * 250)
     });
 }
+//******************************
 //init addFavorite dialog
+//******************************
 if(favorite[0]){
     var htmlstr = '<form id="addFavoriteForm">';
     for(var i = 0; i < favorite.length; i ++ ){
@@ -31,6 +35,22 @@ if(favorite[0]){
     $('#addFavorite .mdui-row').html(htmlstr);
     var addFavorite = new mdui.Dialog('#addFavorite', {history:false,modal:true,closeOnEsc:false});
 }
+//******************************
+//load the script from sinajs dynamic.
+//******************************
+/*
+document.body.onload = function () {
+    let a = document.createElement('script');
+    a.id = 'sinaData';
+    a.src = 'https://hq.sinajs.cn/list=' + stockCode;
+    document.head.appendChild(a);
+    let b = setInterval(function(){
+        if (document.getElementById('sinaData') && window['hq_str_' + stockCode]) {
+                console.log(window['hq_str_' + stockCode]);
+            }
+        }, 3000);
+};
+*/
 $('#favoriteCheckbox').on('click',
 function() {
     if (document.getElementById('favoriteCheckbox').checked) {
@@ -621,4 +641,20 @@ function recentStockDisplay() {
         htmlStr += '<a href="/detail/?stockcode=' + recentObj[i][0] + '"><li class="mdui-list-item">' + recentObj[i][1] + '</li></a>';
     }
     $('#recentStock').html(htmlStr);
+}
+function isTrading() {
+    let inweek = Z.getTime('inweek');
+    let hour = Z.getTime('hour');
+    let minute = Z.getTime('minute');
+    if (inweek >= 1 && inweek <= 5) {
+        if (hour > 9 && hour < 15) {
+            return true;
+        } else if (hour = 9) {
+            if (minute >= 20) {
+                return true;
+            }
+        }
+    } else {
+        return false;
+    }
 }
