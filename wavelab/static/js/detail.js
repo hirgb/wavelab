@@ -1,26 +1,32 @@
 var $ = mdui.JQ;
-$('#main').css('height', window.innerHeight - 64 + 'px');
-var user = Z.cookie.get('loginname') ? Z.cookie.get('loginname') : '';
-var stockCode = Z.getUrlParam().stockcode;
-var hash = window.location.hash;
-var yearCount = Z.getUrlParam().yearcount ? Z.getUrlParam().yearcount: 1;
-var stockData = localStorage.getItem(stockCode) ? JSON.parse(localStorage.getItem(stockCode)) : {};
-var favorite = localStorage.getItem(user + 'favoriteData') ? JSON.parse(localStorage.getItem(user + 'favoriteData')).favorite : {};
-var yestoday = Z.timeFormat('yyyy/MM/dd', -1);
-var today = Z.timeFormat('yyyy/MM/dd');
+var page = {
+    isTrading : isTrading(),
+    hash : window.location.hash,
+    user : Z.cookie.get('loginname') ? Z.cookie.get('loginname') : '',
+    stockCode : Z.getUrlParam().stockcode,
+    yearCount : Z.getUrlParam().yearcount ? Z.getUrlParam().yearcount: 1,
+    yestoday : Z.timeFormat('yyyy/MM/dd', -1),
+    today : Z.timeFormat('yyyy/MM/dd')
+};
+var stockData = localStorage.getItem(page.stockCode) ? JSON.parse(localStorage.getItem(page.stockCode)) : {};
+var favorite = localStorage.getItem(page.user + 'favoriteData') ? JSON.parse(localStorage.getItem(page.user + 'favoriteData')).favorite : {};
 var infomenu = new mdui.Menu('#infobtn', '#infomenu', {
     position: 'bottom'
 });
 var addtrade = new mdui.Dialog('#addtrade');
 //******************************
+//make the canvas height fit current page.
+//******************************
+$('#main').css('height', window.innerHeight - 64 + 'px');
+//******************************
 //Does stockData need to be updated?
 //******************************
-if (!stockData.code || hash == '#refresh' || stockData.yearcount < yearCount || (Z.getTime('inweek') < 6 && Z.getTime('hour') >= 15 && stockData.update != today) || (Z.getTime('inweek') < 6 && Z.getTime('hour') < 15 && stockData.update != yestoday)) {
+if (!stockData.code || page.hash == '#refresh' || stockData.yearcount < page.yearCount || (Z.getTime('inweek') < 6 && Z.getTime('hour') >= 15 && stockData.update != page.today) || (Z.getTime('inweek') < 6 && Z.getTime('hour') < 15 && stockData.update != page.yestoday)) {
     getStockData(initPage);
 } else {
     initPage({
         stockdata: stockData,
-        dataamount: (yearCount * 250)
+        dataamount: (page.yearCount * 250)
     });
 }
 //******************************
@@ -38,23 +44,38 @@ if(favorite[0]){
 //******************************
 //load the script from sinajs dynamic.
 //******************************
-/*
 document.body.onload = function () {
-    let a = document.createElement('script');
-    a.id = 'sinaData';
-    a.src = 'https://hq.sinajs.cn/list=' + stockCode;
-    document.head.appendChild(a);
-    let b = setInterval(function(){
-        if (document.getElementById('sinaData') && window['hq_str_' + stockCode]) {
-                console.log(window['hq_str_' + stockCode]);
-            }
-        }, 3000);
+    let url = 'http://qt.gtimg.cn/q=' + page.stockCode;
+    if (page.isTrading) {
+        let b = setInterval(function(){
+            let c = document.getElementById('tcData');
+            if (c) {
+                document.head.removeChild(c);
+                let a = document.createElement('script');
+                a.id = 'tcData';
+                a.src = url;
+                document.head.appendChild(a);
+                a.onload = stockDataDisplay;
+                } else {
+                    let a = document.createElement('script');
+                    a.id = 'tcData';
+                    a.src = url;
+                    document.head.appendChild(a);
+                    a.onload = stockDataDisplay;
+                }
+            }, 3000);
+    } else {
+        let a = document.createElement('script');
+        a.id = 'tcData';
+        a.src = url;
+        document.head.appendChild(a);
+        a.onload = stockDataDisplay;
+    }
 };
-*/
 $('#favoriteCheckbox').on('click',
 function() {
     if (document.getElementById('favoriteCheckbox').checked) {
-        if(user){
+        if(page.user){
             addFavorite.open();
         }else{
             mdui.alert('请登录后再进行此操作。', '提示', 
@@ -76,7 +97,7 @@ function() {
     }
 });
 $('#addtradebtn').on('click', function(){
-            if(user){
+            if(page.user){
                 addtrade.open();
             }else{
                 mdui.alert('请登录后再进行此操作。', '提示', 
@@ -90,7 +111,7 @@ $('#addtradebtn').on('click', function(){
 $('#addtrade').on('opened.mdui.dialog',
 function() {
     $('#tradeStockCode').val(stockData.code);
-    $('#tradeDate').val(today);
+    $('#tradeDate').val(page.today);
 });
 $('#addtrade').on('confirm.mdui.dialog',
 function() {
@@ -115,7 +136,7 @@ function() {
             data:{"action":"addfavoritestock", "group":grouplist[0].value, "stockcode":stockData.code, "stockname":stockData.name}, 
             success:function(data){
                 if(data == 1){
-                    var favoriteData = JSON.parse(localStorage.getItem(user + 'favoriteData'));
+                    var favoriteData = JSON.parse(localStorage.getItem(page.user + 'favoriteData'));
                     var favorite = favoriteData.favorite;
                     for(var i = 0; i < favorite.length; i ++ ){
                         if(favorite[i].name == grouplist[0].value){
@@ -123,7 +144,7 @@ function() {
                             break;
                         }
                     }
-                    localStorage.setItem(user + 'favoriteData', JSON.stringify(favoriteData));
+                    localStorage.setItem(page.user + 'favoriteData', JSON.stringify(favoriteData));
                     mdui.snackbar({
                         message: '添加成功',
                         timeout: 800,
@@ -531,7 +552,7 @@ function initPage(option) {
     $('#ifeng').prop('href', 'http://finance.ifeng.com/app/hq/stock/'+stockData.code+'/index.shtml');
     $('#xueqiu').prop('href', 'https://xueqiu.com/s/'+stockData.code);
     $('#gaf10').prop('href', 'http://www.gaf10.com/shareDetails.html?code=' + stockData.code.substr(2));
-    $('#gsjj').prop('href', 'http://gu.qq.com/'+stockData.code+'/gp/jbzl');
+    $('#gsjj').prop('href', 'https://xueqiu.com/S/'+stockData.code+'/GSJJ');
     $('#ggxw').prop('href', 'http://gu.qq.com/'+stockData.code+'/gp/news');
     $('#hyxw').prop('href', 'http://gu.qq.com/'+stockData.code+'/gp/hyxw');
     $('#gggg').prop('href', 'http://gu.qq.com/'+stockData.code+'/gp/notice');
@@ -546,13 +567,13 @@ function initPage(option) {
     $('#yjyg').prop('href', 'http://gu.qq.com/'+stockData.code+'/gp/yjyg');
     $('#tzts').prop('href', 'http://gu.qq.com/'+stockData.code+'/gp/tzts');
     $('#jgyc').prop('href', 'http://gu.qq.com/'+stockData.code+'/gp/jgyc');
-    if (user != '') {
-        var favoritestr = JSON.stringify(JSON.parse(localStorage.getItem(user + 'favoriteData')).favorite)
+    if (page.user != '') {
+        var favoritestr = JSON.stringify(JSON.parse(localStorage.getItem(page.user + 'favoriteData')).favorite)
         document.getElementById('favoriteCheckbox').checked = !(favoritestr.indexOf(stockData.code) == -1);
     }
     updateRecentStock(stockData.code, stockData.name);
     recentStockDisplay();
-    if (!!user) {
+    if (!!page.user) {
         $.ajax({
             url: '/ajax',
             method: 'POST',
@@ -591,14 +612,14 @@ function getStockData(callback) {
         dataType: 'json',
         data: {
             action: 'getstockdata',
-            stockcode: stockCode,
-            yearcount: yearCount
+            stockcode: page.stockCode,
+            yearcount: page.yearCount
         },
         success: function(data) {
             if ( !! data.code) {
                 callback({
                     stockdata: data,
-                    dataamount: (yearCount * 250)
+                    dataamount: (page.yearCount * 250)
                 });
             } else {
                 $('#left-drawer').remove();
@@ -609,8 +630,8 @@ function getStockData(callback) {
     });
 }
 function updateRecentStock(stockcode, stockname) {
-    if (Z.check.localStorageSupport() && localStorage.getItem(user + 'recentStock')) {
-        var recentObj = JSON.parse(localStorage.getItem(user + 'recentStock'));
+    if (Z.check.localStorageSupport() && localStorage.getItem(page.user + 'recentStock')) {
+        var recentObj = JSON.parse(localStorage.getItem(page.user + 'recentStock'));
         var len = recentObj.length;
         var index = -1;
         for (e in recentObj) {
@@ -629,18 +650,38 @@ function updateRecentStock(stockcode, stockname) {
                 recentObj.unshift([stockcode, stockname]);
             }
         }
-        localStorage.setItem(user + 'recentStock', JSON.stringify(recentObj));
+        localStorage.setItem(page.user + 'recentStock', JSON.stringify(recentObj));
     } else {
-        Z.check.localStorageSupport() && localStorage.setItem(user + 'recentStock', JSON.stringify([[stockcode, stockname]]));
+        Z.check.localStorageSupport() && localStorage.setItem(page.user + 'recentStock', JSON.stringify([[stockcode, stockname]]));
     }
 }
 function recentStockDisplay() {
-    recentObj = JSON.parse(localStorage.getItem(user + 'recentStock'));
+    recentObj = JSON.parse(localStorage.getItem(page.user + 'recentStock'));
     htmlStr = '';
     for (i in recentObj) {
         htmlStr += '<a href="/detail/?stockcode=' + recentObj[i][0] + '"><li class="mdui-list-item">' + recentObj[i][1] + '</li></a>';
     }
     $('#recentStock').html(htmlStr);
+}
+function stockDataDisplay() {
+    let stockstr = window['v_' + page.stockCode];
+    let stockdata = stockstr.split('~');
+    let a = document.getElementById('stockData');
+    let htmlstr = '';
+    htmlstr += '<li class="mdui-list-item">　　当前：' + stockdata[3] + '元</li>';
+    htmlstr += '<li class="mdui-list-item">　　昨收：' + stockdata[4] + '元</li>';
+    htmlstr += '<li class="mdui-list-item">　　今开：' + stockdata[5] + '元</li>';
+    htmlstr += '<li class="mdui-list-item">　　涨跌：' + stockdata[32] + '%</li>';
+    htmlstr += '<li class="mdui-list-item">　　最高：' + stockdata[33] + '元</li>';
+    htmlstr += '<li class="mdui-list-item">　　最低：' + stockdata[34] + '元</li>';
+    htmlstr += '<li class="mdui-list-item">　　涨停：' + stockdata[47] + '元</li>';
+    htmlstr += '<li class="mdui-list-item">　　跌停：' + stockdata[48] + '元</li>';
+    htmlstr += '<li class="mdui-list-item">流通市值：' + stockdata[44] + '亿元</li>';
+    htmlstr += '<li class="mdui-list-item">　总市值：' + stockdata[45] + '亿元</li>';
+    htmlstr += '<li class="mdui-list-item">　市盈率：' + stockdata[39] + '%</li>';
+    htmlstr += '<li class="mdui-list-item">　市净率：' + stockdata[46] + '%</li>';
+    htmlstr += '<li class="mdui-list-item">　换手率：' + stockdata[38] + '%</li>';
+    a.innerHTML = htmlstr;
 }
 function isTrading() {
     let inweek = Z.getTime('inweek');
