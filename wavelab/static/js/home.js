@@ -3,7 +3,6 @@ var user = Z.cookie.get('loginname') ? Z.cookie.get('loginname') : '';
 var favoriteData = null;
 var strategy = null;
 var stockchoosePanel = new mdui.Panel('#stockchoosepanel');
-//var renameGroupObj = null;
 var oldname = '';
 var newname = '';
 var editGroup = new mdui.Dialog('#editgroup', {
@@ -61,6 +60,9 @@ function() {
     Z.cookie.remove('token');
     window.location.href = '/';
 });
+//******************************
+//the active of the left drawer navigation.
+//******************************
 $(document).on('click', '.mdui-collapse-item',
 function() {
     var list = $('.panel');
@@ -79,8 +81,8 @@ function() {
                     for (var i = 0; i < data.length; i ++ ){
                         htmlstr += '<div class="mdui-panel-item"><div class="mdui-panel-item-header"><div class="mdui-panel-item-title">'+ data[i].name + ' - ' + data[i].code +'<a href="/detail/?stockcode='+data[i].code+'" target="_blank"><i class="mdui-icon material-icons">trending_up</i></a></div><i class="mdui-panel-item-arrow mdui-icon material-icons">keyboard_arrow_down</i></div><div class="mdui-panel-item-body"><div class="mdui-table-fluid"><table class="mdui-table mdui-table-hoverable"><thead><tr><th>日期</th><th>买卖</th><th>价格</th><th>数量</th><th>总价</th><th>编辑</th></tr></thead><tbody>';
                         for (var j = 0;j < data[i].value.length ; j++ ){
-                            var tradedata = data[i].code+'-'+data[i].value[j].date+'-'+data[i].value[j].type+'-'+data[i].value[j].price+'-'+data[i].value[j].volume;
-                            htmlstr += '<tr><th>' + data[i].value[j].date + '</th><th>' + data[i].value[j].type + '</th><th>' + data[i].value[j].price + '</th><th>' + data[i].value[j].volume + '</th><th>' + data[i].value[j].price * data[i].value[j].volume + '</th><th><i class="mdui-icon material-icons" data-trade="edit-'+tradedata+'">edit</i><i class="mdui-icon material-icons" data-trade="delete-'+tradedata+'">delete</i></th></tr>';
+                            var tradedata = data[i].code+'-'+data[i].value[j][0]+'-'+data[i].value[j][2]+'-'+data[i].value[j][3]+'-'+data[i].value[j][1];
+                            htmlstr += '<tr><th>' + data[i].value[j][0] + '</th><th>' + data[i].value[j][2] + '</th><th>' + data[i].value[j][3] + '</th><th>' + data[i].value[j][1] + '</th><th>' + data[i].value[j][3] * data[i].value[j][1] + '</th><th><i class="mdui-icon material-icons" data-trade="edit-'+tradedata+'">edit</i><i class="mdui-icon material-icons" data-trade="delete-'+tradedata+'">delete</i></th></tr>';
                         }
                         htmlstr += '</tbody></table></div></div></div>';
                     }
@@ -359,6 +361,9 @@ function initPublicStrategy(data, elementselector) {
     }
     $(elementselector).html(htmlstr);
 }
+//******************************
+//the charts option which in the panel
+//******************************
 option = {
     title: {
         text: '',

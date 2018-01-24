@@ -8,6 +8,7 @@ var page = {
     yestoday : Z.timeFormat('yyyy/MM/dd', -1),
     today : Z.timeFormat('yyyy/MM/dd')
 };
+var u = null;
 var stockData = localStorage.getItem(page.stockCode) ? JSON.parse(localStorage.getItem(page.stockCode)) : {};
 var favorite = localStorage.getItem(page.user + 'favoriteData') ? JSON.parse(localStorage.getItem(page.user + 'favoriteData')).favorite : {};
 var infomenu = new mdui.Menu('#infobtn', '#infomenu', {
@@ -44,34 +45,9 @@ if(favorite[0]){
 //******************************
 //load the script from sinajs dynamic.
 //******************************
-document.body.onload = function () {
-    let url = 'http://qt.gtimg.cn/q=' + page.stockCode;
-    if (page.isTrading) {
-        let b = setInterval(function(){
-            let c = document.getElementById('tcData');
-            if (c) {
-                document.head.removeChild(c);
-                let a = document.createElement('script');
-                a.id = 'tcData';
-                a.src = url;
-                document.head.appendChild(a);
-                a.onload = stockDataDisplay;
-                } else {
-                    let a = document.createElement('script');
-                    a.id = 'tcData';
-                    a.src = url;
-                    document.head.appendChild(a);
-                    a.onload = stockDataDisplay;
-                }
-            }, 3000);
-    } else {
-        let a = document.createElement('script');
-        a.id = 'tcData';
-        a.src = url;
-        document.head.appendChild(a);
-        a.onload = stockDataDisplay;
-    }
-};
+//window.onload = getStockDataFromTC;
+$(getStockDataFromTC);
+
 $('#favoriteCheckbox').on('click',
 function() {
     if (document.getElementById('favoriteCheckbox').checked) {
@@ -291,12 +267,12 @@ function display(pagedata) {
         grid: [{
             top: '5%',
             left: '3%',
-            right: 5,
+            right: 15,
             height: '50%'
         },
         {
             left: '3%',
-            right: 5,
+            right: 15,
             top: '55%',
             height: '40%'
         }],
@@ -534,15 +510,15 @@ function addTradeData(code, date, price, volume, type) {
 }
 function initPage(option) {
     stockData = option.stockdata;
-    var upordown = 100 * (stockData.value[stockData.value.length - 1][1] - stockData.value[stockData.value.length - 2][1])/stockData.value[stockData.value.length - 1][0];
-    var closeprice = stockData.value[stockData.value.length - 1][1];
+    //var upordown = 100 * (stockData.value[stockData.value.length - 1][1] - stockData.value[stockData.value.length - 2][1])/stockData.value[stockData.value.length - 2][1];
+    //var closeprice = stockData.value[stockData.value.length - 1][1];
+    //if(upordown > 0){$('#priceinfo').addClass('mdui-text-color-red');}
+    //else if(upordown < 0){$('#priceinfo').addClass('mdui-text-color-green');$('#priceinfo i').eq(0).text('arrow_downward');}
     localStorage.setItem(stockData.code, JSON.stringify(stockData));
     $('title').text(stockData.name + stockData.code + ' - WAVE LAB');
     $('#title').text(stockData.name + stockData.code);
-    $('#closeprice').text(closeprice);
-    $('#upordown').text(upordown.toFixed(2) + '%');
-    if(upordown > 0){$('#priceinfo').addClass('mdui-text-color-red');}
-    else if(upordown < 0){$('#priceinfo').addClass('mdui-text-color-green');$('#priceinfo i').eq(0).text('arrow_downward');}
+    //$('#closeprice').text(closeprice);
+    //$('#upordown').text(upordown.toFixed(2) + '%');
     $('#tonghuashun').prop('href', 'http://stockpage.10jqka.com.cn/' + stockData.code.substr(2) + '/');
     $('#dongfangcaifu').prop('href', 'http://quote.eastmoney.com/'+stockData.code+'.html');
     $('#hexun').prop('href', 'http://stockdata.stock.hexun.com/'+stockData.code.substr(2)+'.shtml');
@@ -663,11 +639,58 @@ function recentStockDisplay() {
     }
     $('#recentStock').html(htmlStr);
 }
+function getStockDataFromTC() {
+    let url = 'http://qt.gtimg.cn/q=' + page.stockCode;
+    if (isTrading()) {
+        u = setInterval(function(){
+            let e = document.getElementById('tcData');
+            if (e) {
+                document.head.removeChild(e);
+                let a = document.createElement('script');
+                a.id = 'tcData';
+                a.src = url;
+                document.head.appendChild(a);
+                a.onload = stockDataDisplay;
+            } else {
+                let a = document.createElement('script');
+                a.id = 'tcData';
+                a.src = url;
+                document.head.appendChild(a);
+                a.onload = stockDataDisplay;
+            }
+        }, 3000);
+    } else {
+        u = setInterval(function(){
+            if (window['v_' + page.stockCode]) {
+                clearInterval(u);
+            } else {
+                let e = document.getElementById('tcData');
+                if (e) {
+                    document.head.removeChild(e);
+                    let a = document.createElement('script');
+                    a.id = 'tcData';
+                    a.src = url;
+                    document.head.appendChild(a);
+                    a.onload = stockDataDisplay;
+                } else {
+                    let a = document.createElement('script');
+                    a.id = 'tcData';
+                    a.src = url;
+                    document.head.appendChild(a);
+                    a.onload = stockDataDisplay;
+                }
+            }
+        }, 200);
+    }
+}
 function stockDataDisplay() {
     let stockstr = window['v_' + page.stockCode];
     let stockdata = stockstr.split('~');
     let a = document.getElementById('stockData');
+    let upordown = stockdata[32];
+    let closeprice = stockdata[3];
     let htmlstr = '';
+
     htmlstr += '<li class="mdui-list-item">　　当前：' + stockdata[3] + '元</li>';
     htmlstr += '<li class="mdui-list-item">　　昨收：' + stockdata[4] + '元</li>';
     htmlstr += '<li class="mdui-list-item">　　今开：' + stockdata[5] + '元</li>';
@@ -682,6 +705,11 @@ function stockDataDisplay() {
     htmlstr += '<li class="mdui-list-item">　市净率：' + stockdata[46] + '%</li>';
     htmlstr += '<li class="mdui-list-item">　换手率：' + stockdata[38] + '%</li>';
     a.innerHTML = htmlstr;
+
+    $('#closeprice').text(closeprice);
+    $('#upordown').text(upordown + '%');
+    if(upordown > 0){$('#priceinfo').addClass('mdui-text-color-red');$('#priceinfo i').eq(0).text('arrow_upward');}
+    else if(upordown < 0){$('#priceinfo').addClass('mdui-text-color-green');$('#priceinfo i').eq(0).text('arrow_downward');}
 }
 function isTrading() {
     let inweek = Z.getTime('inweek');

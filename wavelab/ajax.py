@@ -92,11 +92,11 @@ def ajax(request):
             query = "select trade from wave_user where login = '%s'" % request.COOKIES['loginname']
             cursor = db.sqlquery(query)
             trade = json.loads(cursor.fetchone()[0])
-            trade = trade.get(request.POST.get('stockcode'), {})
+            trade = trade.get(request.POST.get('stockcode'), [])
             dataFinal = []
             for i in trade:
-                color = ('#cc3300' if i['type'] == 'buy' else '#009926')
-                dataFinal.append({"name":i['type'], "coord":[i['date'], i['price']], "itemStyle":{"normal":{"color":color}}})
+                color = ('#cc3300' if i[2] == 'buy' else '#009926')
+                dataFinal.append({"name":i[2], "coord":[i[0], i[3]], "itemStyle":{"normal":{"color":color}}})
             return HttpResponse(json.dumps(dataFinal, ensure_ascii = False))
         else:
             return HttpResponse('[]')
@@ -112,9 +112,9 @@ def ajax(request):
             cursor = db.sqlquery(query)
             trade = json.loads(cursor.fetchone()[0])
             if code in trade:
-                trade[code].append({'date':date, 'price':price, 'volume':volume, 'type':tradetype})
+                trade[code].append([date, volume, tradetype, price])
             else:
-                trade[code] = [{'date':date, 'price':price, 'volume':volume, 'type':tradetype}]
+                trade[code] = [[date, volume, tradetype, price]]
             query = "update wave_user set trade = '%s' where login = '%s'" % (json.dumps(trade, ensure_ascii = False), user)
             db.sqlquery(query)
             return HttpResponse(1)
@@ -124,14 +124,15 @@ def ajax(request):
         query = "select trade from wave_user where login = '%s'" % request.COOKIES['loginname']
         cursor = db.sqlquery(query)
         trade = json.loads(cursor.fetchone()[0])
-        stocklist = trade.keys()
-        stockliststr = '\'' + '\',\''.join(stocklist) + '\''
+        sortedlist = sorted(trade, key = lambda x : trade[x][-1][0], reverse = True)
+        stockliststr = '\'' + '\',\''.join(sortedlist) + '\''
         query = "select code, name from wave_stocklist where code in (%s)" % stockliststr
         cursor = db.sqlquery(query)
         result = cursor.fetchall()
+        codenamedic = {i[0] : i[1] for i in result}
         tradeData = []
-        for i in result:
-            tradeData.append({'code':i[0], 'name':i[1], 'value':trade[i[0]]})
+        for i in sortedlist:
+            tradeData.append({'code':i, 'name':codenamedic[i], 'value':trade[i]})
         return HttpResponse(json.dumps(tradeData, ensure_ascii = False))
     elif action == 'deletetrade':
         try:
@@ -139,9 +140,8 @@ def ajax(request):
             query = "select trade from wave_user where login = '%s'" % request.COOKIES['loginname']
             cursor = db.sqlquery(query)
             trade = json.loads(cursor.fetchone()[0])
-            print(trade[datalist[1]])
             for i in trade[datalist[1]]:
-                if datalist[2] == i['date'] and datalist[3] == i['type'] and datalist[4] == i['price'] and datalist[5] == i['volume']:
+                if datalist[2] == i[0] and datalist[3] == i[2] and datalist[4] == i[3] and datalist[5] == i[1]:
                     trade[datalist[1]].remove(i)
                     query = "update wave_user set trade = '%s' where login = '%s'" % (json.dumps(trade, ensure_ascii = False), request.COOKIES['loginname'])
                     db.sqlquery(query)
