@@ -52,6 +52,42 @@ def filter(strategyid):
             finaldata.append(getStockData(stocklist[-1]))
             stocklist.pop()
         return finaldata
+    #HongSanBing
+    elif strategyid == 3:
+        stocklist = getStockList("select code from wave_stocklist where calculated = 1 and riseday = 3 and issuspend = 0 and code not in ('sh000001', 'sz399001', 'sz399005', 'sz399006')")
+        while len(stocklist):
+            query = "select bar from %s order by date desc limit 10" % stocklist[-1]
+            cursor = db.sqlquery(query)
+            result = cursor.fetchall()
+            barlist = [float(i[0]) for i in result]
+            if isNegetive(barlist):
+                finaldata.append(getStockData(stocklist[-1]))
+            stocklist.pop()
+        return finaldata
+    #JianSanBing
+    elif strategyid == 2:
+        stocklist = getStockList("select code from wave_stocklist where calculated = 1 and riseday > 3 and issuspend = 0 and code not in ('sh000001', 'sz399001', 'sz399005', 'sz399006')")
+        while len(stocklist):
+            query = "select close, highest from %s order by date desc limit 2" % stocklist[-1]
+            cursor = db.sqlquery(query)
+            result = cursor.fetchall()
+            datalist = [[float(i[0]), float(i[1])] for i in result]
+            if datalist[0][0] > datalist[1][1]:
+                finaldata.append(getStockData(stocklist[-1]))
+            stocklist.pop()
+        return finaldata
+    #ShuGuangChuXian
+    elif strategyid == 4:
+        stocklist = getStockList("select code from wave_stocklist where calculated = 1 and riseday = 2 and issuspend = 0 and code not in ('sh000001', 'sz399001', 'sz399005', 'sz399006')")
+        while len(stocklist):
+            query = "select bar from %s order by date desc limit 10" % stocklist[-1]
+            cursor = db.sqlquery(query)
+            result = cursor.fetchall()
+            barlist = [float(i[0]) for i in result]
+            if isNegetive(barlist):
+                finaldata.append(getStockData(stocklist[-1]))
+            stocklist.pop()
+        return finaldata
     else:
         print('im in the else')
 

@@ -162,6 +162,9 @@ $(document).on('mouseover', '.mdui-card', function(){
 $(document).on('mouseout', '.mdui-card', function(){
             $(this).children('i').css('display', 'none');
             });
+//******************************
+//delete a favorite stock
+//******************************
 $(document).on('click', '.delete-favorite', function(){
             var _this = $(this);
             var stock = $(this).prop('id');
@@ -204,6 +207,9 @@ $(document).on('mouseout', '.favoritegroup',
 function() {
     $(this).children('.edit').css('display', 'none');
 });
+//******************************
+//rename a stock group
+//******************************
 $(document).on('click', '.edit-edit',
 function() {
     //renameGroupObj = $(this).parent().children('span');
@@ -211,6 +217,9 @@ function() {
     $('#groupname').val(oldname);
     editGroup.open();
 });
+//******************************
+//delete a stock group
+//******************************
 $(document).on('click', '.edit-del',
 function() {
     name = $(this).parent().children('span').text();
@@ -238,6 +247,9 @@ function() {
             });
         }, {confirmText:'确定'});
 });
+//******************************
+//edit group
+//******************************
 $(document).on('confirm.mdui.dialog', '#editgroup',
 function() {
     var newname = $('#groupname').val();
@@ -281,6 +293,9 @@ function() {
         mdui.alert('分组名已存在，请更换分组名称。');
     }
 });
+//******************************
+//create a new group
+//******************************
 $(document).on('confirm.mdui.dialog', '#newgroup', 
 function() {
     var newgroupname = $('#newgroupname').val();
@@ -312,6 +327,9 @@ $(document).on('click', '#addgroup',
 function() {
     newGroup.open();
 });
+//******************************
+//search stock
+//******************************
 $(document).on('click', '#publicstrategy button', 
 function(){
     let searchObj = $(this).data();
